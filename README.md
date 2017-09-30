@@ -14,7 +14,7 @@
     -Útvonalkeresés, A* optimalizálás
     -Waypointok generálása: Delaunay triangulation
     -Csontvázanimáció, AI, evolúciós algoritmus
-    -Ágens alaapú viselkedés az ellenfeleknek
+    -Ágens alapú viselkedés az ellenfeleknek
 -Tesztek, fő eredmények (profilozás)
 -Összegzés
 -Hivatkozások
