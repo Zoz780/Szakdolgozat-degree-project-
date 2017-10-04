@@ -1,0 +1,49 @@
+\Chapter{Problémakör}
+\label{Chap:problemakor}
+
+Játékmotorok
+
+- Quake, Unreal, Unity, Cry Engine említés szintjén
+- A játékmotorok fő funkciói
+- Miért volt szükség új játékmotor implementálására?
+
+Problémafelvetés
+
+- Leírni, hogy melyek azok a funckiók, amelyekre a játékmotorban szükségesek.
+
+Milyen konkrét problémát old meg?
+
+- Felsorol néhány gyakori optimalizálási problémát.
+
+Miért volt szükség az elkészítésére?
+
+- Lehetőséget adott az optimalizálási problémák vizsgálatára.
+- Aktívan kutatott terület.
+- Az eredmények szemléletesek.
+
+\section{Mesterséges intelligencia}
+
+Egyjátékos FPS játékról van szó, így mindenféleképp kellett egy, az ellenfelek mozgását irányító mesterséges intelligencia. Ez az egész az A* algoritmusra alapszik. A játék véletlenszerűen, különböző helyekre kirak x mennyiségű ellenfelet, amiknek közeledni kell a játékos felé, különböző kritériumoknak megfelelve. Ezek a kritériumok azért kellenek, mert a pályán vannak játékelemek, amiken nem lehet átmenni, illetve az ellenfelek sem mehetnek egymásba. 
+
+Az alapötlet az, hogy a pályán le lesznek rakva pontok, ún. waypointok, amik csak az ellenfelek számára lesznek láthatók. Ha kikerül egy adott ellenfél a pályára, az első feladata az lesz, hogy megkeresse a hozzá legközelebb eső waypointot. Ezt egy sima pitagorasz tétellel számolja ki. Ezután az A* algoritmus segítségével meghatározza a játékoshoz legközelebb eső waypointhoz vezető legrövidebb utat, végigmegy rajta, majd ha elérte, akkor onnantól a játékos lesz a közvetlen célpontja. Mivel a játékos folyamatosan mozog, mindezt másodpercenként legalább 15-30x kell kiszámolni.
+
+\section{Hangok}
+
+Egy játék alapelemeihez hozzátartoznak a hangeffektek, zenék is, amik élvezetessé teszik azt. Egy jól megválasztott zene például nagyon sokat tud javítani a játékélményen. Ezek megszólalásáért az SDL\_mixer felelős, ami lehetővé teszi azt is, hogy több hang egyidőben, átfedésben megszólaljon, és ne várják meg egymást. Ezt a Sound osztályban valósítottam meg. Lehetőség van hangcsatornákat megadni, folyamatos újrajátszást, illetve a hangok egymáshoz viszonyított hangerejét beállítani.
+
+\section{Magasságmező}
+
+A játékteret adó domborzatot, a játék egy fekete-fehér, max 400x400pixeles képből számolja ki. Az adott képen minél magasabb egy pont, annál fehérebb, így a fehér adja a legmagasabb, a fekete szín a legalacsonyabb pontot. Ezekből az adatokból vissza lehet számolni a játékos függőleges pozícióját is, illetve az átmeneteket nézve, meredekségnek megfelelően a visszacsúszást. Mindez tehát megadja a játékteret minden szempontból (vizualitás, játékos mozgástere).
+
+\section{Konkrét megjelenítés módja}
+
+A játéktér adatait tehát képből kinyertük, de ez még nem jelenti azt, hogy látjuk is a monitoron. Ehhez a VBO-s (Vertex Buffer Object) kirajzolási módszert választottam, ami a videókártyának a legoptimálisabb adatstruktúrában adja át azt a lehető leggyorsabb kirajzoláshoz.
+
+\section{A csapda mint játékelem}
+
+Mindenképp szerettem volna olyan elemet a játékba, ami megkülönbözteti a többi hasonló, aréna jellegű, túlélős játéktól. Az egyik ilyen elem, hogyha a játékos megáll x ideig (az x majd tesztelés során derül ki mi a legoptimálisabb), akkor megjelenik egy csapda, majd leesik, és meghal. Vannak olyan játékok, ahol szimplán az ellenfelek ösztönzik a játékost a mozgásra, de itt konkrétan ki is van kényszerítve. Jelenlegi beállítás:
+Ha megáll a játékos 5mp-ig, akkor megjelenik a csapda modell egy hang kíséretében, illetve onnantól nem lehet már pozíciót változtatni, csak az egérrel körbe nézni. Majd még 2mp leteltével már az egeret sem érzékeli, a föld felé fordul a kamera, majd leesik, ekkor ismét egy hangot lehet hallani, és értesül a játékos arról, hogy miért halt meg.
+
+\section{A lövés}
+
+Egy ilyen játékban alapelem az is, hogy tudjunk lőni, mivel ez nélkül az egész értelmét veszti. A textúrázott játéktéren ugyan nem látni, de az egész több százezer háromszögből áll. Adott egy irányvektor, ami azt határozza meg, merre fordul épp a játékos, azaz mire néz. Ennek a vektornak a metszéspontját kell vizsgálni a háromszögekkel, hogy találatot meg tudjuk jeleníteni, ami jelen esetben a falon egy lövésnyom. Szóval ki számolja a program a metszéspont x, y, z koordinátáját, majd odailleszt egy lövésnyom textúrát. Az ellenfeleknél szintén metszéspontot kell számolni, csak ott hengerre. Ki lehetne számolni a modellre is közvetlen, de az nagyon lassú lenne, így egy leegyszerűsített alakzatot választottam. Ez az ellenfél ún. hitboxa.
