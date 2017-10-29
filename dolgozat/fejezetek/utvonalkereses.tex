@@ -5,7 +5,7 @@ A fejezet az útvonalkeresésnél alkalmazott módszereket mutatja be.
 
 \section{A waypoint-ok fogalma és jellemzői}
 
-Ez egy térben meghatározott egyszerű pont, amely nem látható a játkos számára. A mesterséges intelligencia ezeket használja fel az ellenfelek mozgatásához. Azért van rájuk szükség, mert a pályán vannak falak, különböző játékelemek, amiken nem lehet átmenni, és ezekkel a pontokkal egyértelműen meg lehet határozni, hogy melyek azok a helyek, amelyek bejárhatók.
+Ez egy térben meghatározott egyszerű pont, amely nem látható a játékos számára. A mesterséges intelligencia ezeket használja fel az ellenfelek mozgatásához. Azért van rájuk szükség, mert a pályán vannak falak, különböző játékelemek, amiken nem lehet átmenni, és ezekkel a pontokkal egyértelműen meg lehet határozni, hogy melyek azok a helyek, amelyek bejárhatók.
 
 A waypoint-okhoz rendelhetünk különféle többletinformációkat. Ilyenek lehet például, hogy az adott pontban a gépi játékosnak megállnia, guggolnia.
 
@@ -17,19 +17,37 @@ Fontos, hogy a waypoint-nak legyen egy típusa, amely meghatározza, hogy az ado
 
 \section{Útvonalkeresés waypoint-ok alapján}
 
-% NOTE: De pontosan hogyan használjuk fel a waypointokat a mesterséges intelligenciához?
-
 Tegyük fel, a gép létrehoz egy ellenfelet egy véletlenszerű pozícióba. (Ezt a szakzsargonban \textit{spawn}-olásnak hívják.) Az ellenfeleknek az a fő feladatuk, hogy a lehető legrövidebb útvonalon eljussanak a játékoshoz, és megtámadják. 
 
 Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
 \begin{itemize}
 \item A waypoint-ok közül megkeressük az adott karakterhez legközelebbit. Először ezt a pontot kell megközelíteni.
 \item A pont adott, kis sugarú környezetét elérve A*-algoritmus segítségével meghatározzuk
+\item 
 \end{itemize}
+% TODO: Felsorolás folytatása
 
 % TODO: Készíteni egy demo-t az A*-algoritmushoz, és megnézni, hogy a legközelebbi pontok keresése pontosan hogy nézne ki, és egyáltalán kell-e hozzá külön heurisztika.
 
-% TODO: A legközelebbi pont megkereséséhez tartozó algoritmushoz pszeudókódos leírás.
+A legközelebbi pont megkereséséhez, a következő algoritmust használom:
+\begin{verbatim} 
+1.Waypoint vegso_pont;
+2.Vec2 legkozelebbi_pont;
+3.double pont_tav = 100000, temp, x_tav, y_tav;
+4.float x, y;
+5.
+6.ciklus Waypoint pont : waypointokon
+7.	x = pont.x;
+8.	y = pont.y;
+9.	x_tav = abs(x – jelenlegi_xpoz);
+10.	y_tav = abs(y – jelenlegi_ypoz);
+11.	temp = sqrtf(x_tav * x_tav +  y_tav * y_tav);
+12.	ha temp < pont_tav akkor
+13.		pont_tav = temp;
+14.		vegso_pont = pont;
+15.legkozelebbi_pont.x = vegso_pont.x;
+16.legkozelebbi_pont.y = vegso_pont.y; 
+\end{verbatim}
 
 \section{Az A*-algoritmus}
 
@@ -39,35 +57,76 @@ Ezt az algoritmust a legrövidebb útvonal számításra gyakran használják, m
 
 A keresést egy gráfon tudjuk végrehajtani. A gráf egy lehetséges realizációja a rács, amelyben a gráf pontjai négyzetrácsnak megfelelően helyezkednek el.
 
-% TODO: Leírni, hogy ez a rácsos megadás miért előnyös.
+Ez a rácsos kialakítás több szempontból is előnyös. A pontok minden esetben egymástól egyforma távolságra helyezkednek el, így ezeket nem kell számolni. Továbbá ha csak a bejárható helyekre helyeznénk pontokat, külön olyan algoritmusra lenne szükség, amely meghatározza azt, hogy melyik pontból melyikbe haladhatunk. Pontpárok tárolására lenne szükség, amelynek a pálya elrendezéséhez való dinamikus meghatározása plusz erőforrásigény. A rácsos megoldással a pálya elrendezésétől függetlenül rakjuk le a pontokat, csak egy értéket állítunk át a pont típusának megváltoztatásakor, amely a be nem járható területeket határozza meg.
 
-Listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk. Kell lennie egy, vagy több feltételnek, hogy az adott pontból merre haladhatunk tovább, ilyen például az, hogy csak vízszintesen és függőlegeseb haladhatunk a ponthálón, vagy átlósan is. Az a pont, amin éppen tartózkodunk az az ősnode (base node), amelyekre léphetünk, azok pedig a gyerek node-ok (child node).
+Listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk, ezeket hívjuk nyitott (Open) illetve zárt(Closed) node listáknak. A nyitott node lista másképpen fogalmazva a hátralévő, vizsgálatlan pontok, a zárt node lista pedig a már vizsgált pontok halmaza. Kell lennie egy, vagy több feltételnek, hogy az adott pontból merre haladhatunk tovább, ilyen például az, hogy csak vízszintesen és függőlegesen haladhatunk a ponthálón, vagy átlósan is.  Az a pont, amin éppen tartózkodunk az a jelenlegi node (current node), amelyekre léphetünk, azok pedig a gyerek node-ok (successor node).
 
-X és Y pozíció, ezen felül kell lennie egy változónak, amiben az adott pontig bejárt távolság található. Illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található.
+Egy node-hoz a következők tartoznak: X és Y pozíció, ezen felül kell lennie egy változónak, amiben az adott pontig bejárt távolság található. Illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található.
 Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, ugyanis ezekből az adatokból számolja ki egy adott pont prioritását (kezdőponttól való táv + célponttól való táv), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, szóval arra kell elindulni. Ha egy idő után falba ütközik, elkezdi vizsgálni mindig a lehető legkisebb prioritással rendelkező, még szabad pontokat, egészen addig, még utat nem talál valahol magának.
 
-% TODO: Az A*-algoritmus pszeudókódját részletesen megadni. (Az előző bekezdéseket annak megfelelően kellene átírni majd.)
+Az A* algoritmus leírása pszeudokóddal:
+A célpontot jelöljük goal\_node-dal, a kezdőpontot pedig start\_node-dal.
 
-% NOTE: Milyen adatok tartoznak egy node-hoz?
+\begin{verbatim} 
+1.Helyezük a start_node-ot az Open listába. f(start_node) = h(start_node)
+2.Amíg az Open lista nem üres
+3.	Vegyük a az Open listából azt a node-ot, amely a legkisebb költségű
+4.		f(current_node) = g(current_node) + h(current_node)
+5.	ha current_node a célpont, megtaláltuk a megoldást; break
+6.	Generáljunk minden állapothoz successor_node-ot, ami a current_node-ból származik
+7.	ciklus minden current_node successor_node-ján
+8.		Állítsuk be a successor_current_költséget, amely g(current_node) + w(current_node, successor_node)
+9.		ha successor_node az Open listában van
+10.			ha g(successor_node) <= successor_current_költség folytatás (19. sorral)
+11.			különben ha successor_node a Closed listában van
+12.			ha g(successor_node) <= successor_current_költség folytatás (19. sorral)
+13.			Mozgassuk successor_node-ot a Closed listából az Open listába
+14.		    különben
+15.			Adjuk hozzá successor_node-ot az Open listához
+16.			Állítsuk a h(successor_node)-ot hogy megkapjuk a heurisztikus távolságot a célig
+17.		Legyen egyenlő g(successor_node) a successor_current_költséggel
+18.		Állítsuk be node_successor szülőjét current_node-nak
+19.	Adjuk hozzá a current_node-ot a Closed listához
+20.ha(current_node != goal_node) lépjünk ki a következővel (az Open lista üres)
+\end{verbatim}
 
 \section{A pontos megvalósítás}
 
 A program a játéktér alapját képző domborzatot, egy képből olvassa be. Ez a magasságmező, ahol egy adott pont magasságát a világossága határozza meg, minél világosabb, annál magasabb pontot jelent a domborzaton, így 256 féle magasság lehetséges, ami az aktuális változathoz megfelelő felbontásnak bizonyult. 
 
-A játéktér jelentős része (körülbelül 95\%) bejárható. A magasságmezőhöz tartozó kép felbontása $384 \times 384$ pixel.
+A játéktér jelentős része (körülbelül 95\%) bejárható. A magasságmezőhöz tartozó kép felbontása $384 \times 384$ pixel, amely a térkép megfelelő részletességű megjelenítése miatt ennyi. A waypoint-ok meghatározására több lehetőség is van.
 
-% TODO: Miért pont ennyi a felbontás? Megvizsgálni, hogy milyen hatással van a felbontásnak a többi részre. Megmutatni, hogy ez miért lehet ideális. (Ehhez esetleg lehet csinálni számítási idős görbét, vagy problémás eseteket részletezni.)
+Az egyik lehetőség, ha minden pixelhez rendelünk egy pontot. Ez olyan szempontból lehet előny, hogy pontosabban meg van határozva az összes pont amelyre léphet az ellenfél. Hátránya viszont, hogy ez nagyon sok számításigény, és fölösleges is minden pixelre egy waypoint.
 
-% TODO: Készíteni egy ábrát a küszöbölésről (a maasságmező metszevel például).
+A másik lehetőség, ha 8 pixelenként határozunk meg egy waypoint-ot, ami 48x48-as felbontást eredményez. Azért pont erre az értékre esett a választásom, mert ez nagyban gyorsítja a számításokat, viszont még nem megy a bejárható területek rovására, megfelelően pontos. Ez kevesebb memória igényt jelent, és mivel kevesebb adattal is kell számolni, kevésbé terheli a processzort is. Ez látható \aref{fig:diagram_utvonal} ábrán.
 
-Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 4 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ha például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. A képen „.”-al a bejárható terület, „X”-el a falak, „S”-el az indulópont, „F”-el a célpont, „R”-el a legrövidebb útvonal van jelölve.
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{kepek/utvonal_szamitas_diagram_waypointokra.png}
+\caption{Számításigény a felbontás és idő függvényében}
+\label{fig:diagram_utvonal}
+\end{figure}
 
-A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olvasható, a játékon belül a beolvasott magasságmező színe határozza ezt meg. Erre azért van szükség, mert így lehet megoldani azt, hogy a mesterséges intelligencia alkalmazkodjon a környezetéhez. Ha a pályától függetlenül, statikusan lenne az összes waypoint típusa meghatározva, akkor ha a játékos más pályát rajzol, a pontok típusai nem illeszkednének a layoutra. Ezt a módszert alkalmazva, meg lehet adni, hogy egy bizonyos magasságnál csak másszon, vagy ugorjon, stb. Ez egy fontos tulajdonsága a játéknak, mert azt úgy terveztem, hogy ha a felhasználó akár paint-ben rajzol egy pályát, akkor a teret azonnal kialakítsa, beállítsa hogy a falakon a játékos ne tudjon átmenni, a meredek lejtőkről visszacsússzon, illetve a mesterséges intelligencia is alkalmazkodjon.
+Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 8 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ahogy \aref{fig:kuszobertek}-as ábrán is látható, aa például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. \aref{fig:mi_printscreen}  képen „.”-al a bejárható terület, „X”-el a falak, „S”-el az indulópont, „F”-el a célpont, „R”-el a legrövidebb útvonal van jelölve.
 
-% TODO: Megmutatni a naiv, küszöbölős megoldást a falak meghatározására.
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.15]{kepek/mi_printscreen.png}
+\caption{Útvonal meghatározó algoritmus működése}
+\label{fig:mi_printscreen}
+\end{figure}
 
-% TODO: Megnézni, hogy gradiens alapján hogy lehet meghatározni. Ha túl nagy a gradiens akkor nem lehet az adott részen áthaladni.
+% TODO: Képet nagyítani, nekem valamiért szétcsúszik a szöveg!
+
+A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olvasható, a játékon belül a beolvasott magasságmező színe határozza ezt meg. Erre azért van szükség, mert így lehet megoldani azt, hogy a mesterséges intelligencia alkalmazkodjon a környezetéhez. Ha a pályától függetlenül, statikusan lenne az összes waypoint típusa meghatározva, akkor ha a játékos más pályát rajzol, a pontok típusai nem illeszkednének az elrendezésre. Ezt a módszert alkalmazva, meg lehet adni, hogy egy bizonyos magasságnál csak másszon, vagy ugorjon, stb. Ez egy fontos tulajdonsága a játéknak, mert azt úgy terveztem, hogy ha a felhasználó akár paint-ben rajzol egy pályát, akkor a teret azonnal kialakítsa, beállítsa hogy a falakon a játékos ne tudjon átmenni, a meredek lejtőkről visszacsússzon, illetve a mesterséges intelligencia is alkalmazkodjon.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.48]{kepek/magassagmezo_kuszobertek_diagram.png}
+\caption{Küszöbérték a még bejárható terület meghatározásához}
+\label{fig:kuszobertek}
+\end{figure}
+
+De a küszöbérték megadása nem mindig elegendő, ugyanis lehetnek olyan helyek a pályán, amelyek fal magasságúak, de bejárhatók, mert alacsony meredekségű emelkedő vezet fel oda. Ezt a problémát gradiens számítással lehet megoldani, ezzel van megoldva az is, hogy a játékos ne tudjon kimenni a játéktérből. Ahol túl nagy a meredekség, ott a waypoint típusát nem bejárhatóra kell állítani.
 
 A pontok típusának a pálya alapján legenerálása után, az A*-algoritmus segítségével meghatározza a program a legrövidebb útvonalat a cél waypointig, természetesen a pontok típusait figyelembe véve. Ezt másodpercenként legalább 15x újra kell számolni, ugyanis a játékos mozog, és a cél waypoint mindig a játékoshoz legközelebb eső pont, ami ezzel együtt változik.
-
-% TODO: Waypointok generálása: Delaunay triangulation
