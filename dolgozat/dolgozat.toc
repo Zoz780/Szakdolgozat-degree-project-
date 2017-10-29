@@ -1,0 +1,35 @@
+\select@language {magyar} \contentsline {chapter}{\numberline {1}Bevezet\IeC {\'e}s}{7}
+\select@language {magyar} \contentsline {chapter}{\numberline {2}Probl\IeC {\'e}mak\IeC {\"o}r}{8}
+\select@language {magyar} \contentsline {section}{\numberline {2.1}J\IeC {\'a}t\IeC {\'e}kmotorok}{8}
+\select@language {magyar} \contentsline {section}{\numberline {2.2}Mi\IeC {\'e}rt volt sz\IeC {\"u}ks\IeC {\'e}g \IeC {\'u}j j\IeC {\'a}t\IeC {\'e}kmotor k\IeC {\'e}sz\IeC {\'\i }t\IeC {\'e}s\IeC {\'e}re?}{8}
+\select@language {magyar} \contentsline {section}{\numberline {2.3}Lehets\IeC {\'e}ges optimaliz\IeC {\'a}l\IeC {\'a}si probl\IeC {\'e}m\IeC {\'a}k}{8}
+\select@language {magyar} \contentsline {section}{\numberline {2.4}Az egyedi motorral megval\IeC {\'o}s\IeC {\'\i }tott funkci\IeC {\'o}k}{9}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4.1}Mesters\IeC {\'e}ges intelligencia}{9}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4.2}Hangok}{9}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4.3}Magass\IeC {\'a}gmez\IeC {\H o}}{9}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4.4}Konkr\IeC {\'e}t megjelen\IeC {\'\i }t\IeC {\'e}s m\IeC {\'o}dja}{10}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4.5}A csapda mint j\IeC {\'a}t\IeC {\'e}kelem}{10}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4.6}A l\IeC {\"o}v\IeC {\'e}s}{10}
+\select@language {magyar} \contentsline {chapter}{\numberline {3}Komponensek}{11}
+\select@language {magyar} \contentsline {section}{\numberline {3.1}Modellbet\IeC {\"o}lt\IeC {\'e}s text\IeC {\'u}r\IeC {\'a}z\IeC {\'a}ssal}{12}
+\select@language {magyar} \contentsline {section}{\numberline {3.2}Ir\IeC {\'a}ny\IeC {\'\i }t\IeC {\'a}s, fizika}{12}
+\select@language {magyar} \contentsline {section}{\numberline {3.3}Hangok}{13}
+\select@language {magyar} \contentsline {section}{\numberline {3.4}\IeC {\'A}llapotok}{14}
+\select@language {magyar} \contentsline {section}{\numberline {3.5}L\IeC {\"o}v\IeC {\'e}s}{14}
+\select@language {magyar} \contentsline {section}{\numberline {3.6}Mesters\IeC {\'e}ges intelligencia}{15}
+\select@language {magyar} \contentsline {section}{\numberline {3.7}A j\IeC {\'a}t\IeC {\'e}kind\IeC {\'\i }t\IeC {\'a}s folyamata}{15}
+\select@language {magyar} \contentsline {chapter}{\numberline {4}\IeC {\"U}tk\IeC {\"o}z\IeC {\'e}svizsg\IeC {\'a}lat}{16}
+\select@language {magyar} \contentsline {section}{\numberline {4.1}A karakterek \IeC {\"u}tk\IeC {\"o}z\IeC {\'e}svizsg\IeC {\'a}lata mozg\IeC {\'a}s szempontj\IeC {\'a}b\IeC {\'o}l}{16}
+\select@language {magyar} \contentsline {section}{\numberline {4.2}A domborzat \IeC {\'e}s terept\IeC {\'a}rgyak \IeC {\"u}k\IeC {\"o}z\IeC {\'e}svizsg\IeC {\'a}lata a l\IeC {\"o}v\IeC {\'e}s szempontj\IeC {\'a}b\IeC {\'o}l}{17}
+\select@language {magyar} \contentsline {section}{\numberline {4.3}A j\IeC {\'a}t\IeC {\'e}kos, \IeC {\'e}s az ellenfelek hitboxa}{17}
+\select@language {magyar} \contentsline {chapter}{\numberline {5}\IeC {\'U}tvonalkeres\IeC {\'e}s}{18}
+\select@language {magyar} \contentsline {section}{\numberline {5.1}A waypoint-ok fogalma \IeC {\'e}s jellemz\IeC {\H o}i}{18}
+\select@language {magyar} \contentsline {section}{\numberline {5.2}A waypoint-hoz tartoz\IeC {\'o} adatok}{18}
+\select@language {magyar} \contentsline {section}{\numberline {5.3}\IeC {\'U}tvonalkeres\IeC {\'e}s waypoint-ok alapj\IeC {\'a}n}{18}
+\select@language {magyar} \contentsline {section}{\numberline {5.4}Az A*-algoritmus}{19}
+\select@language {magyar} \contentsline {section}{\numberline {5.5}A pontos megval\IeC {\'o}s\IeC {\'\i }t\IeC {\'a}s}{20}
+\select@language {magyar} \contentsline {chapter}{\numberline {6}Anim\IeC {\'a}ci\IeC {\'o}}{23}
+\select@language {magyar} \contentsline {chapter}{\numberline {7}Ellenfelek viselked\IeC {\'e}s\IeC {\'e}nek modellez\IeC {\'e}se}{24}
+\select@language {magyar} \contentsline {chapter}{\numberline {8}Tesztek}{25}
+\select@language {magyar} \contentsline {chapter}{\numberline {9}\IeC {\"O}sszegz\IeC {\'e}s}{26}
+\select@language {magyar} \contentsline {chapter}{Irodalomjegyz\'ek}{27}
