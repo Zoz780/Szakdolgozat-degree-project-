@@ -38,7 +38,7 @@ Ezen felül a gravitáció ami nagyon lényeges, mert a pályának vannak olyan 
  
 \section{A domborzat és tereptárgyak üközésvizsgálata a lövés szempontjából}
 
-Az ilyen fajta ütközésvizsgálat számítás nem létszükséglet a játszhatóság szempontjából, de tény, hogy jóval realisztikusabbá teszi a játékot, és sok optimalizációt igényel. Ez teszi lehetővé, hogy ha lövünk egyet, és beletalál bármilyen elembe, ami a pálya része, megjeleníthessük rajta a találatot. Ennek minősége lehet többféle, csak egy textúra, vagy egyéb még realisztikusabb megoldások.
+Az ilyen fajta ütközésvizsgálat számítás nem létszükséglet a játszhatóság szempontjából, de tény, hogy jóval realisztikusabbá teszi a játékot, és sok optimalizációt igényel. Ez teszi lehetővé, hogy ha lövünk egyet, és beletalál bármilyen elembe, ami a pálya része, megjeleníthessük rajta a találatot. Ennek minősége lehet többféle, csak egy textúra, vagy egyéb még realisztikusabb megoldások. Mivel a pálya háromszögekből áll, és az irány amerre nézünk egy egyenes, így itt egyenes és háromszög metszéspontját kell számolnunk térben. A pálya háromszöghálóját, geometriáját \aref{fig:wireframe} ábrán mutatom be.
 
 \begin{figure}[h]
 \centering
@@ -47,10 +47,37 @@ Az ilyen fajta ütközésvizsgálat számítás nem létszükséglet a játszhat
 \label{fig:wireframe}
 \end{figure}
 
+Első lépésként, meg kell határozni azt az egyenest, amely azt írja le, amerre néz az adott karakter. Ez az egyenes két ponttal van leírva. Az egyik az adott karakter pozíciójával egyezik meg. A másik, távoli pontot jelen esetben egy, az OpenGL-ben definiált függvényből, a GluLookAt-ből határozzuk meg. A GluLookAt-nek 9 paramétere van. Az első három a karakter jelenlegi pozíciója, a második három azt a pontot írja le merre nézünk (referencia pont), az utolsó három pedig azt határozza meg, hogy melyik tengelyen, és merre néz a felfelé vektor. A 9 paraméter közül a középső háromból lehet a túlsó pontot  meghatározni. Mindegyikből ki kell vonni az adott tengelynek megfelelő jelenlegi pozíciót, majd megszorozni egy nagy értékkel, azért, mert ez nélkül túl közeli pontot kapnánk, ezáltal egy rövid egyenest.
 
+Második lépés, ennek az egyenesnek kiszámolni a háromszögekkel való metszéspontját. A háromszögek a három csúcspontjukkal vannak leírva. Kell lennie egy függvénynek, amelynek a háromszög három csúcspontját, és az egyenes két végpontját átadva, visszaadja a metszéspont x,y,z koordinátáját. Ez működés közben \aref{fig:triangle} ábrán látható.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.48]{kepek/one_triangle.png}
+\caption{Egyenes és háromszög metszéspontja vizualizációval}
+\label{fig:triangle}
+\end{figure}
+
+Ez a függvény először megvizsgálja, hogy azt a síkot, amelyen a háromszög van, metszi-e az egyenes, ha nem, nem is számol tovább. Ha metszi a síkot, akkor megnézi, pontosan hol metszi azt, megkapva az x,y,z koordinátákat. Ez után már csak azt kell vizsgálni, hogy a metszéspont benne van-e a három csúcspontjával leírt háromszögben. Ha igen, akkor visszaadja a pontos metszéspontot.
 
 \section{A játékos, és az ellenfelek hitboxa}
 
-f
+% TODO: Hitbox kép linkét bemásolni a jegyzékbe
+% http://www.toptiertactics.com/wp-content/uploads/2011/05/Hitbox.jpg 
+
+Ennek alapelve ugyanaz, mint a domborzat és tereptárgyak üközésvizsgálatánál, annyi különbséggel, hogy itt azt kell vizsgálni, hogy az ellenfelek körül lévő, a játékosok számára láthatatlan hengerrel van-e metszéspontja az adott egyenesnek. Ezt a hengert nevezzük jelen esetben hitbox-nak, de egyéb játékokban lehet sokkal részletesebb, attól függően, mennyire szeretnénk pontosan regisztrálni az egyes találatokat.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{kepek/hitbox.png}
+\caption{Különböző részletességű hitbox-ok}
+\label{fig:hitbox}
+\end{figure}
+
+Ebben az esetben azért nem a pontos, látható geometriára számoljuk a találatokat, mert annak nagyon nagy erőforrásigénye lenne, ellenben az lenne a legpontosabb, tehát amit látunk, az jelenti a találatot. A találatszámításra használt leegyszerűsített geometria előnye, hogy sokkal kevesebb hátérszámításra van szükség. Viszont mivel nem azt találjuk el, amit látunk, előfordulhatnak kellemetlen, vagy érdekes szituációk. Előfordulhat, hogy úgy találjuk el az ellenfelet, hogy ott valójában nem látunk semmit, vagy ennek ellenkezője, hogy elvileg eltaláljuk, de az a rész nem tartozik a hitbox-hoz.
+
+Online lövöldözős játéknál a külön leegyszerűsített hitbox-os megoldással lehetnek még problémák. Ilyen például az, hogy a nem megfelelő internetkapcsolat okozta nagy válaszidő, vagy csomagvesztés miatt a hitbox elcsúszik a látható geometriától. Így akár hiába van leegyszerűsített, de még egész részletes geometria ráhúzva az adott karakterre, mégsem találjuk el az ellenfelet, mert az nem illeszkedik pontosan.
+
+\section{Optimalizálási módszerek}
 
 
