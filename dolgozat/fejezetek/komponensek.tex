@@ -9,7 +9,7 @@ A kép világ kirajzolásához, illetve a hangok megszólaltatásához az SDL 2.
 
 %https://hu.wikipedia.org/wiki/Simple_DirectMedia_Layer
 
-\section{Az elképzelés, nagyobb komponensek}
+\section{Az alkalmazás fő részei}
 
 Mint ahogy a bevezetésben is írtam, egy FPS (First Person Shooter = belső nézetes lövöldözős játék, az adott személy szemszögéből látjuk az eseményeket) játék elkészítését tűztem ki célul. A konkrét elképzelés az, hogy egy aréna jellegű, túlélő játék készüljön el. Nem terveztem online módot, a játékosnak egy mesterséges intelligenciával kell harcolnia. A játékmenet hullámokra lesz osztva, és ahogy halad előre a játékos, annál nehezebbé válik (több és/vagy erősebb ellenfelekkel). Egy hullám akkor ér véget, ha egy előre megadott számú ellenfelet sikerül megölni. A körök között a játékosnak lehetősége nyílik az életerőt és lőszert feltölteni, fejleszteni a fegyverét a teljesítményének megfelelően. A játékmenet nehezítve lesz azzal (azon felül hogy lőnek rá), hogy ha x másodpercig megáll a játékos, akkor azonnal meghal, így mindig mozgásban kell lenni. Ennek az időtartamnak a pontos meghatározása majd a tesztelés során alakul ki. Lehetőség lesz különböző elemeket (ún. power up-okat) felszedni a körök alatt, ami lehet pozitív vagy negatív hatású is. Pl. adhat/vehet el életerőt, adhat/vehet el lőszert, adhat/vehet el fegyverfejlesztést.
 
@@ -23,14 +23,14 @@ Magasságmező beolvasásáért, illetve számításáért, illetve a kirajzolá
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.7]{kepek/heightmap.png}
+\includegraphics[scale=0.6]{kepek/heightmap.png}
 \caption{A magasságmező adatait tartalmazó bitmap}
 \label{fig:heightmap}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=1.6]{kepek/heightmap_texture.png}
+\includegraphics[scale=0.2]{kepek/heightmap_texture.png}
 \caption{A magasságmező textúrája}
 \label{fig:heightmap_texture}
 \end{figure}

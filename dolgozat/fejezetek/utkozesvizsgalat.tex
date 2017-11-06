@@ -25,13 +25,13 @@ Ezen felül a gravitáció ami nagyon lényeges, mert a pályának vannak olyan 
  Ez esetben egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekre, aminek a küszöbértéke mindig az aktuális talajmagasság. Ennek pszeudokódja:
 
 \begin{verbatim}
-1. gravitációs erő := -9,8;
+1. gravitációs erő;
 2. küszöbérték := aktuális talajmagasság;
 3. ha karakter függőleges pozíciója > küszöbérték
 4. 	akkor
 5.		függőleges gyorsaság = függőleges gyorsaság + gravitációs erő;
 6.		karakter függőleges pozíciója = karakter függőleges pozíciója 
-										+ függőleges gyorsaság;
+											+ függőleges gyorsaság;
 6.	különben
 7. 		karakter függőleges pozíciója = küszöbérték;
 \end{verbatim}
@@ -69,7 +69,7 @@ Ennek alapelve ugyanaz, mint a domborzat és tereptárgyak üközésvizsgálatá
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.7]{kepek/hitbox.png}
+\includegraphics[scale=0.3]{kepek/hitbox.png}
 \caption{Különböző részletességű hitbox-ok}
 \label{fig:hitbox}
 \end{figure}
@@ -80,4 +80,30 @@ Online lövöldözős játéknál a külön leegyszerűsített hitbox-os megold�
 
 \section{Optimalizálási módszerek}
 
+Mivel az ütközéskezelés során nagyon sok adattal kell számolni, szükség van optimalizációkra. Korábban ezt részben már említettem, hogy több százezer háromszög, vagy nagy terület esetén nagyon erőforrás igényesek a számítások, és teljesen fölöslegesen is számolja ki a processzor a teljes területre a ütközést, mikor a pálya túlsó felének közelében sem vagyunk. Erre létezik több optimalizálási mód, ilyen például a játéktér szabályos felosztása, a négyes fa vagy oktális fa.
 
+\subsection{A játéktér szabályos felosztása}
+
+Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva felosztjuk a teret egy felosztási részletességet megadva. Meg kell adnunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található, ez látható \aref{fig:grid} ábrán. A karakterek ütközésvizsgálatánál elég, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyiken épp tartózkodik. Lövedék becsapódásának x,y,z koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. Előnye, hogy ezt a legegyszerűbb megadni, és ehhez képest elég nagy gyorsulást tapasztalhatunk. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, minden tárgy nélkül. Ennek kiküszöbölésére találták ki a négyes, és az oktális fát.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.2]{kepek/grid.png}
+\caption{A pálya felosztása egyenlő részekre}
+\label{fig:grid}
+\end{figure}
+
+\subsection{Négyes fa és az oktális fa}
+
+A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát síkbeli, az oktális fát pedig térbeli felosztásra használják. Olyan, kivételes esetekben használható jól a négyes fa térben, ha a játéktér nem nagy magassággal rendelkezik. Használatánál az első feladatunk a fa gyökerének meghatározása, ami a teljes játékteret magában foglalja. Négyes fa esetén a síkot mindig 4 részre osztjuk mindaddig, még a fa el nem éri a maximális, előre definiált értéket, vagy az adott cellában az objektumok száma nem több mint egy előre definiált érték. Ugyanez a módszer érvényesül az oktális fánál, annyi különbséggel, hogy ott 8 felé osztjuk a teret. A négyes fa \aref{fig:quadtree} ábrán látható, hogyan is működik.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.2]{kepek/quadtree.png}
+\caption{A pálya felosztása a rajta lévő objektumok alapján}
+\label{fig:quadtree}
+\end{figure}
+
+\subsection{Optimalizálási módszer kiválasztása}
+
+A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrásigényt, a fölösleges számításokat mellőzve. Felvetődhet a kérdés, hogy miért négyes fát alkalmaztam, mikor a játék három dimenziós? Egyrészt azért, mivel ezt könnyebb megvalósítani. Másrészt, mint ahogy korábban is említettem, ha nincs a térnek nagy magassága, akkor tökéletesen elegendő lehet a négyes fa is, mivel az oktális fa ilyen esetben nem hoz annyival jobb eredményt, mint amennyivel több munka van vele.

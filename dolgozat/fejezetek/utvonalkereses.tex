@@ -22,10 +22,10 @@ Tegyük fel, a gép létrehoz egy ellenfelet egy véletlenszerű pozícióba. (E
 Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
 \begin{itemize}
 \item A waypoint-ok közül megkeressük az adott karakterhez legközelebbit. Először ezt a pontot kell megközelíteni.
-\item A pont adott, kis sugarú környezetét elérve A*-algoritmus segítségével meghatározzuk
-\item 
+\item A waypoint-ok közül meghatározzuk a célponthoz legközelebbit, ez lesz majd a célpont.
+\item A pont adott, kis sugarú környezetét elérve A*-algoritmus segítségével meghatározzuk a legrövidebb útvonalat.
+\item A célpontot elérve már csak a játékoshoz kell egyenes úton eljutni.
 \end{itemize}
-% TODO: Felsorolás folytatása
 
 % TODO: Készíteni egy demo-t az A*-algoritmushoz, és megnézni, hogy a legközelebbi pontok keresése pontosan hogy nézne ki, és egyáltalán kell-e hozzá külön heurisztika.
 
@@ -33,20 +33,20 @@ A legközelebbi pont megkereséséhez, a következő algoritmust használom:
 \begin{verbatim} 
 1.Waypoint vegso_pont;
 2.Vec2 legkozelebbi_pont;
-3.double pont_tav = 100000, temp, x_tav, y_tav;
+3.double pont_tav := 100000, temp, x_tav, y_tav;
 4.float x, y;
 5.
 6.ciklus Waypoint pont : waypointokon
-7.	x = pont.x;
-8.	y = pont.y;
-9.	x_tav = abs(x – jelenlegi_xpoz);
-10.	y_tav = abs(y – jelenlegi_ypoz);
-11.	temp = sqrtf(x_tav * x_tav +  y_tav * y_tav);
+7.	x := pont.x;
+8.	y := pont.y;
+9.	x_tav := abs(x – jelenlegi_xpoz);
+10.	y_tav := abs(y – jelenlegi_ypoz);
+11.	temp := sqrtf(x_tav * x_tav +  y_tav * y_tav);
 12.	ha temp < pont_tav akkor
-13.		pont_tav = temp;
-14.		vegso_pont = pont;
-15.legkozelebbi_pont.x = vegso_pont.x;
-16.legkozelebbi_pont.y = vegso_pont.y; 
+13.		pont_tav := temp;
+14.		vegso_pont := pont;
+15.legkozelebbi_pont.x := vegso_pont.x;
+16.legkozelebbi_pont.y := vegso_pont.y; 
 \end{verbatim}
 
 \section{Az A*-algoritmus}
@@ -68,26 +68,30 @@ Az A* algoritmus leírása pszeudokóddal:
 A célpontot jelöljük goal\_node-dal, a kezdőpontot pedig start\_node-dal.
 
 \begin{verbatim} 
-1.Helyezük a start_node-ot az Open listába. f(start_node) = h(start_node)
+1.Helyezük a start_node-ot az Open listába. f(start_node)=h(start_node)
 2.Amíg az Open lista nem üres
 3.	Vegyük a az Open listából azt a node-ot, amely a legkisebb költségű
 4.		f(current_node) = g(current_node) + h(current_node)
 5.	ha current_node a célpont, megtaláltuk a megoldást; break
-6.	Generáljunk minden állapothoz successor_node-ot, ami a current_node-ból származik
+6.	Generáljunk minden állapothoz successor_node-ot, ami a 
+		current_node-ból származik
 7.	ciklus minden current_node successor_node-ján
-8.		Állítsuk be a successor_current_költséget, amely g(current_node) + w(current_node, successor_node)
+8.		Állítsuk be a successor_current_költséget, amely g(current_node) 
+				+ w(current_node, successor_node)
 9.		ha successor_node az Open listában van
-10.			ha g(successor_node) <= successor_current_költség folytatás (19. sorral)
+10.			ha g(successor_node) <= successor_current_költség ugrás 19-re
 11.			különben ha successor_node a Closed listában van
-12.			ha g(successor_node) <= successor_current_költség folytatás (19. sorral)
+12.			ha g(successor_node) <= successor_current_költség ugrás 19-re
 13.			Mozgassuk successor_node-ot a Closed listából az Open listába
 14.		    különben
 15.			Adjuk hozzá successor_node-ot az Open listához
-16.			Állítsuk a h(successor_node)-ot hogy megkapjuk a heurisztikus távolságot a célig
+16.			Állítsuk a h(successor_node)-ot hogy megkapjuk a heurisztikus 
+				távolságot a célig
 17.		Legyen egyenlő g(successor_node) a successor_current_költséggel
 18.		Állítsuk be node_successor szülőjét current_node-nak
 19.	Adjuk hozzá a current_node-ot a Closed listához
-20.ha(current_node != goal_node) lépjünk ki a következővel (az Open lista üres)
+20.ha(current_node != goal_node) lépjünk ki a következővel: 
+						(az Open lista üres)
 \end{verbatim}
 
 \section{A pontos megvalósítás}
