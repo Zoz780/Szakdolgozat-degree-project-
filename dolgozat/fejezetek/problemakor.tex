@@ -21,22 +21,27 @@
 
 \section{Játékmotorok}
 
-Új játék fejlesztésénél két fő lehetőség adott, az első, hogy választunk egy előre megírt motort, ami a játék alapját adja, illetve ha egyiket sem tartjuk megfelelőnek, akkor írunk egyet saját magunknak. Meglévő motorok például az Unreal engine, Cryengine, Quake engine (ID Tech). Az Unreal engine első változata 1998-ban jelent meg, az első játék, ami ezt használta az Unreal című játék volt. A motor jelenlegi, legújabb verziója a 4.17-es, nagyon sokat fejlődött az évek során. A Cryengine-t először a Far Cry nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral. Az általam írt motorhoz a legközelebb a Quake engine (ID tech) 2 és 3 áll.  Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, pl.: lövés pályájának számítása, gravitáció, ütközésdetektálás, billentyűzet és/vagy egérkezelés, hangok, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítésének kialakítása a motor adta lehetőségekkel, eszközökkel. Úgy kell választanunk játékmotort, hogy annak funkcióival megvalósítható legyen a játék.
+Új játék fejlesztésénél két fő lehetőség adott, az első, hogy választunk egy előre megírt motort, ami a játék alapját adja, illetve ha egyiket sem tartjuk megfelelőnek, akkor írunk egyet saját magunknak. Meglévő motorok például az Unreal engine, Cryengine, Quake engine (ID Tech). Az Unreal engine első változata 1998-ban jelent meg, az első játék, ami ezt használta az Unreal című játék volt. A motor jelenlegi, legújabb verziója a 4.17-es, nagyon sokat fejlődött az évek során. A Cryengine-t először a Far Cry (\ref{fig:farcry} ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral. Az általam írt motorhoz a legközelebb a Quake engine (ID tech) 2 és 3 áll.  Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, pl.: lövés pályájának számítása, gravitáció, ütközésdetektálás, billentyűzet és/vagy egérkezelés, hangok, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítésének kialakítása a motor adta lehetőségekkel, eszközökkel. Úgy kell választanunk játékmotort, hogy annak funkcióival megvalósítható legyen a játék.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.27]{kepek/farcry.png}
+\caption{Pillanatkép a Far Cry című játékból (Crytek)}
+\label{fig:farcry}
+\end{figure}
 
 \section{Miért volt szükség új játékmotor készítésére?}
 
-A saját játékom tervezésekor, át kellett gondolnom, hogy milyen jellegű programot szeretnék írni, annak milyen funkciói lesznek, hogyan tervezem azt megvalósítani. Mint ahogy korábban írtam, úgy kell megválasztani a motort, hogy azzal megvalósíthatók legyenek az általunk elképzelt funkciók. Ebben az esetben egyrészt azért volt szükség új játékmotorra, mert a tervezés során előjöttek olyan ötletek, játékelemek, amik teljesen egyediek ebben a formában. Ilyen például a csapda, ami egy bizonyos idő után jön elő, ha a játékos nem mozdul meg. Másrészt pedig ez lehetőséget adott az optimalizálási problémák vizsgálatára.
+A saját játékom tervezésekor, át kellett gondolnom, hogy milyen jellegű programot szeretnék írni, annak milyen funkciói lesznek, hogyan tervezem azt megvalósítani. Mint ahogy korábban írtam, úgy kell megválasztani a motort, hogy azzal megvalósíthatók legyenek az általunk elképzelt funkciók. Ebben az esetben egyrészt azért volt szükség új játékmotorra, mert a tervezés során előjöttek olyan ötletek, játékelemek, amik teljesen egyediek ebben a formában. Ilyen például a csapda, ami egy bizonyos idő után jön elő, ha a játékos nem mozdul meg. Másrészt pedig ez lehetőséget adott az optimalizálási problémák vizsgálatára, programfejlesztési (architekturális), optimalizálási feladatok sorát adta.
 
 \section{Lehetséges optimalizálási problémák}
 
 A játékban megvalósítandó elemek között szerepel a lövés, a mesterséges intelligencia, az ütközésvizsgálat, és mindnek megvannak a maga optimalizálási problémái. Ütközésvizsgálatra szükség van a játékos karakterének az ellenfeleknek és a lövéshez is a találatok regisztrálására, pontos helyének számolására. A játéktér háromszögekből áll. A lövés megvalósításához szükségünk van háromszög, és egyenes metszéspontjának számítására, hogy vizualizálható legyen a lövedék becsapódásának helye a talajon, falakon, illetve egyéb játékbeli elemeken. Ez alapjában véve egy matematikai probléma, amit ki kell számoltatni, le kell programozni. Meg kell határozni azt az egyenest, ami azt mutatja meg, éppen merre nézünk, majd vizsgálni kell, hogy az adott egyenes metszi-e a teret alkotó háromszögek egyikét. De mivel több 100000 háromszög és egyenes metszéspontját kellene alap esetben számítani, így ez több optimalizálási problémát is felvet, amit a későbbiekben részletezek.
 
-\section{Az egyedi motorral megvalósított funkciók}
+\section{Az egyedi motorral megvalósított elemek}
 \subsection{Mesterséges intelligencia}
 
-Egyjátékos FPS játékról van szó, így mindenféleképp kellett egy, az ellenfelek mozgását irányító mesterséges intelligencia. Ez az egész az A* algoritmusra alapszik. A játék véletlenszerűen, különböző helyekre kirak x mennyiségű ellenfelet, amiknek közeledni kell a játékos felé, különböző kritériumoknak megfelelve. Ezek a kritériumok azért kellenek, mert a pályán vannak játékelemek, amiken nem lehet átmenni, illetve az ellenfelek sem mehetnek egymásba. 
-
-Az alapötlet az, hogy a pályán le lesznek rakva pontok, ún. waypointok, amik csak az ellenfelek számára lesznek láthatók. Ha kikerül egy adott ellenfél a pályára, az első feladata az lesz, hogy megkeresse a hozzá legközelebb eső waypointot. Ezután az A* algoritmus segítségével meghatározza a játékoshoz legközelebb eső waypointhoz vezető legrövidebb utat, végigmegy rajta, majd ha elérte, akkor onnantól a játékos lesz a közvetlen célpontja. Mivel a játékos folyamatosan mozog, mindezt másodpercenként legalább 15-30x kell kiszámolni.
+Az MI osztálynak elsősorban az a feladata, hogy az ellenfelek egy meghatározott útvonalon mozogjanak, ne menjenek át falakon, menjenek egymásba. A véletlenszerűen lerakott ellenfelet a legközelebbi definiált waypoint-hoz kell irányítani, definiálni kell a célpontot (ami elsődlegesen a játékos), és ki kell számítani a pontokon keresztül vezető legrövidebb útvonalat.
 
 \subsection{Hangok}
 
@@ -46,7 +51,7 @@ Egy játék alapelemeihez hozzátartoznak a hangeffektek, zenék is, amik élvez
 
 A játékteret adó domborzatot, a játék egy fekete-fehér, 384x384 pixeles képből számolja ki. Az adott képen minél magasabb egy pont, annál fehérebb, így a fehér adja a legmagasabb, a fekete szín a legalacsonyabb pontot. Ezekből az adatokból vissza lehet számolni a játékos függőleges pozícióját is, illetve az átmeneteket nézve, meredekségnek megfelelően a visszacsúszást. Mindez tehát megadja a játékteret minden szempontból (vizualitás, játékos mozgástere).
 
-\subsection{Konkrét megjelenítés módja}
+\subsection{Konkrét megjelenítés}
 
 A játéktér adatait tehát képből kinyertük, de ez még nem jelenti azt, hogy látjuk is a monitoron. Ehhez a VBO-s (Vertex Buffer Object) kirajzolási módszert választottam, ami a videókártyának a legoptimálisabb adatstruktúrában adja át azt a lehető leggyorsabb kirajzoláshoz.
 
@@ -58,3 +63,9 @@ Ha megáll a játékos 5mp-ig, akkor megjelenik a csapda modell egy hang kísér
 \subsection{A lövés}
 
 Egy ilyen játékban alapelem az is, hogy tudjunk lőni, mivel ez nélkül az egész értelmét veszti. A textúrázott játéktéren ugyan nem látni, de az egész több százezer háromszögből áll. Adott egy irányvektor, ami azt határozza meg, merre fordul épp a játékos, azaz mire néz. Ennek a vektornak a metszéspontját kell vizsgálni a háromszögekkel, hogy találatot meg tudjuk jeleníteni, ami jelen esetben a falon egy lövésnyom. Szóval ki számolja a program a metszéspont x, y, z koordinátáját, majd odailleszt egy lövésnyom textúrát. Az ellenfeleknél szintén metszéspontot kell számolni, csak ott hengerre. Ki lehetne számolni a modellre is közvetlen, de az nagyon lassú lenne, így egy leegyszerűsített alakzatot választottam. Ez az ellenfél ún. hitboxa.
+
+\section{A végső elképzelés}
+
+Mint ahogy a bevezetésben is írtam, egy FPS (First Person Shooter = belső nézetes lövöldözős játék, az adott személy szemszögéből látjuk az eseményeket) játék elkészítését tűztem ki célul. A konkrét elképzelés az, hogy egy aréna jellegű, túlélő játék készüljön el. Nem terveztem online módot, a játékosnak egy mesterséges intelligenciával kell harcolnia. A játékmenet hullámokra lesz osztva, és ahogy halad előre a játékos, annál nehezebbé válik (több és/vagy erősebb ellenfelekkel). Egy hullám akkor ér véget, ha egy előre megadott számú ellenfelet sikerül megölni. A körök között a játékosnak lehetősége nyílik az életerőt és lőszert feltölteni, fejleszteni a fegyverét a teljesítményének megfelelően. A játékmenet nehezítve lesz azzal (azon felül hogy lőnek rá), hogy ha x másodpercig megáll a játékos, akkor azonnal meghal, így mindig mozgásban kell lenni. Ennek az időtartamnak a pontos meghatározása majd a tesztelés során alakul ki. Lehetőség lesz különböző elemeket (ún. power up-okat) felszedni a körök alatt, ami lehet pozitív vagy negatív hatású is. Például adhat/vehet el életerőt, adhat/vehet el lőszert, adhat/vehet el fegyverfejlesztést.
+
+A fentebb leírtak megvalósítása nagyon sok munka és idő. Meg kell valósítani a modellbetöltést textúrázással, az irányítást, fizikát, ütközéskezelést, hitboxot, mesterséges intelligenciát, fényeket, hangokat, árnyékokat.

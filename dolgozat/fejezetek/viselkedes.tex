@@ -46,10 +46,31 @@ Ugrás & Ugrás gyakorisága.\\
 Forgás & Forgás sebessége (reflex).\\
 Reakcióidő & Miután meglát, mennyi idő telik el az első lövésig.\\
 Lövéspontosság & 0 és 1 közötti érték, a lövés szórását adja meg.\\
-Bosszú & Az ellenfél bosszúállósága\\
+Bosszú & Az ellenfél bosszúállósága.\\
 \end{tabular}
 
 \subsection{Kimenetek}
 
-A bemeneti adatok alapján a program egy modulja kiértékeli az eseményeket, és annak kimeneti értékei határozzák meg a következményeket.
+A bemeneti adatok alapján a program egy modulja kiértékeli az eseményeket, és annak kimeneti értékei határozzák meg a következményeket. Minden kimenet egy végrehajtható akciót jelöl (támadás, menekülés, életerő vagy lőszer töltés). A döntési fa az csak az állapotot határozza meg. Minden iterációban ki kell értékelni, és minden lehetséges esethez meg kell írni azt a kódrészt, ami az adott cselekvésfolyamatot elindítja. \Aref{fig:behavior}-es ábrán kékkel vannak jelölve a bemeneti paraméterek, zölddel és pirossal pedig azok következményei, vagyis a kimenetek.
+
+\section{Véletlenszerű tényezők}
+
+A játékban el vannak helyezve különböző használható elemek, amelyek kihatással vannak a játékmenetre. Viszont az, hogy annak milyen mértékben van hatása pozitív irányban, csak akkor derül ki, ha már felvettük azt. Különböző típusú elemek léteznek, amiket a mesterséges intelligencia által vezérelt ellenfelek is tudnak hasznosítani. A játéktéren találhatunk életerőre, lőszerre és csapda megjelenési idejére hatással levő elemeket.
+
+\subsection{Konkrét megvalósítás}
+
+Az életerő és a lőszer megvalósítás szempontjából egy egész (integer) típusú, a csapda megjelenési ideje pedig egy tört (float) szám. A felvehető elemek ezeket az értékeket módosítják különböző mértékben. Ezek egyikének megvalósítása \aref{fig:health} ábrán látható.
+
+\begin{itemize}
+\item Életerőt véletlenszerűen 10, 25 vagy 50\%-kal növelheti. 
+\item Lőszerhez véletlenszerűen adhat 15, 30, vagy 50 darabot.
+\item Csapda megjelenési idejét véletlenszerűen növelheti 25, 50 vagy 100\%-kal.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.4]{kepek/health.png}
+\caption{Egy felvehető elem a játékban}
+\label{fig:health}
+\end{figure}
 

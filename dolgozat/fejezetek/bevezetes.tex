@@ -1,8 +1,13 @@
 \Chapter{Bevezetés}
 \label{Chap:bevezetes}
 
-Egy FPS játék elkészítése különféle számítási- és optimalizálási problémát felvet.
+Egy FPS (belső nézetes) játék elkészítése különféle számítási- és optimalizálási problémát felvet. Készítése során az elsődleges cél az volt, hogy a számítógépes grafika és játékfejlesztés területén is bemutassak olyan optimalizálási problémákat, amelyek szorosan kötődnek a termelésinformatikához. Egy működő játéknak olyan elemei vannak, amelyek optimalizálások nélkül olyan erőforrásigényekkel rendelkeznének, hogy nem futnának egy modern csúcskategóriás számítógépen sem. Ilyen elem például a karakterek mozgásterének definiálása, a lövés során eltalált objektumok metszéspontjának számítása, az ellenfelek lelövésének regisztrálása. 
 
-Sorravenni, hogy milyen jellegűek ezek, hogyan kapcsolódnak egyáltalán egy témához.
+Megjelenítés szempontjából is nagyon fontos, hogy a videokártyának megfelelő formátumban, egyben adjuk át a kirajzolni kívánt elemeket, mert így lesz a leggyorsabb a megjelenítés, így lehet elérni a legmagasabb erőforrás-kihasználtságot, illetve a legmagasabb képkocka/másodperc értéket. Ha nem a videokártya számára megfelelő formátumot használunk, akár 8-10x is lassabb lehet a megjelenítés.
 
-Ez a rész elég ha 1-2 oldal. Bőven elég lesz majd csak a végén összerakni.
+A karakterek mozgásterének definiálása valójában egy fajta ütközésvizsgálat, csak itt azt vizsgáljuk, hogy a játékos bejárhat-e egy adott területet, vagy nem. Falakon, illetve egyéb objektumokon nem lehet áthaladni. Minél nagyobb a játék bejárható területe, annál több számításra van szükség, nő az erőforrásigénye. Ezt úgy tudjuk optimalizálni, hogy felosztjuk a területet egy, a későbbiekben taglalt módszer segítségével, és csak arra a részre számoljuk ki a karakter ütközését, amelyikben éppen áll.
+
+A lövés során eltalált objektumok metszéspontjának számítását az előzővel megegyező módon tudjuk optimalizálni. Itt a játéktér objektumai közül azokon vizsgáljuk végig az ütközést, amelyek a játékos karakterének irányában vannak, lecsökkentve ezzel azon objektumok számát, amelyeket figyelembe kell venni.
+
+Találatregisztrálás valójában nem közvetlen a megjelenített modellre történik. Minél több ellenfél van az adott pályán, annál lehetetlenebb lenne valós időben kiszámolni a találatot a megjelenített geometriára. Ennek az optimalizálása a későbbiekben részletesen taglalva van.
+

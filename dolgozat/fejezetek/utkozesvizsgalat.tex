@@ -22,19 +22,20 @@ Ebben a játékban a karakterek ütközésvizsgálata gradiens számítással va
 
 Ezen felül a gravitáció ami nagyon lényeges, mert a pályának vannak olyan magaslati pontjai, amelyekre fel lehet jutni. Ha egy ilyenre felmegyünk, és nincs semmilyen erő, ami a karaktert a föld felé húzná, akkor felfelé ugyan lekövetné a talajmagasságot, de le már nem esne alacsonyabb pontra onnan.
 
- Ez esetben egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekre, aminek a küszöbértéke mindig az aktuális talajmagasság. Ennek pszeudokódja:
+ Ez esetben egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekre, aminek a küszöbértéke mindig az aktuális talajmagasság.
 
-\begin{verbatim}
-1. gravitációs erő;
-2. küszöbérték := aktuális talajmagasság;
-3. ha karakter függőleges pozíciója > küszöbérték
-4. 	akkor
-5.		függőleges gyorsaság = függőleges gyorsaság + gravitációs erő;
-6.		karakter függőleges pozíciója = karakter függőleges pozíciója 
-											+ függőleges gyorsaság;
-6.	különben
-7. 		karakter függőleges pozíciója = küszöbérték;
-\end{verbatim}
+\begin{algorithm}[H]
+ \KwData{gravitációs erő; küszöbérték\;}
+ \KwResult{A karakter föld felé húzása az aktuális talajmagasságig}
+ küszöbérték := aktuális talajmagasság\;
+  \eIf{karakter függőleges pozíciója > küszöbérték}{
+   függőleges gyorsaság := függőleges gyorsaság + gravitációs erő\;
+   karakter függőleges pozíciója := karakter függőleges pozíciója \\ + függőleges gyorsaság\;
+   }{
+   karakter függőleges pozíciója := küszöbérték\;
+  }
+ \caption{Gravitáció megvalósítása}
+\end{algorithm} 
  
 \section{A domborzat és tereptárgyak üközésvizsgálata a lövés szempontjából}
 
@@ -47,13 +48,13 @@ Az ilyen fajta ütközésvizsgálat számítás nem létszükséglet a játszhat
 \label{fig:wireframe}
 \end{figure}
 
-Első lépésként, meg kell határozni azt az egyenest, amely azt írja le, amerre néz az adott karakter. Ez az egyenes két ponttal van leírva. Az egyik az adott karakter pozíciójával egyezik meg. A másik, távoli pontot jelen esetben egy, az OpenGL-ben definiált függvényből, a GluLookAt-ből határozzuk meg. A GluLookAt-nek 9 paramétere van. Az első három a karakter jelenlegi pozíciója, a második három azt a pontot írja le merre nézünk (referencia pont), az utolsó három pedig azt határozza meg, hogy melyik tengelyen, és merre néz a felfelé vektor. A 9 paraméter közül a középső háromból lehet a túlsó pontot  meghatározni. Mindegyikből ki kell vonni az adott tengelynek megfelelő jelenlegi pozíciót, majd megszorozni egy nagy értékkel, azért, mert ez nélkül túl közeli pontot kapnánk, ezáltal egy rövid egyenest.
+Első lépésként, meg kell határozni azt az egyenest, amely azt írja le, amerre néz az adott karakter. Ez az egyenes két ponttal van leírva. Az egyik az adott karakter pozíciójával egyezik meg. A másik, távoli pontot jelen esetben egy, az OpenGL-ben definiált függvényből, a GluLookAt-ből határozzuk meg, aminek 9 paramétere van. Az első három a karakter jelenlegi pozíciója, a második három azt a pontot írja le merre nézünk (referencia pont), az utolsó három pedig azt határozza meg, hogy melyik tengelyen, és merre néz a felfelé vektor. A 9 paraméter közül a középső háromból lehet a túlsó pontot  meghatározni. Mindegyikből ki kell vonni az adott tengelynek megfelelő jelenlegi pozíciót, majd megszorozni egy nagy értékkel, azért, mert ez nélkül túl közeli pontot kapnánk, ezáltal egy rövid egyenest.
 
 Második lépés, ennek az egyenesnek kiszámolni a háromszögekkel való metszéspontját. A háromszögek a három csúcspontjukkal vannak leírva. Kell lennie egy függvénynek, amelynek a háromszög három csúcspontját, és az egyenes két végpontját átadva, visszaadja a metszéspont x,y,z koordinátáját. Ez működés közben \aref{fig:triangle} ábrán látható.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.48]{kepek/one_triangle.png}
+\includegraphics[scale=0.4]{kepek/one_triangle.png}
 \caption{Egyenes és háromszög metszéspontja vizualizációval}
 \label{fig:triangle}
 \end{figure}
@@ -95,7 +96,7 @@ Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva 
 
 \subsection{Négyes fa és az oktális fa}
 
-A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát síkbeli, az oktális fát pedig térbeli felosztásra használják. Olyan, kivételes esetekben használható jól a négyes fa térben, ha a játéktér nem nagy magassággal rendelkezik. Használatánál az első feladatunk a fa gyökerének meghatározása, ami a teljes játékteret magában foglalja. Négyes fa esetén a síkot mindig 4 részre osztjuk mindaddig, még a fa el nem éri a maximális, előre definiált értéket, vagy az adott cellában az objektumok száma nem több mint egy előre definiált érték. Ugyanez a módszer érvényesül az oktális fánál, annyi különbséggel, hogy ott 8 felé osztjuk a teret. A négyes fa \aref{fig:quadtree} ábrán látható, hogyan is működik.
+A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát síkbeli, az oktális fát pedig térbeli felosztásra használják. Olyan, kivételes esetekben használható jól a négyes fa térben, ha a játéktér nem nagy magassággal rendelkezik. Használatánál az első feladatunk a fa gyökerének meghatározása, ami a teljes játékteret magában foglalja. Négyes fa esetén a síkot mindig 4 részre osztjuk mindaddig, még a fa mélysége el nem éri a maximális, előre definiált értéket, vagy az adott cellában az objektumok száma nem több mint egy előre definiált érték. Ugyanez a módszer érvényesül az oktális fánál, annyi különbséggel, hogy ott 8 felé osztjuk a teret. A négyes fa \aref{fig:quadtree} ábrán látható, hogyan is működik.
 
 \begin{figure}[h]
 \centering

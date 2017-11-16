@@ -29,25 +29,25 @@ Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
 
 % TODO: Készíteni egy demo-t az A*-algoritmushoz, és megnézni, hogy a legközelebbi pontok keresése pontosan hogy nézne ki, és egyáltalán kell-e hozzá külön heurisztika.
 
-A legközelebbi pont megkereséséhez, a következő algoritmust használom:
-\begin{verbatim} 
-1.Waypoint vegso_pont;
-2.Vec2 legkozelebbi_pont;
-3.double pont_tav := 100000, temp, x_tav, y_tav;
-4.float x, y;
-5.
-6.ciklus Waypoint pont : waypointokon
-7.	x := pont.x;
-8.	y := pont.y;
-9.	x_tav := abs(x – jelenlegi_xpoz);
-10.	y_tav := abs(y – jelenlegi_ypoz);
-11.	temp := sqrtf(x_tav * x_tav +  y_tav * y_tav);
-12.	ha temp < pont_tav akkor
-13.		pont_tav := temp;
-14.		vegso_pont := pont;
-15.legkozelebbi_pont.x := vegso_pont.x;
-16.legkozelebbi_pont.y := vegso_pont.y; 
-\end{verbatim}
+\begin{algorithm}[H]
+ \KwData{Waypoint vegso\_pont\;\\ Vec2 legkozelebbi\_pont\;\\double pont\_tav, temp, x\_tav, y\_tav\;\\ float x, y\; }
+ \KwResult{Legközelebbi pont x és y koordinátája}
+ pont\_tav := 100000\;
+ \For {Waypoint pont : waypointokon}{
+ 	x := pont.x;\\
+	y := pont.y;\\
+	x\_tav := abs(x – jelenlegi\_xpoz);\\
+	y\_tav := abs(y – jelenlegi\_ypoz);\\
+	temp := sqrtf(x\_tav * x\_tav +  y\_tav * y\_tav)\;
+  \If{temp < pont\_tav}{
+   		pont\_tav := temp;\\
+		vegso\_pont := pont\;
+   }
+   legkozelebbi\_pont.x := vegso\_pont.x;\\
+   legkozelebbi\_pont.y := vegso\_pont.y\;
+ }
+ \caption{A legközelebbi pont megkeresése}
+\end{algorithm} 
 
 \section{Az A*-algoritmus}
 
@@ -126,7 +126,7 @@ A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olva
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.48]{kepek/magassagmezo_kuszobertek_diagram.png}
+\includegraphics[scale=0.42]{kepek/magassagmezo_kuszobertek_diagram.png}
 \caption{Küszöbérték a még bejárható terület meghatározásához}
 \label{fig:kuszobertek}
 \end{figure}
