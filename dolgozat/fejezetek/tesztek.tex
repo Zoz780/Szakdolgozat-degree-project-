@@ -27,4 +27,40 @@ Alapvetően két fő kirajzolási módszer létezik az OpenGL-ben. Az egyik a r�
 
 \section{Profilozás}
 
-Ide még írni.
+A játék egyes elemeinek betöltéséről, kirajzolásáról diagramok készültek. Minden ábrán, a függőleges tengelyen az adott objektum, vagy elem neve látható, a vízszintes tengelyen pedig az idő van feltüntetve milliszekundumban.
+
+\Aref{fig:start_diag}-as ábrán a játék indításának folyamatának időigénye látható, illetve hogy az egyes elemek létrehozása, betöltése hogyan oszlik el a teljes időhöz képest.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.84]{kepek/start_diag.png}
+\caption{Játékindítás teljes ideje a menübe való eljutásig}
+\label{fig:start_diag}
+\end{figure}
+
+\Aref{fig:map_diag}-es ábrán a teljes játéktér betöltésének, illetve az egyes részek betöltésének ideje látható.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.84]{kepek/map_load_diag.png}
+\caption{A játéktér betöltésének ideje}
+\label{fig:map_diag}
+\end{figure}
+
+Mivel a magasságmező betöltésének ideje nagyon kiugró, külön megvizsgáltam (\ref{fig:height_map_diag}-ös ábra), hogy azon belül melyik rész okozza ezt.
+ 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.84]{kepek/height_map_load_diag.png}
+\caption{A domborzat betöltésének ideje részletezve}
+\label{fig:height_map_diag}
+\end{figure}
+
+Végső soron megvizsgáltam, hogy egy képkocka elkészülése során, melyik játékkomponens megjelenítése vagy számítása hogyan oszlik el a teljes képkocka idejének elkészüléséhez képest. Ez \aref{fig:frame_draw}-os ábrán látható.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.84]{kepek/frame_draw_diag.png}
+\caption{Egy képkocka kirajzolása (120FPS esetén)}
+\label{fig:frame_draw}
+\end{figure}
