@@ -21,10 +21,10 @@ Tegyük fel, a gép létrehoz egy ellenfelet egy véletlenszerű pozícióba. (E
 
 Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
 \begin{itemize}
-\item A waypoint-ok közül megkeressük az adott karakterhez legközelebbit. Először ezt a pontot kell megközelíteni.
+\item A waypoint-ok közül megkeressük az adott karakterhez vagy objektumhoz legközelebbit. Először ezt a pontot kell megközelíteni.
 \item A waypoint-ok közül meghatározzuk a célponthoz legközelebbit, ez lesz majd a célpont.
 \item A pont adott, kis sugarú környezetét elérve A*-algoritmus segítségével meghatározzuk a legrövidebb útvonalat.
-\item A célpontot elérve már csak a játékoshoz kell egyenes úton eljutni.
+\item A célpontot elérve már csak az adott karakterhez vagy objektumhoz kell egyenes úton eljutni.
 \end{itemize}
 
 % TODO: Készíteni egy demo-t az A*-algoritmushoz, és megnézni, hogy a legközelebbi pontok keresése pontosan hogy nézne ki, és egyáltalán kell-e hozzá külön heurisztika.
@@ -111,18 +111,16 @@ A másik lehetőség, ha 8 pixelenként határozunk meg egy waypoint-ot, ami 48x
 \label{fig:diagram_utvonal}
 \end{figure}
 
-Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 8 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ahogy \aref{fig:kuszobertek}-as ábrán is látható, aa például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. \aref{fig:mi_printscreen}  képen „.”-al a bejárható terület, „X”-el a falak, „S”-el az indulópont, „F”-el a célpont, „R”-el a legrövidebb útvonal van jelölve.
+Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 8 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ahogy \aref{fig:kuszobertek}-as ábrán is látható, a például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. \aref{fig:mi_printscreen}  képen „.”-al a bejárható terület, „X”-el a falak, „S”-el az indulópont, „F”-el a célpont, „R”-el a legrövidebb útvonal van jelölve.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.15]{kepek/mi_printscreen.png}
+\includegraphics[scale=0.22]{kepek/mi_printscreen.png}
 \caption{Útvonal meghatározó algoritmus működése}
 \label{fig:mi_printscreen}
 \end{figure}
 
-% TODO: Képet nagyítani, nekem valamiért szétcsúszik a szöveg!
-
-A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olvasható, a játékon belül a beolvasott magasságmező színe határozza ezt meg. Erre azért van szükség, mert így lehet megoldani azt, hogy a mesterséges intelligencia alkalmazkodjon a környezetéhez. Ha a pályától függetlenül, statikusan lenne az összes waypoint típusa meghatározva, akkor ha a játékos más pályát rajzol, a pontok típusai nem illeszkednének az elrendezésre. Ezt a módszert alkalmazva, meg lehet adni, hogy egy bizonyos magasságnál csak másszon, vagy ugorjon, stb. Ez egy fontos tulajdonsága a játéknak, mert azt úgy terveztem, hogy ha a felhasználó akár paint-ben rajzol egy pályát, akkor a teret azonnal kialakítsa, beállítsa hogy a falakon a játékos ne tudjon átmenni, a meredek lejtőkről visszacsússzon, illetve a mesterséges intelligencia is alkalmazkodjon.
+A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olvasható, a játékon belül a beolvasott magasságmező színe határozza ezt meg. Erre azért van szükség, mert így lehet megoldani azt, hogy a mesterséges intelligencia alkalmazkodjon a környezetéhez. Ha a pályától függetlenül, statikusan lenne az összes waypoint típusa meghatározva, akkor ha a játékos más pályát rajzol, a pontok típusai nem illeszkednének az elrendezésre. Ezt a módszert alkalmazva, meg lehet adni, hogy egy bizonyos magasságnál csak másszon, vagy ugorjon, vagy bármilyen más tevékenységet végezzen. Ez egy fontos tulajdonsága a játéknak, mert azt úgy terveztem, hogy ha a felhasználó akár paint-ben rajzol egy pályát, akkor a teret azonnal kialakítsa, beállítsa hogy a falakon a játékos ne tudjon átmenni, a meredek lejtőkről visszacsússzon, illetve a mesterséges intelligencia is alkalmazkodjon.
 
 \begin{figure}[h]
 \centering

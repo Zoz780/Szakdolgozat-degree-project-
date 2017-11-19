@@ -18,7 +18,7 @@ Ebben a fejezetben a játékokban alkalmazott animációs módszerekről, azok m
 
 \section{Kulcsképkocka alapú animáció}
 
-Kulcsképkocka alapú mozgatást több területen használnak, például filmkészítés vagy játékfejlesztés. Bármilyen célra is használjuk, az elv nem változik. Meg kell adnunk olyan pontokat, amelyeket szeretnénk ha az adott tárgy, vagy objektum érintene. Ezzel úgymond egy előre meghatározott mozgási útvonalat adunk meg. Legegyszerűbb animációknál egy alapállapot és egy végállapot van megadva, ilyen lehet egy redőny le és felengedése, ajtó vagy kapu kinyitása, becsukása. Ilyen jellegű, alap szintű animációknál, például ha egy redőnyt le akarunk engedni, annyi a dolgunk hogy megadjuk a kezdő és végpontot, majd időben lineárisan interpolálni. Ahogy \aref{fig:keyframe} ábrán is látható, ez a kulcsképkockák közötti egyenes mozgást eredményezi. Ha már forgatást is szeretnénk, ami tegyük fel egy nyíló bejárati ajtó, akkor mivel alapból a világ koordináta-rendszer középpontjában forog, transzformálnunk kell a középpontot a test forgási pontjába egy külön lépésben, hogy a várt eredményt kapjuk. Így egy lokális koordináta-rendszert kapunk.
+Kulcsképkocka alapú mozgatást több területen használnak, például filmkészítés vagy játékfejlesztés. Bármilyen célra is használjuk, az elv nem változik. Meg kell adnunk olyan pontokat, amelyeket szeretnénk ha az adott tárgy, vagy objektum érintene. Ezzel úgymond egy előre meghatározott mozgási útvonalat adunk meg. Legegyszerűbb animációknál egy alapállapot és egy végállapot van megadva, ilyen lehet egy redőny leengedése és felhúzása, ajtó vagy kapu kinyitása, becsukása. Ilyen jellegű, alap szintű animációknál, például ha egy redőnyt le akarunk engedni, annyi a dolgunk hogy megadjuk a kezdő és végpontot, majd időben lineárisan interpolálni. Ahogy \aref{fig:keyframe} ábrán is látható, ez a kulcsképkockák közötti egyenes mozgást eredményezi. Ha már forgatást is szeretnénk, ami tegyük fel egy nyíló bejárati ajtó, akkor mivel alapból a világ koordináta-rendszer középpontjában forog, transzformálnunk kell a középpontot a test forgási pontjába egy külön lépésben, hogy a várt eredményt kapjuk. Így egy lokális koordináta-rendszert kapunk.
 
 \begin{figure}[h]
 \centering
@@ -31,7 +31,7 @@ Ezt a fajta animációt 3D játékfejlesztésben karakter mozgatásához a 2000-
 
 \subsection{Az md2-es formátum}
 
-1997-ben az idSoftware fejlesztette ki a Quake 2 nevű játékához, kulcsképkocka animáción alapul. Tartalmazza az adott modell geometriáit, és a képkockánkénti animációkat. A fájl adatai olyan struktúrában helyezkednek el, hogy könnyedén kirajzoltatható legyen a GL\_TRIANGLE\_FAN és GL\_TRIANGLE\_STRIP parancsokkal. A formátum két fő részből áll: a fejléc (header) és az adatok (data), viszont nem tartalmazza a modell textúráját. A fejléc egy struktúra, rögön a fájl elején amely tartalmazza az összes olyan információt a további részről, amire szükség lehet az implementáció során. Ilyen például a textúra szélessége, magassága, egy képkocka mérete, képkockák száma. Az animáláshoz én ezt a módszert választottam, mert viszonylag egyszerű implementálni, a legnagyobb hátránya, a sok memóriahasználat a modern korban már nem olyan nagy probléma, illetve jelen esetben elegendő az animáció részletessége is. 
+1997-ben az idSoftware fejlesztette ki a Quake 2 nevű játékához, kulcsképkocka animáción alapul. Tartalmazza az adott modell geometriáit, és a képkockánkénti animációkat. A fájl adatai olyan struktúrában helyezkednek el, hogy könnyedén kirajzoltatható legyen a GL\_TRIANGLE\_FAN és GL\_TRIANGLE\_STRIP parancsokkal. A formátum két fő részből áll: a fejléc (header) és az adatok (data), viszont nem tartalmazza a modell textúráját. A fejléc egy struktúra, rögön a fájl elején, amely tartalmazza az összes olyan információt a további részről, amelyekre szükség lehet az implementáció során. Ilyen például a textúra szélessége, magassága, egy képkocka mérete, képkockák száma. Az animáláshoz én ezt a módszert választottam, mert viszonylag egyszerű implementálni, a legnagyobb hátránya, a sok memóriahasználat a modern korban már nem olyan nagy probléma, illetve jelen esetben elegendő az animáció részletessége is. 
 
 \section{Csontváz alapú animáció}
 
@@ -48,7 +48,7 @@ A legtöbb mai játék ezt a módszert alkalmazza karakterek mozgatásához. Ez 
 
 De ez nem csak élőlények mozgásának megvalósításához alkalmazható, ilyen például a naprendszer is. Vannak a naprendszerünk bolygói, amelyek a tengelyük, és a központi csillag, a Nap körül is forognak, ha a Nap elmozdul, mozdul vele a teljes naprendszer is, köztük a Föld, és a Hold is. Előnye hogy könnyen létre lehet így hozni dinamikus animációkat, mivel az összes karakter csontjait lehet forgatni, mozgatni, továbbá megkönnyíti a bonyolultabb animációk elkészítését. Hátránya viszont, hogy komplexebbek, így több processzoridőt igényelnek.
 
-\subsection{Csontváz alapú animáció megvalósítása}
+\subsection{Csontváz alapú animációhoz tartozó fájlformátum}
 
 Minden, csontváz alapú animáció megvalósításához szükséges fájlformátum két részből áll. Az egyik a modell geometriáit, a másik pedig a csontvázat, kapcsolódási pontokat, eltolást tartalmazza. Ha két csont tartozik minden vertex-hez, a felépítés a következőképp alakul:
 \begin{itemize}
@@ -87,6 +87,30 @@ Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szere
 \label{fig:lagrange}
 \end{figure}
 
+\subsubsection{Megvalósítás}
 
+A felhasználónak lehetősége van beírni egy x értéket, amelyhez a program kiszámolja az y koordinátát Lagrange-interpolációval. Ez a program azért készült, hogy bemutassa, hogyan működik ez a fajta interpolálás.
+Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y értékeit. A num a tömbök elemeinek számát, az input pedig a bevitt értéket takarja.
 
+\begin{algorithm}[H]
+ \KwData{x[]; y[]; num; input; s; t; eredmeny\;}
+ \KwResult{Adott x-hez tartozó y koordináta}
+\For{i := 0; i < num; i++}{
+	s := 1, t := 1\;
+	\For{j := 0; j < num; j++}{	
+	\If{j != i}{
+   		s := s * (input - x[j]);\\
+		t := t * (x[i] - x[j])\;
+   		}
+	}
+	eredmeny := eredmeny + ((s / t) * y[i])\;
+ }
+ \caption{Lagrange-interpoláció implementálása}
+\end{algorithm} 
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{kepek/lagrange_imp.png}
+\caption{Lagrange-interpolációs demó}
+\label{fig:lagrange_imp}
+\end{figure}

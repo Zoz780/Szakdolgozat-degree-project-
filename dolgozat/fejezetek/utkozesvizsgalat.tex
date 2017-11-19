@@ -18,11 +18,31 @@ Ebben a fejezetben az ütközésvizsgálattal kapcsolatos számításokról, opt
 
 Ez a játék szempontjából az egyik legfontosabb elem. Az hogy kirajzoltatunk valamit a képernyőre, még nem jelenti azt, hogy azon nem lehet áthaladni. A kirajzolás csak a vizualitást adja, a domborzat, a tereptárgyak, a karakterek kinézetét. A játékfejlesztő feladata az, hogy megírja külön az ezekhez szükséges ütközésvizsgálatot. Mivel ez két különálló dolog, egyes helyzetekben adódhatnak olyan problémák, hogy ezek nincsenek szinkronban, tehát látunk valamit amin át lehet menni, vagy nem látunk valamit és mégis megakadunk benne.
 
-Ebben a játékban a karakterek ütközésvizsgálata gradiens számítással van megoldva. Ez azt jelenti, hogy ha két, egymás mellett lévő pont magasságértéke között túl nagy a különbség pozitív irányba, az falat, vagy túl meredek emelkedőt jelent. Ha mérsékelt, vagy nagyon minimális a különbség, akkor arról vagy lecsúszik, vagy csak egyszerűen át lehet ott haladni. Mindezt a beolvasott magasságmezőből számolja, ezzel dinamikussá téve az ütközésvizsgálatot. Ha ez nem lenne így, akkor elveszne a játék azon tulajdonsága, hogy dinamikusan lehet cserélgetni a pályákat minden további nélkül.
+Ebben a játékban a karakterek ütközésvizsgálata gradiens számítással van megoldva. Ez azt jelenti, hogy ha két, egymás mellett lévő pont magasságértéke között túl nagy a különbség pozitív irányba, az falat, vagy túl meredek emelkedőt jelent. Ha mérsékelt, vagy nagyon minimális a különbség, akkor arról vagy lecsúszik, vagy csak egyszerűen át lehet ott haladni. Mindezt a beolvasott magasságmezőből számolja, ezzel dinamikussá téve az ütközésvizsgálatot. Ha ez nem lenne így, akkor elveszne a játék azon tulajdonsága, hogy dinamikusan lehet cserélgetni a pályákat minden további nélkül. Az egyes számú algoritmusban a delta a különbséget, a h a magasságot, és a curr a jelenlegi értéket takarja. A lépték azt adja meg, hogy a következő pont milyen távolságra legyen, mennyire legyen pontos a számítás.
+
+\begin{algorithm}[H]
+ \KwData{delta; h; hx; hy; curr\_x; curr\_y; delta\_x; delta\_y\;}
+ \KwResult{A meredekség számítása x és y irányban}
+ 	delta := térkép\_szélesség / (lépték * térkép\_szélesség);\\
+ 	h = altuális\_talajmagasság(curr\_x, curr\_y);\\
+	hx := altuális\_talajmagasság(curr\_x + delta, curr\_y);\\
+	hy := altuális\_talajmagasság(curr\_x, curr\_y + delta);\\
+	delta\_x := (hx - h) / delta;\\
+	delta\_y := (hy - h) / delta\; 
+ \caption{Gradiens számolása}
+\end{algorithm} 
+
 
 Ezen felül a gravitáció ami nagyon lényeges, mert a pályának vannak olyan magaslati pontjai, amelyekre fel lehet jutni. Ha egy ilyenre felmegyünk, és nincs semmilyen erő, ami a karaktert a föld felé húzná, akkor felfelé ugyan lekövetné a talajmagasságot, de le már nem esne alacsonyabb pontra onnan.
 
- Ez esetben egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekre, aminek a küszöbértéke mindig az aktuális talajmagasság.
+Ez esetben egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekre, aminek a küszöbértéke mindig az aktuális talajmagasság. Ugrás esetén a gravitációnál nagyobb, ellenirányú erőt fejt ki a karakter, amely folyamatosan csökken, ez eredményezi azt, hogy elemelkedik a földtől, egy ponton megáll, majd vissza is esik a talajra. Ez látható \aref{fig:gravity}-es ábrán. A gravitációs erő Fg-vel, a kifejtett erő Fk-val van jelölve.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.6]{kepek/gravity.png}
+\caption{A karakterre ható erők}
+\label{fig:gravity}
+\end{figure}
 
 \begin{algorithm}[H]
  \KwData{gravitációs erő; küszöbérték\;}
@@ -54,7 +74,7 @@ Második lépés, ennek az egyenesnek kiszámolni a háromszögekkel való metsz
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.4]{kepek/one_triangle.png}
+\includegraphics[scale=0.46]{kepek/one_triangle.png}
 \caption{Egyenes és háromszög metszéspontja vizualizációval}
 \label{fig:triangle}
 \end{figure}
@@ -70,7 +90,7 @@ Ennek alapelve ugyanaz, mint a domborzat és tereptárgyak üközésvizsgálatá
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{kepek/hitbox.png}
+\includegraphics[scale=0.4]{kepek/hitbox.png}
 \caption{Különböző részletességű hitbox-ok}
 \label{fig:hitbox}
 \end{figure}

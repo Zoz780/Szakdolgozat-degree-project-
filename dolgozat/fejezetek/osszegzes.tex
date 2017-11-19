@@ -1,5 +1,13 @@
 \Chapter{Összegzés}
 \label{Chap:osszegzes}
 
-A korábbiakban olyan optimalizálási módszerek kerületek bemutatásra, amelyek nagyban csökkentik egy adott játék, vagy alkalmazás erőforrásigényét. Ezen eszközök együttes használata segíti hozzá a fejlesztőket ahhoz, hogy végül egy jóval komplexebb játékot el tudjanak készíteni. A játékfejlesztés egy nagyon időigényes munka, ugyanis minden összetevőjét nem csak megírni kell, hanem optimalizálni is. Minden elem működhetne optimalizálás nélkül is, és tény, hogy jóval kevesebb munkaóra alatt elkészülne, de vagy sokkal egyszerűbb lenne, vagy sokkal erősebb hardverre lenne szüksége, és a mai technológiával nem lenne megvalósítható. Egy mai modern játékot elképesztően komplex, nagy bejárható terület, sok lehetőség, reális fizika, illetve szép, szinte teljesen valósághű grafika jellemzi, amely akár még fél évtizede is elképzelhetetlen volt.
+A korábbiakban olyan optimalizálási módszerek kerületek bemutatásra, amelyek nagyban csökkentik egy adott játék, vagy alkalmazás erőforrásigényét. Ezen eszközök együttes használata segíti hozzá a fejlesztőket ahhoz, hogy végül egy jóval komplexebb játékot el tudjanak készíteni. A játékfejlesztés egy nagyon időigényes munka, ugyanis minden összetevőjét nem csak megírni kell, hanem optimalizálni is. Minden elem működhetne optimalizálás nélkül is, és tény, hogy jóval kevesebb munkaóra alatt elkészülne, de vagy sokkal egyszerűbb lenne, vagy sokkal erősebb hardverre lenne szüksége, és a mai technológiával nem lenne megvalósítható. Egy mai modern játék elképesztően komplex, nagy bejárható terület, sok lehetőség, reális fizika, illetve szép, szinte teljesen valósághű grafika jellemzi, amely akár még fél évtizede is elképzelhetetlen volt.
+
+OpenGL-el való megjelenítés esetén a VBO-t érdemes használni, mert ez ad olyan optimális sebességet, amelyre szükségünk van.
+
+A négyes fa és az oktális fa a nagy játéktér optimalizálásában segít. A karakter ütközésvizsgálatának szempontjából érdemes nem csak azt a területet figyelembe venni, amelyben éppen tartózkodik, hanem a közvetlen körülötte levőket is minden irányban, mert ha a szélére érve nem váltana valamilyen oknál fogva rögtön a játék, nem történnek nem várt esetek, például nem megyünk át objektumokon, esünk le olyan helyen ahol szilárd talaj van.
+
+Találatregisztrálás minden mai játékban egy leegyszerűsített geometriára történik, ezzel teszik lehetővé azt, hogy minél több játékos lehessen egy időben a pályán. Léteznek olyan többjátékos online játékok, ahol egyszerre akár 100-an is lehetnek, egy időben, egy szerveren. Ez nem csak a kliens, hanem a szerver szempontjából is előnyös.
+
+Mivel egy modern játék esetében az egyik fő cél az, hogy minél valóságszerűbb legyen a játékmenet, csontváz animációt használnak az élőlények mozgatásához, hogy minél simább, életszerű mozgásokat láthasson a játékos.
 
