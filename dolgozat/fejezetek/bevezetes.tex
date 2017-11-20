@@ -1,13 +1,18 @@
 \Chapter{Bevezetés}
 \label{Chap:bevezetes}
 
-Egy FPS (belső nézetes) játék elkészítése különféle számítási- és optimalizálási problémát felvet. Készítése során az elsődleges cél az volt, hogy a számítógépes grafika és játékfejlesztés területén is bemutassak olyan optimalizálási problémákat, amelyek szorosan kötődnek a termelésinformatikához. Egy működő játéknak olyan elemei vannak, amelyek optimalizálások nélkül olyan erőforrásigényekkel rendelkeznének, hogy nem futnának egy modern csúcskategóriás számítógépen sem. Ilyen elem például a karakterek mozgásterének definiálása, a lövés során eltalált objektumok metszéspontjának számítása, az ellenfelek lelövésének regisztrálása. 
+% TODO: Bővíteni kellene még a végén szereplő kommentek szerint például.
 
-Megjelenítés szempontjából is nagyon fontos, hogy a videokártyának megfelelő formátumban, egyben adjuk át a kirajzolni kívánt elemeket, mert így lesz a leggyorsabb a megjelenítés, így lehet elérni a legmagasabb erőforrás-kihasználtságot, illetve a legmagasabb képkocka/másodperc értéket. Ha nem a videokártya számára megfelelő formátumot használunk, akár 8-10x is lassabb lehet a megjelenítés.
+Egy FPS (\textit{First-Person Shooter}) játék elkészítése különféle számítási- és optimalizálási problémákat vet fel. A számítógépes grafika és a játékfejlesztés segítségével lehetőség adódott a termelésinformatikához kapcsolódó optimalizálási problémák bemutatására.
 
-A karakterek mozgásterének definiálása valójában egy fajta ütközésvizsgálat, csak itt azt vizsgáljuk, hogy a játékos bejárhat-e egy adott területet, vagy nem. Falakon, illetve egyéb objektumokon nem lehet áthaladni. Minél nagyobb a játék bejárható területe, annál több számításra van szükség, nő az erőforrásigénye. Ezt úgy tudjuk optimalizálni, hogy felosztjuk a területet egy, a későbbiekben taglalt módszer segítségével, és csak arra a részre számoljuk ki a karakter ütközését, amelyikben éppen áll.
+Azon számítógépes játékoknak, amelyek célja a minél valószerűbb megjelenítés, számos olyan eleme van, amely optimalizálás nélkül olyan erőforrásigényes lenne, amely a manapság elérhető csúcskategóriás számítógépeken sem futna megfelelően. Ilyen elem például a karakterek mozgásterének definiálása, a lövés során eltalált objektumok metszéspontjának számítása, az ellenfelek viselkedésének szimulálása.
 
-A lövés során eltalált objektumok metszéspontjának számítását az előzővel megegyező módon tudjuk optimalizálni. Itt a játéktér objektumai közül azokon vizsgáljuk végig az ütközést, amelyek a játékos karakterének irányában vannak, lecsökkentve ezzel azon objektumok számát, amelyeket figyelembe kell venni.
+Megjelenítés szempontjából nagyon fontos, hogy a videokártyának megfelelő formátumban, egyben adjuk át a kirajzolni kívánt elemeket, mert így hatékonyabb lesz a megjelenítés, jobban ki lehet használni a rendelkezésre álló erőforrásokat, illetve a magasabb másodpercenkénti képkockaszámot.
 
-Találatregisztrálás valójában nem közvetlen a megjelenített modellre történik. Minél több ellenfél van az adott pályán, annál lehetetlenebb lenne valós időben kiszámolni a találatot a megjelenített geometriára. Ennek az optimalizálása a későbbiekben részletesen taglalva van.
+A problémakör egyik fontos eleme az ellenfelek bejárható területének kezelése. Tulajdonképpen ez is egyfajta ütközésvizsgálatot jelent a falakra, objektumokra nézve. A dolgozatban bemutatásra kerülnek azon térpartícionálásos megoldások, amelyekkel a számítások gyorsabban, hatékonyabban elvégezhetők.
 
+Az ütközésvizsgálat egy másik tipikus esete az ilyen jellegű játékokban a lövedékek útjának és metszéspontjainak kiszámítása. Ennél például jelentős optimalizációt érhetünk el, ha csak azon objektumokat vesszük figyelembe, amelyek a lövedék haladási irányába esnek.
+
+% TODO: Hitbox-okról néhány dolog.
+
+% TODO: Viselkedésmodellezésről kb. egy bekezdés még.

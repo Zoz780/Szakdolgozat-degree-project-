@@ -1,27 +1,21 @@
 \Chapter{Problémakör}
 \label{Chap:problemakor}
 
-%- Quake, Unreal, Unity, Cry Engine említés szintjén
-%- A játékmotorok fő funkciói
-%- Miért volt szükség új játékmotor implementálására?
-
-%Problémafelvetés
-
-%- Leírni, hogy melyek azok a funckiók, amelyekre a játékmotorban szükségesek.
-
-%Milyen konkrét problémát old meg?
-
-%- Felsorol néhány gyakori optimalizálási problémát.
-
-%Miért volt szükség az elkészítésére?
-
-%- Lehetőséget adott az optimalizálási problémák vizsgálatára.
-%- Aktívan kutatott terület.
-%- Az eredmények szemléletesek.
-
 \section{Játékmotorok}
 
-Új játék fejlesztésénél két fő lehetőség adott, az első, hogy választunk egy előre megírt motort, ami a játék alapját adja, illetve ha egyiket sem tartjuk megfelelőnek, akkor írunk egyet saját magunknak. Meglévő motorok például az Unreal engine, Cryengine, Quake engine (ID Tech). Az Unreal engine első változata 1998-ban jelent meg, az első játék, ami ezt használta az Unreal című játék volt. A motor jelenlegi, legújabb verziója a 4.17-es, nagyon sokat fejlődött az évek során. A Cryengine-t először a Far Cry (\ref{fig:farcry} ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral. Az általam írt motorhoz a legközelebb a Quake engine (ID tech) 2 és 3 áll.  Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, pl.: lövés pályájának számítása, gravitáció, ütközésdetektálás, billentyűzet és/vagy egérkezelés, hangok, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítésének kialakítása a motor adta lehetőségekkel, eszközökkel. Úgy kell választanunk játékmotort, hogy annak funkcióival megvalósítható legyen a játék.
+Új játék fejlesztésénél két fő lehetőség adott. Az első, hogy választunk egy kész, elérhető grafikus vagy játékmotort, amely majd a játék alapját adja. Amennyiben nem találunk megfelelőt, akkor írhatunk egyet saját magunknak.
+
+% TODO: Kellene még hivatkozás az összes említett játékmotorra!
+
+Meglévő motorok például az Unreal engine, Cryengine, Quake engine (ID Tech). Az Unreal engine első változata 1998-ban jelent meg, az első játék, amelyik ezt használta az Unreal nevű játék volt. A motor jelenlegi, legújabb verziója a 4.17-es. Nagyon sokat fejlődött az évek során.
+
+% TODO: Az Unreal fejlődésével kapcsolatban lehet még említeni pár dolgot.
+
+A Cryengine-t először a Far Cry (\ref{fig:farcry}. ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral.
+
+% TODO: Itt is lehet még konkretizálni, hogy a szépsége miből adódik.
+
+Az általam írt motorhoz a legközelebb a Quake engine (ID tech) 2-es és 3-mas verziója áll. Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, például lövés pályájának számítása, játék fizikájának számításai, ütközésdetektálás, billentyűzet és egérkezelés, hangokkal kapcsolatos számítások, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítése a motor adta eszközökkel. Praktikusan arra kell törekednünk, hogy olyan játékmotort válasszunk, amelyikben minél több kész funkció elérhető számunkra.
 
 \begin{figure}[h]
 \centering
@@ -30,42 +24,57 @@
 \label{fig:farcry}
 \end{figure}
 
-\section{Miért volt szükség új játékmotor készítésére?}
+\section{Egyedi igények és megoldandó problémák}
 
-A saját játékom tervezésekor, át kellett gondolnom, hogy milyen jellegű programot szeretnék írni, annak milyen funkciói lesznek, hogyan tervezem azt megvalósítani. Mint ahogy korábban írtam, úgy kell megválasztani a motort, hogy azzal megvalósíthatók legyenek az általunk elképzelt funkciók. Ebben az esetben egyrészt azért volt szükség új játékmotorra, mert a tervezés során előjöttek olyan ötletek, játékelemek, amik teljesen egyediek ebben a formában. Ilyen például a csapda, ami egy bizonyos idő után jön elő, ha a játékos nem mozdul meg. Másrészt pedig ez lehetőséget adott az optimalizálási problémák vizsgálatára, programfejlesztési (architekturális), optimalizálási feladatok sorát adta.
+A saját játékom tervezésekor, megvizsgáltam, hogy milyen jellegű programra, milyen funkciókra van szükség, azt hogyan tervezem majd megvalósítani. Egy kész játékmotor használata helyett egy saját játékmotor implementálására esett a választás. A döntést részben az indokolta, hogy az egyedi funkciók implementálására egy kész játékmotor esetében is szükség lenne. A fő ok viszont az volt, hogy egy játékmotor fejlesztése kimondottan alkalmas különféle matematikával (geometriával, optimalizálással) és programfejlesztéssel (szoftver architektúrával és implementációval)  kapcsolatos problémák vizsgálatára, szemléltetésére és megoldására.
 
-\section{Lehetséges optimalizálási problémák}
+\section{Optimalizálási problémák}
 
 A játékban megvalósítandó elemek között szerepel a lövés, a mesterséges intelligencia, az ütközésvizsgálat, és mindnek megvannak a maga optimalizálási problémái. Ütközésvizsgálatra szükség van a játékos karakterének az ellenfeleknek és a lövéshez is a találatok regisztrálására, pontos helyének számolására. A játéktér háromszögekből áll. A lövés megvalósításához szükségünk van háromszög, és egyenes metszéspontjának számítására, hogy vizualizálható legyen a lövedék becsapódásának helye a talajon, falakon, illetve egyéb játékbeli elemeken. Ez alapjában véve egy matematikai probléma, amit ki kell számoltatni, le kell programozni. Meg kell határozni azt az egyenest, ami azt mutatja meg, éppen merre nézünk, majd vizsgálni kell, hogy az adott egyenes metszi-e a teret alkotó háromszögek egyikét. De mivel több 100000 háromszög és egyenes metszéspontját kellene alap esetben számítani, így ez több optimalizálási problémát is felvet, amit a későbbiekben részletezek.
 
-\section{Az egyedi motorral megvalósított elemek}
+\section{A játékmotor fő elemei}
+
 \subsection{Mesterséges intelligencia}
+
+% TODO: Itt még nem ilyen, osztály szintjén kellene tárgyalni a dolgot. Az MI és az ütközésvizsgálat kapcsolatát kellene inkább részletezni kicsit.
 
 Az MI osztálynak elsősorban az a feladata, hogy az ellenfelek egy meghatározott útvonalon mozogjanak, ne menjenek át falakon, menjenek egymásba. A véletlenszerűen lerakott ellenfelet a legközelebbi definiált waypoint-hoz kell irányítani, definiálni kell a célpontot (ami elsődlegesen a játékos), és ki kell számítani a pontokon keresztül vezető legrövidebb útvonalat.
 
 \subsection{Hangok}
 
-Egy játék alapelemeihez hozzátartoznak a hangeffektek, zenék is, amik élvezetessé teszik azt. Egy jól megválasztott zene például nagyon sokat tud javítani a játékélményen. Ezek megszólalásáért az SDL\_mixer felelős, ami lehetővé teszi azt is, hogy több hang egyidőben, átfedésben megszólaljon, és ne várják meg egymást. Ezt a Sound osztályban valósítottam meg. Lehetőség van hangcsatornákat megadni, folyamatos újrajátszást, illetve a hangok egymáshoz viszonyított hangerejét beállítani.
+% TODO: A játékmotorok felsorolása után kellene egy részletesebb leírást csinálni az SDL-ről.
+
+Egy játékhoz hozzátartoznak a hangeffektek, zenék is, amik élvezetessé teszik azt. Egy jól megválasztott zene például nagyon sokat tud javítani a játékélményen. Ezek megszólalásáért az SDL\_mixer felelős, ami lehetővé teszi azt is, hogy több hang egyidőben, átfedésben megszólaljon, és ne várják meg egymást. Ezt a Sound osztályban valósítottam meg. Lehetőség van hangcsatornákat megadni, folyamatos újrajátszást, illetve a hangok egymáshoz viszonyított hangerejét beállítani.
 
 \subsection{Magasságmező}
 
+% TODO: Itt sem kellene még belemenni az implementációba. Ami itt van, az elég, ha egy kicsit később szerepel majd. Ide az kellene, hogy a domborzat az mennyiben illeszkedik az eltervezett játék térképének kialakításához.
+
 A játékteret adó domborzatot, a játék egy fekete-fehér, 384x384 pixeles képből számolja ki. Az adott képen minél magasabb egy pont, annál fehérebb, így a fehér adja a legmagasabb, a fekete szín a legalacsonyabb pontot. Ezekből az adatokból vissza lehet számolni a játékos függőleges pozícióját is, illetve az átmeneteket nézve, meredekségnek megfelelően a visszacsúszást. Mindez tehát megadja a játékteret minden szempontból (vizualitás, játékos mozgástere).
 
-\subsection{Konkrét megjelenítés}
+\subsection{Modellek kezelése}
+
+% TODO: A modell tárolási formátumot kellene kicsit pontosítani!
 
 A játéktér adatait tehát képből kinyertük, de ez még nem jelenti azt, hogy látjuk is a monitoron. Ehhez a VBO-s (Vertex Buffer Object) kirajzolási módszert választottam, ami a videókártyának a legoptimálisabb adatstruktúrában adja át azt a lehető leggyorsabb kirajzoláshoz.
 
-\subsection{A csapda mint játékelem}
+\subsection{A csapda, mint játékelem}
 
-Mindenképp szerettem volna olyan elemet a játékba, ami megkülönbözteti a többi hasonló, aréna jellegű, túlélős játéktól. Az egyik ilyen elem, hogyha a játékos megáll x ideig (az x majd tesztelés során derül ki mi a legoptimálisabb), akkor megjelenik egy csapda, majd leesik, és meghal. Vannak olyan játékok, ahol szimplán az ellenfelek ösztönzik a játékost a mozgásra, de itt konkrétan ki is van kényszerítve. Jelenlegi beállítás:
-Ha megáll a játékos 5mp-ig, akkor megjelenik a csapda modell egy hang kíséretében, illetve onnantól nem lehet már pozíciót változtatni, csak az egérrel körbe nézni. Majd még 2mp leteltével már az egeret sem érzékeli, a föld felé fordul a kamera, majd leesik, ekkor ismét egy hangot lehet hallani, és értesül a játékos arról, hogy miért halt meg.
+Mindenképp szerettem volna olyan elemet a játékba, ami megkülönbözteti a többi, hasonló, aréna jellegű, túlélős játéktól. Az egyik ilyen elem, hogy ha a játékos egy előre meghatározott időnél több ideig nem mozdul, akkor megjelenik alatta egy csapda, amelybe leesik, és meghal. Vannak olyan játékok, ahol szimplán az ellenfelek ösztönzik a játékost a mozgásra, de a játék itt kikényszeríti azt, hogy a játékosok mozgásban legyenek. A megállásnál a küszöbérték tapasztalati alapon beállítva 5 másodperc lett. Ezt követően megjelenik a csapda modell egy hang kíséretében. Ezt követően 2 másodpercig még a kamera irányát tudja változtatni a játékos, utána viszont már azt sem. Ezt követően az a föld felé fordul, majd értesíti a játékost a történtek okáról.
 
 \subsection{A lövés}
 
-Egy ilyen játékban alapelem az is, hogy tudjunk lőni, mivel ez nélkül az egész értelmét veszti. A textúrázott játéktéren ugyan nem látni, de az egész több százezer háromszögből áll. Adott egy irányvektor, ami azt határozza meg, merre fordul épp a játékos, azaz mire néz. Ennek a vektornak a metszéspontját kell vizsgálni a háromszögekkel, hogy találatot meg tudjuk jeleníteni, ami jelen esetben a falon egy lövésnyom. Szóval ki számolja a program a metszéspont x, y, z koordinátáját, majd odailleszt egy lövésnyom textúrát. Az ellenfeleknél szintén metszéspontot kell számolni, csak ott hengerre. Ki lehetne számolni a modellre is közvetlen, de az nagyon lassú lenne, így egy leegyszerűsített alakzatot választottam. Ez az ellenfél ún. hitboxa.
+Egy ilyen játékban alapelem az is, hogy tudjunk lőni, mivel e nélkül az egész értelmét vesztené. A játéktér alapvetően egy textúrázott polygonháló. A lövés során azt kell meghatározni, hogy a lövedék melyik háromszögbe ütközne bele, ha a nézet irányába lőnénk, és egyenes pályát feltételeznénk. Ez egy olyan metszéspontszámítást tesz szükségessé, amelyet a játék összes objektumára el kell végeznünk. Megjelenítés szempontjából ez tipikusan egy lövés textúra illesztését jelenti.
 
-\section{A végső elképzelés}
+% TODO: Az ellenfelekre vonatkozó ütközésvizsgálatnál a hitbox csak addig kell, amíg azt meg sikerül állapítani, hogy a tartalmazó hitbox-ot eltalálta-e a lövés. Azt követően már a konkrét modellre is meg lehet csinálni a vizsgálatot.
 
-Mint ahogy a bevezetésben is írtam, egy FPS (First Person Shooter = belső nézetes lövöldözős játék, az adott személy szemszögéből látjuk az eseményeket) játék elkészítését tűztem ki célul. A konkrét elképzelés az, hogy egy aréna jellegű, túlélő játék készüljön el. Nem terveztem online módot, a játékosnak egy mesterséges intelligenciával kell harcolnia. A játékmenet hullámokra lesz osztva, és ahogy halad előre a játékos, annál nehezebbé válik (több és/vagy erősebb ellenfelekkel). Egy hullám akkor ér véget, ha egy előre megadott számú ellenfelet sikerül megölni. A körök között a játékosnak lehetősége nyílik az életerőt és lőszert feltölteni, fejleszteni a fegyverét a teljesítményének megfelelően. A játékmenet nehezítve lesz azzal (azon felül hogy lőnek rá), hogy ha x másodpercig megáll a játékos, akkor azonnal meghal, így mindig mozgásban kell lenni. Ennek az időtartamnak a pontos meghatározása majd a tesztelés során alakul ki. Lehetőség lesz különböző elemeket (ún. power up-okat) felszedni a körök alatt, ami lehet pozitív vagy negatív hatású is. Például adhat/vehet el életerőt, adhat/vehet el lőszert, adhat/vehet el fegyverfejlesztést.
+\section{A játék szabályai és mechanikája}
 
-A fentebb leírtak megvalósítása nagyon sok munka és idő. Meg kell valósítani a modellbetöltést textúrázással, az irányítást, fizikát, ütközéskezelést, hitboxot, mesterséges intelligenciát, fényeket, hangokat, árnyékokat.
+Egy belső nézetes lövöldözős játék esetében az adott személy szemszögéből látjuk a virtuális világot. Egy olyan, aréna jellegű, túlélő játékról van szó, amelyben a játékosok mesterséges intelligenciával rendelkező ellenfelekkel (gyakori szóhasználat szerint \textit{bot}-okkal}) harcolnak.
+
+A játék során az ellenfelek hullámokban érkeznek. Egy ilyen hullám akkor ér véget, ha a játékosnak megadott számú ellenfelet sikerült eltalálnia. Közben a játékosnak lehetősége van gyógyszert és lőszert szereznie. A játékos teljesítményének függvényében a fegyver fejlesztését is lehetővé teszi a játék.
+
+A klasszikusan felszedhető tárgyak (\textit{powerup}-ok) mellett a játékban, az előzőekhez kinézetükben hasonló csapda jellegű elemek is vannak. A felszedhető elemek hatása így tehát lehet egyaránt pozitív vagy negatív.
+
+A játék megvalósításának problémaköre tehát szerteágazó. Többek között meg kellett valósítani a modellbetöltést textúrázással, az irányítást, fizikát, ütközéskezelést, ellenfelek viselkedésének modellezését, fények és hangok kezelését.
+
