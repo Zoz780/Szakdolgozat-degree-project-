@@ -36,8 +36,8 @@ Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
  \For {Waypoint pont : waypointokon}{
  	x := pont.x;\\
 	y := pont.y;\\
-	x\_tav := abs(x – jelenlegi\_xpoz);\\
-	y\_tav := abs(y – jelenlegi\_ypoz);\\
+	x\_tav := |(x – jelenlegi\_xpoz)|;\\
+	y\_tav := |(y – jelenlegi\_ypoz)|;\\
 	temp := sqrtf(x\_tav * x\_tav +  y\_tav * y\_tav)\;
   \If{temp < pont\_tav}{
    		pont\_tav := temp;\\

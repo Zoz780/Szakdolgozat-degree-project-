@@ -1,17 +1,6 @@
 \Chapter{Ütközésvizsgálat}
 \label{Chap:utkozesvizsgalat}
 
-% TODO: Ütközéssel, metszéspontokkal kapcsolatos számítások
-
-%- A try bullet-es példa részletes kifejtése, matematikai része
-
-%Egyszerűbb változatoktól a bonyolultabbak fel
-
-%- Először az intuitív, egyszerűbb megoldások, még ha kevésbé hatékony is.
-%- Felsorolni több megoldást is.
-%- Optimalizálási módszerek részletezése
-%- Összehasonlítani őket pontosság és számításigény szempontjából.
-
 Ebben a fejezetben az ütközésvizsgálattal kapcsolatos számításokról, optimalizációkról lesz szó. Ütközésvizsgálatra több szempontból is szükség van. Egyrészt, vizsgálni kell, hogy a játékos a játszható területen belül van-e, azaz nem mehet át falakon, tereptárgyakon, nem mehet fel túl meredek emelkedőn. Másrészt, vizsgálni kell, hogy a játékos által leadott lövedék eltalálja-e a domborzatot, tereptárgyakat, jelezni kell a lövedék becsapódását. Harmadrészt regisztrálni kell az ellenfeleket eltaláló leadott lövéseket. A második és harmadik pont nagyon hasonló, de még is szétszedtem, mert az ellenfeleknél nem a látható geometriát találjuk el, hanem annak egy leegyszerűsített modelljét, a számítások felgyorsítása érdekében. Szükség van további optimalizációkra is, mert ha ezek nem lennének, irreálisan nagy erőforrás igénye lenne a játékoknak.
 
 \section{A karakterek ütközésvizsgálata mozgás szempontjából}
@@ -83,14 +72,11 @@ Ez a függvény először megvizsgálja, hogy azt a síkot, amelyen a háromszö
 
 \section{A játékos, és az ellenfelek hitboxa}
 
-% TODO: Hitbox kép linkét bemásolni a jegyzékbe
-% http://www.toptiertactics.com/wp-content/uploads/2011/05/Hitbox.jpg 
-
 Ennek alapelve ugyanaz, mint a domborzat és tereptárgyak üközésvizsgálatánál, annyi különbséggel, hogy itt azt kell vizsgálni, hogy az ellenfelek körül lévő, a játékosok számára láthatatlan hengerrel van-e metszéspontja az adott egyenesnek. Ezt a hengert nevezzük jelen esetben hitbox-nak, de egyéb játékokban lehet sokkal részletesebb, attól függően, mennyire szeretnénk pontosan regisztrálni az egyes találatokat.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.4]{kepek/hitbox.png}
+\includegraphics[scale=0.38]{kepek/hitbox.png}
 \caption{Különböző részletességű hitbox-ok}
 \label{fig:hitbox}
 \end{figure}
@@ -105,11 +91,11 @@ Mivel az ütközéskezelés során nagyon sok adattal kell számolni, szükség 
 
 \subsection{A játéktér szabályos felosztása}
 
-Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva felosztjuk a teret egy felosztási részletességet megadva. Meg kell adnunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található, ez látható \aref{fig:grid} ábrán. A karakterek ütközésvizsgálatánál elég, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyiken épp tartózkodik. Lövedék becsapódásának x,y,z koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. Előnye, hogy ezt a legegyszerűbb megadni, és ehhez képest elég nagy gyorsulást tapasztalhatunk. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, minden tárgy nélkül. Ennek kiküszöbölésére találták ki a négyes, és az oktális fát.
+Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva felosztjuk a teret egy felosztási részletességet megadva. Meg kell adnunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található, ez látható \aref{fig:grid} ábrán. A karakterek ütközésvizsgálatánál elég, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyiken épp tartózkodik, de ajánlott a körülötte levő 8 részre is. Lövedék becsapódásának x,y,z koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. Előnye, hogy ezt a legegyszerűbb megadni, és ehhez képest elég nagy gyorsulást tapasztalhatunk. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, minden tárgy nélkül. Ennek kiküszöbölésére találták ki a négyes, és az oktális fát.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.2]{kepek/grid.png}
+\includegraphics[scale=0.22]{kepek/grid.png}
 \caption{A pálya felosztása egyenlő részekre}
 \label{fig:grid}
 \end{figure}
@@ -120,11 +106,37 @@ A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát sí
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.2]{kepek/quadtree.png}
+\includegraphics[scale=0.22]{kepek/quadtree.png}
 \caption{A pálya felosztása a rajta lévő objektumok alapján}
 \label{fig:quadtree}
 \end{figure}
 
 \subsection{Optimalizálási módszer kiválasztása}
 
-A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrásigényt, a fölösleges számításokat mellőzve. Felvetődhet a kérdés, hogy miért négyes fát alkalmaztam, mikor a játék három dimenziós? Egyrészt azért, mivel ezt könnyebb megvalósítani. Másrészt, mint ahogy korábban is említettem, ha nincs a térnek nagy magassága, akkor tökéletesen elegendő lehet a négyes fa is, mivel az oktális fa ilyen esetben nem hoz annyival jobb eredményt, mint amennyivel több munka van vele.
+A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrásigényt, a fölösleges számításokat mellőzve. Felvetődhet a kérdés, hogy miért négyes fát alkalmaztam, mikor a játék három dimenziós? Egyrészt azért, mivel ezt könnyebb megvalósítani. Másrészt, mint ahogy korábban is említettem, ha nincs a térnek nagy magassága, akkor tökéletesen elegendő lehet a négyes fa is, mivel az oktális fa ilyen esetben nem feltétlen hoz annyival jobb eredményt, mint amennyivel több munka van vele.
+
+\subsection{Négyes fa megvalósítása}
+
+Megvalósítás során meg kell adnunk a gyökér node-ot, ami a teljes, felosztani kívánt területet takarja. Egy node a következő adattagokat tartalmazza:
+
+\begin{itemize}
+\item X és Y pozíció
+\item Szélesség és magasság
+\item 4 darab gyerek node (ha nincs, akkor az adott node értéke NULL)
+\item Pont tömb, amelynek mérete a programozó által meghatározott
+\end{itemize}
+
+Ezután meg kell adnunk az objektumok helyét, amelyeket figyelembe véve történik meg a felosztás. Ha az objektumok száma a meghatározott értéknél nagyobb, az adott node gyerek node-jai meghatározásra kerülnek. Ez az egész folyamat egy rekurzív algoritmus. Gyerek node területének meghatározásánál, mivel a területet 4 felé osztjuk, adott, hogy mindkét oldalát feleznünk kell. A for ciklusban is a terület 4 felé osztása miatt megy az i 4-ig. 
+
+\begin{algorithm}[H]
+ \KwData{node; pontok\;}
+ \KwResult{A teljes terület összes része}
+  \If{pontok > küszöbérték}{
+   	\For{i := 0; i < 4; i++}{
+   		Adott node gyerek node-jának[i] := új node;\\
+   		Gyerek node területének meghatározása;\\
+   		Algoritmus rekurzív hívása\;
+   	}
+   }
+ \caption{Négyes fa területfelosztás}
+\end{algorithm}
