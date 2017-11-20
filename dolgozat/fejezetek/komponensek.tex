@@ -17,7 +17,7 @@ https://hu.wikipedia.org/wiki/Simple_DirectMedia_Layer
 
 \section{Az alkalmazás fő részei}
 
-A fő részek, és azok kapcsolatainak szemléltetéséhez egy osztálydiagramot készítettem (\fig{fig:uml} ábra.). Ezen megtekinthető a játék felépítése, melyik osztálynak melyik az őse, illetve mely osztályok vannak kapcsolatban egymással. Továbbá feltüntetésre kerültek a kapcsolatokhoz szükséges adattagok, metódusok.
+A fő részek, és azok kapcsolatainak szemléltetéséhez egy osztálydiagramot készítettem (\ref{fig:uml} ábra.). Ezen megtekinthető a játék felépítése, melyik osztálynak melyik az őse, illetve mely osztályok vannak kapcsolatban egymással. Továbbá feltüntetésre kerültek a kapcsolatokhoz szükséges adattagok, metódusok.
 
 A \texttt{MainGame} a játék fő osztálya. Ehhez kapcsolódik minden egyéb komponens, és ez felel az ablak inicializálásáért, felhasználói interakciók kezeléséért. A játékbeli interakciók kezeléséért az \texttt{Action} osztály felelős, ez kezeli az állapotokat, például hogy éppen előre vagy hátra haladunk, ugrunk, vagy futunk. Ennek megfelelően az \texttt{Action} osztály kimenetei alapján a \texttt{Player} osztály végzi el a játékoshoz kapcsolódó cselekvéseket. A \texttt{MainGame}-hez kapcsolódik még közvetlen a \texttt{Map}, a \texttt{Sound}, a \texttt{MainMenu} osztály. 
 
@@ -99,7 +99,7 @@ A lövés háttérszámításait egy külön komponens végzi. A számítások e
 
 \subsection{Mesterséges intelligencia}
 
-Mivel nem egy elsősorban online játszható, FPS játékról van szó, így mindenféleképp kellett egy, az ellenfelek mozgását irányító mesterséges intelligencia. Az ellenfelek mozgásához az útvonalak keresése A* algoritmus segítségével történik. A játék véletlenszerűen, különböző helyekre kirak adott mennyiségű ellenfelet, amiknek közeledni kell a játékos felé, különböző kritériumoknak megfelelve. Ezek a kritériumok azért kellenek, mert a pályán vannak játékelemek, amiken nem lehet átmenni, illetve az ellenfelek sem mehetnek egymásba. 
+Mivel nem egy elsősorban online játszható, FPS játékról van szó, így mindenképpen szükséges egy, az ellenfelek mozgását irányító mesterséges intelligencia. Az ellenfelek mozgásához az útvonalak keresése A* algoritmus segítségével történik. A játék véletlenszerűen, különböző helyekre kirak adott mennyiségű ellenfelet, amiknek közeledni kell a játékos felé, különböző kritériumoknak megfelelve. Ezek a kritériumok azért kellenek, mert a pályán vannak játékelemek, amiken nem lehet átmenni, illetve az ellenfelek sem mehetnek egymásba. 
 
 Az alapötlet az, hogy a pályán le lesznek rakva pontok (úgynevezett \textit{waypointok}), amelyek csak az ellenfelek számára lesznek láthatók. Ha kikerül egy adott ellenfél a pályára, az első feladata az lesz, hogy megkeresse a hozzá legközelebb eső waypointot. Ezután az A* algoritmus segítségével meghatározza a játékoshoz legközelebb eső waypointhoz vezető legrövidebb utat, végigmegy rajta, majd ha elérte, akkor onnantól a játékos lesz a közvetlen elsődleges célpontja. Mivel a játékos folyamatosan mozog, mindezt másodpercenként legalább 15-30x kell kiszámolni.
 

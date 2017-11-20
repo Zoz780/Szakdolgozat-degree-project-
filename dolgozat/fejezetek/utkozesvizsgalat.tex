@@ -1,30 +1,33 @@
 \Chapter{Ütközésvizsgálat}
 \label{Chap:utkozesvizsgalat}
 
-Ebben a fejezetben az ütközésvizsgálattal kapcsolatos számításokról, optimalizációkról lesz szó. Ütközésvizsgálatra több szempontból is szükség van. Egyrészt, vizsgálni kell, hogy a játékos a játszható területen belül van-e, azaz nem mehet át falakon, tereptárgyakon, nem mehet fel túl meredek emelkedőn. Másrészt, vizsgálni kell, hogy a játékos által leadott lövedék eltalálja-e a domborzatot, tereptárgyakat, jelezni kell a lövedék becsapódását. Harmadrészt regisztrálni kell az ellenfeleket eltaláló leadott lövéseket. A második és harmadik pont nagyon hasonló, de még is szétszedtem, mert az ellenfeleknél nem a látható geometriát találjuk el, hanem annak egy leegyszerűsített modelljét, a számítások felgyorsítása érdekében. Szükség van további optimalizációkra is, mert ha ezek nem lennének, irreálisan nagy erőforrás igénye lenne a játékoknak.
+Ebben a fejezetben az ütközésvizsgálattal kapcsolatos számításokról, optimalizációkról lesz szó. Ütközésvizsgálatra több szempontból is szükség van. Egyrészt, vizsgálni kell, hogy a játékos a játszható területen belül van-e, azaz nem mehet át falakon, tereptárgyakon, nem mehet fel túl meredek emelkedőn. Másrészt, vizsgálni kell, hogy a játékos által leadott lövedék eltalálja-e a domborzatot, tereptárgyakat, jelezni kell a lövedék becsapódását. Harmadrészt regisztrálni kell az ellenfeleket eltaláló leadott lövéseket. A második és harmadik pont nagyon hasonló, de mégis célszerűnek tünt külön kezelni. A magasságmező és az egyéb modellek ütközésvizsgálatának módját azért érdemes külön kezelni, mert a statikus magasságmező esetében másfajta optimalizálási módok állna rendelkezésre, mint az egyéb tereptárgyak, és animált karakterek esetében.
 
 \section{A karakterek ütközésvizsgálata mozgás szempontjából}
 
-Ez a játék szempontjából az egyik legfontosabb elem. Az hogy kirajzoltatunk valamit a képernyőre, még nem jelenti azt, hogy azon nem lehet áthaladni. A kirajzolás csak a vizualitást adja, a domborzat, a tereptárgyak, a karakterek kinézetét. A játékfejlesztő feladata az, hogy megírja külön az ezekhez szükséges ütközésvizsgálatot. Mivel ez két különálló dolog, egyes helyzetekben adódhatnak olyan problémák, hogy ezek nincsenek szinkronban, tehát látunk valamit amin át lehet menni, vagy nem látunk valamit és mégis megakadunk benne.
+Ez a játék szempontjából az egyik legfontosabb elem, mivel ez adja a virtuális világ egyfajta realitását. Az, hogy kirajzoltatunk valamit a képernyőre, még nem jelenti azt, hogy azon nem lehet áthaladni. Konkrétan a Z-buffer felelős azért, hogy a takarási feladatot megoldja, viszont azt úgy képes végrehajtani, hogy közben a kirajzolt objektumok ütközését a lehető legegyszerűbb módon kezeli csak.
 
-Ebben a játékban a karakterek ütközésvizsgálata gradiens számítással van megoldva. Ez azt jelenti, hogy ha két, egymás mellett lévő pont magasságértéke között túl nagy a különbség pozitív irányba, az falat, vagy túl meredek emelkedőt jelent. Ha mérsékelt, vagy nagyon minimális a különbség, akkor arról vagy lecsúszik, vagy csak egyszerűen át lehet ott haladni. Mindezt a beolvasott magasságmezőből számolja, ezzel dinamikussá téve az ütközésvizsgálatot. Ha ez nem lenne így, akkor elveszne a játék azon tulajdonsága, hogy dinamikusan lehet cserélgetni a pályákat minden további nélkül. Az egyes számú algoritmusban a delta a különbséget, a h a magasságot, és a curr a jelenlegi értéket takarja. A lépték azt adja meg, hogy a következő pont milyen távolságra legyen, mennyire legyen pontos a számítás.
+A kirajzolás csak a vizualitást adja, a domborzat, a tereptárgyak, a karakterek kinézetét. A játékfejlesztő feladata az, hogy megírja külön az ezekhez szükséges ütközésvizsgálatot. Mivel ez két különálló dolog, egyes helyzetekben adódhatnak olyan problémák, hogy ezek nincsenek szinkronban, tehát látunk valamit amin át lehet menni, vagy nem látunk valamit és mégis megakadunk benne.
 
-\begin{algorithm}[H]
- \KwData{delta; h; hx; hy; curr\_x; curr\_y; delta\_x; delta\_y\;}
- \KwResult{A meredekség számítása x és y irányban}
- 	delta := térkép\_szélesség / (lépték * térkép\_szélesség);\\
- 	h = altuális\_talajmagasság(curr\_x, curr\_y);\\
-	hx := altuális\_talajmagasság(curr\_x + delta, curr\_y);\\
-	hy := altuális\_talajmagasság(curr\_x, curr\_y + delta);\\
-	delta\_x := (hx - h) / delta;\\
-	delta\_y := (hy - h) / delta\; 
- \caption{Gradiens számolása}
-\end{algorithm} 
+A szakdolgozat készítése közben fejlesztett játékmotorban a karakterek és a magasságmező ütközését magasságpontok és az ezek különbségeiből kapott gradiensek számításával oldottam meg. Ez azt jelenti, hogy ha két, egymás mellett lévő pont magasságértéke között túl nagy a különbség pozitív irányba, az falat, vagy túl meredek emelkedőt jelent. Ez a különbség tehát az eredeti felület pontbeli gradiensének numerikus közelítését adja. Ha mérsékelt, vagy nagyon minimális a különbség, akkor arról vagy lecsúszik, vagy csak egyszerűen át lehet ott haladni. Mindezt a beolvasott magasságmezőből számolja, így az ütközésvizsgálat minden új magasságmező esetében automatikusan elérhető.
 
+Jelölje $H$ azt a két változós valós függvényt, amelyet a magasságmezővel közelítünk. Legyen a $\widetilde{H}$ az az interpolációs függvény, amelyeket az interpoláció alappontjaiban felveszik a $H$ értékét. Egy $p \in \mathbb{R}^2$ pozíció esetén a pontbeli gradienst a következő módon közelíthetjük:
+$$
+\nabla H(p) =
+\left( \dfrac{\partial H(p)}{\partial x}, \dfrac{\partial H(p)}{\partial y} \right)
+\approx
+\left(
+\dfrac{\widetilde{H}(p + \delta_x) - \widetilde{H}(p)}{\delta_x},
+\dfrac{\widetilde{H}(p + \delta_y) - \widetilde{H}(p)}{\delta_y}
+\right),
+$$
+ahol $\delta_x$ és $\delta_y$ az $x$ és $y$ tengely szerinti tetszőlegesen kis eltolást jelöli.
 
-Ezen felül a gravitáció ami nagyon lényeges, mert a pályának vannak olyan magaslati pontjai, amelyekre fel lehet jutni. Ha egy ilyenre felmegyünk, és nincs semmilyen erő, ami a karaktert a föld felé húzná, akkor felfelé ugyan lekövetné a talajmagasságot, de le már nem esne alacsonyabb pontra onnan.
+A gradiens közelítésének ez az egyik legegyszerűbb módja. Előnyös, mivel az interpolt felület pontbeli értékeit egyébként ki kell számítani, illetve a számítási pontosság megfelelő a játékmotor működéséhez.
 
-Ez esetben egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekre, aminek a küszöbértéke mindig az aktuális talajmagasság. Ugrás esetén a gravitációnál nagyobb, ellenirányú erőt fejt ki a karakter, amely folyamatosan csökken, ez eredményezi azt, hogy elemelkedik a földtől, egy ponton megáll, majd vissza is esik a talajra. Ez látható \aref{fig:gravity}-es ábrán. A gravitációs erő Fg-vel, a kifejtett erő Fk-val van jelölve.
+Ezen felül a gravitáció ami nagyon lényeges, mert a pályának vannak olyan magaslati pontjai, amelyekre fel lehet jutni. Ha egy ilyenre felmegyünk, és nincs semmilyen erő, ami a karaktert a föld felé húzná, akkor felfelé ugyan lekövetné a talajmagasságot, de le már nem tudna esni.
+
+A játékmotor fizikájában egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekre, aminek a küszöbértéke mindig az aktuális talajmagasság. Ugrás esetén a gravitációnál nagyobb, ellenirányú erőt fejt ki a karakter, amely folyamatosan csökken. Ez eredményezi azt, hogy elemelkedik a földtől, egy ponton megáll, majd vissza is esik a talajra. Ez látható \aref{fig:gravity}-es ábrán. A gravitációs erőt az $F_g$ jelöli, a kifejtett erőt pedig az $F_k$.
 
 \begin{figure}[h]
 \centering
@@ -33,22 +36,20 @@ Ez esetben egy lefelé ható erő folyamatosan hat a játékosra és ellenfelekr
 \label{fig:gravity}
 \end{figure}
 
-\begin{algorithm}[H]
- \KwData{gravitációs erő; küszöbérték\;}
- \KwResult{A karakter föld felé húzása az aktuális talajmagasságig}
- küszöbérték := aktuális talajmagasság\;
-  \eIf{karakter függőleges pozíciója > küszöbérték}{
-   függőleges gyorsaság := függőleges gyorsaság + gravitációs erő\;
-   karakter függőleges pozíciója := karakter függőleges pozíciója \\ + függőleges gyorsaság\;
-   }{
-   karakter függőleges pozíciója := küszöbérték\;
-  }
- \caption{Gravitáció megvalósítása}
-\end{algorithm} 
+A karakter függőleges pozícióját jelöljük $z$-vel. Amennyiben a játékos a magasságmezőn áll, akkor teljesül, hogy $\widetilde{H}(p) = z$. Az $F_g$ gravitációs erőt konstansnak tekintjük. Ennek tipikusan csak $z$ tengely irányú, $0$-tól különböző komponense van. Amennyiben a karakter a magasságmező felett van, úgy a $z$ és az $F_k$ is felírható az idő függvényében $t$ szerint. Egy $\Delta t$ mintavételezési időt feltételezve (ami tipikusan a képkockák kirajzolásai között eltelt idő) a következő összefüggéseket írhatjuk fel:
+\begin{align*}
+F_k(t + \Delta t) &= F_k(t) + F_g \cdot \Delta t, \\
+z(t + \Delta t) &= z(t) + F_k(t) \cdot \Delta t. \\
+\end{align*}
+Amikor tehát a karakter a magasságmezőre érkezik, akkor az $F_k$ értékét $0$-nak tekinthetjük, a $z$-t pedig a magasságmező adott pontjának értékére állíthatjuk.
+
+A koordinátarendszer és az erők mértékegységének megfelelően szükségünk lehet korrekciós szorzókra, például ha méterben és másodpercben szeretnénk számolni.
  
 \section{A domborzat és tereptárgyak üközésvizsgálata a lövés szempontjából}
 
-Az ilyen fajta ütközésvizsgálat számítás nem létszükséglet a játszhatóság szempontjából, de tény, hogy jóval realisztikusabbá teszi a játékot, és sok optimalizációt igényel. Ez teszi lehetővé, hogy ha lövünk egyet, és beletalál bármilyen elembe, ami a pálya része, megjeleníthessük rajta a találatot. Ennek minősége lehet többféle, csak egy textúra, vagy egyéb még realisztikusabb megoldások. Mivel a pálya háromszögekből áll, és az irány amerre nézünk egy egyenes, így itt egyenes és háromszög metszéspontját kell számolnunk térben. A pálya háromszöghálóját, geometriáját \aref{fig:wireframe} ábrán mutatom be.
+A domborzattal való ütközésvizsgálat azért fontos, hogy azon keresztül ne lehessen eltalálni az ellenfeleket, illetve ezzel is realisztikussabbá tehetjük a játékot. A nagy poligonszám miatt ez is optimalizációt igényel.
+
+A problémát az egyenes és a háromszög metszéspontjának számítására vezethetjük vissza. A domborzat háromszögeit fekete szegélyekkel láthatjuk \aref{fig:wireframe} ábrán.
 
 \begin{figure}[h]
 \centering
@@ -57,9 +58,9 @@ Az ilyen fajta ütközésvizsgálat számítás nem létszükséglet a játszhat
 \label{fig:wireframe}
 \end{figure}
 
-Első lépésként, meg kell határozni azt az egyenest, amely azt írja le, amerre néz az adott karakter. Ez az egyenes két ponttal van leírva. Az egyik az adott karakter pozíciójával egyezik meg. A másik, távoli pontot jelen esetben egy, az OpenGL-ben definiált függvényből, a GluLookAt-ből határozzuk meg, aminek 9 paramétere van. Az első három a karakter jelenlegi pozíciója, a második három azt a pontot írja le merre nézünk (referencia pont), az utolsó három pedig azt határozza meg, hogy melyik tengelyen, és merre néz a felfelé vektor. A 9 paraméter közül a középső háromból lehet a túlsó pontot  meghatározni. Mindegyikből ki kell vonni az adott tengelynek megfelelő jelenlegi pozíciót, majd megszorozni egy nagy értékkel, azért, mert ez nélkül túl közeli pontot kapnánk, ezáltal egy rövid egyenest.
+Első lépésként, meg kell határozni azt az egyenest, amely azt írja le, amerre néz az adott karakter. Az egyenes megadható két pontjával. Az egyik az adott karakter pozíciójával egyezik meg. A másik, távoli pontot jelen esetben egy, az OpenGL-ben definiált függvényből, a \texttt{GluLookAt} függvényből határozzuk meg, aminek 9 paramétere van. Az első három a karakter jelenlegi pozíciója, a második három azt a pontot írja le merre nézünk (referencia pont), az utolsó három pedig azt határozza meg, hogy melyik tengelyen, és merre néz a felfelé vektor. A 9 paraméter közül a középső háromból lehet a második pontot  meghatározni.
 
-Második lépés, ennek az egyenesnek kiszámolni a háromszögekkel való metszéspontját. A háromszögek a három csúcspontjukkal vannak leírva. Kell lennie egy függvénynek, amelynek a háromszög három csúcspontját, és az egyenes két végpontját átadva, visszaadja a metszéspont x,y,z koordinátáját. Ez működés közben \aref{fig:triangle} ábrán látható.
+Második lépésként ki kell számolni ennek az egyenesnek a háromszögekkel vett metszéspontját. A háromszögeket a három csúcspontjukkal írjuk le. Kell lennie egy függvénynek, amelynek a háromszög három csúcspontját, és az egyenes két végpontját átadva, visszakapjuk a metszéspont $(x, y, z)$ koordinátáját. A számítás eredményének egy szemléltetését \aref{fig:triangle} ábrán láthatjuk.
 
 \begin{figure}[h]
 \centering
@@ -68,11 +69,11 @@ Második lépés, ennek az egyenesnek kiszámolni a háromszögekkel való metsz
 \label{fig:triangle}
 \end{figure}
 
-Ez a függvény először megvizsgálja, hogy azt a síkot, amelyen a háromszög van, metszi-e az egyenes, ha nem, nem is számol tovább. Ha metszi a síkot, akkor megnézi, pontosan hol metszi azt, megkapva az x,y,z koordinátákat. Ez után már csak azt kell vizsgálni, hogy a metszéspont benne van-e a három csúcspontjával leírt háromszögben. Ha igen, akkor visszaadja a pontos metszéspontot.
+A számításhoz a függvény először megvizsgálja, hogy azt a síkot, amelyen a háromszög van, metszi-e az egyenes, ha nem, nem is számol tovább. Ha metszi a síkot, akkor megnézi, pontosan hol metszi azt, melyek a metszéspont $(x, y, z)$ koordinátái. Ez után már csak azt kell vizsgálni, hogy a metszéspont benne van-e a három csúcspontjával leírt háromszögben. Ha igen, akkor visszaadja a metszéspontot.
 
-\section{A játékos, és az ellenfelek hitboxa}
+\section{A játékos, és az ellenfelek ütközésének vizsgálata}
 
-Ennek alapelve ugyanaz, mint a domborzat és tereptárgyak üközésvizsgálatánál, annyi különbséggel, hogy itt azt kell vizsgálni, hogy az ellenfelek körül lévő, a játékosok számára láthatatlan hengerrel van-e metszéspontja az adott egyenesnek. Ezt a hengert nevezzük jelen esetben hitbox-nak, de egyéb játékokban lehet sokkal részletesebb, attól függően, mennyire szeretnénk pontosan regisztrálni az egyes találatokat.
+Ennek a működése hasonló, mint a domborzat és tereptárgyak üközésvizsgálatánál, azzal a különbséggel, hogy itt azt kell vizsgálni, hogy az ellenfelek körül lévő, a játékosok számára láthatatlan hengerrel van-e metszéspontja az adott egyenesnek. Ezt a hengert nevezzük jelen esetben \textit{hitbox}-nak. Ennek a megválasztása hatással van egyrészt az ütközésvizsgálat pontosságára, másrészt pedig a számítási időre.
 
 \begin{figure}[h]
 \centering
@@ -81,17 +82,19 @@ Ennek alapelve ugyanaz, mint a domborzat és tereptárgyak üközésvizsgálatá
 \label{fig:hitbox}
 \end{figure}
 
-Ebben az esetben azért nem a pontos, látható geometriára számoljuk a találatokat, mert annak nagyon nagy erőforrásigénye lenne, ellenben az lenne a legpontosabb, tehát amit látunk, az jelenti a találatot. A találatszámításra használt leegyszerűsített geometria előnye, hogy sokkal kevesebb hátérszámításra van szükség. Viszont mivel nem azt találjuk el, amit látunk, előfordulhatnak kellemetlen, vagy érdekes szituációk. Előfordulhat, hogy úgy találjuk el az ellenfelet, hogy ott valójában nem látunk semmit, vagy ennek ellenkezője, hogy elvileg eltaláljuk, de az a rész nem tartozik a hitbox-hoz.
+A hitbox arra szolgál, hogy egy közelítő becslésünk legyen az ütközésvizsgálathoz. Amennyiben eltaláltuk egy objektum \textit{hitbox}-át, úgy meg kell vizsgálni, hogy a benne lévő modellel van-e ütközés. Amennyiben nincs, ugyanazt kell tennünk, mint ha a közelítő alakzattal sem lett volna ütközés.
 
-Online lövöldözős játéknál a külön leegyszerűsített hitbox-os megoldással lehetnek még problémák. Ilyen például az, hogy a nem megfelelő internetkapcsolat okozta nagy válaszidő, vagy csomagvesztés miatt a hitbox elcsúszik a látható geometriától. Így akár hiába van leegyszerűsített, de még egész részletes geometria ráhúzva az adott karakterre, mégsem találjuk el az ellenfelet, mert az nem illeszkedik pontosan.
+% Ebben az esetben azért nem a pontos, látható geometriára számoljuk a találatokat, mert annak nagyon nagy erőforrásigénye lenne, ellenben az lenne a legpontosabb, tehát amit látunk, az jelenti a találatot. A találatszámításra használt leegyszerűsített geometria előnye, hogy sokkal kevesebb hátérszámításra van szükség. Viszont mivel nem azt találjuk el, amit látunk, előfordulhatnak kellemetlen, vagy érdekes szituációk. Előfordulhat, hogy úgy találjuk el az ellenfelet, hogy ott valójában nem látunk semmit, vagy ennek ellenkezője, hogy elvileg eltaláljuk, de az a rész nem tartozik a hitbox-hoz.
+
+Online lövöldözős játékoknál további problémát jelenthet a hálózati kommunikációból eredő hosszú válaszidő. Ebben az esetben az ellefél játékosok nem minden esetben azon a pozíción vannak, mint ahol látjuk őket, mivel a számunkra megjelenített helyüket a játékmotor lokálisan becsli. Amennyiben a becslés rossz volt (az ellenfél játékos más irányba mozdult el, mint ahová a kliensünk azt várta volna), az általunk leadott pontos lövést érvénytelennek kell tekinteni.
 
 \section{Optimalizálási módszerek}
 
-Mivel az ütközéskezelés során nagyon sok adattal kell számolni, szükség van optimalizációkra. Korábban ezt részben már említettem, hogy több százezer háromszög, vagy nagy terület esetén nagyon erőforrás igényesek a számítások, és teljesen fölöslegesen is számolja ki a processzor a teljes területre a ütközést, mikor a pálya túlsó felének közelében sem vagyunk. Erre létezik több optimalizálási mód, ilyen például a játéktér szabályos felosztása, a négyes fa vagy oktális fa.
+Az ütközésvizsgálatra minden képkocka kiszámítása előtt szükség van. Maga a számítás eredeti felírásában nagyon számításigényes, ezért mindenképpen szükséges, hogy ezt valahogyan optimalizáljuk. A következőkben néhány lehetséges optimalizálási módszer kerül bemutatásra.
 
 \subsection{A játéktér szabályos felosztása}
 
-Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva felosztjuk a teret egy felosztási részletességet megadva. Meg kell adnunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található, ez látható \aref{fig:grid} ábrán. A karakterek ütközésvizsgálatánál elég, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyiken épp tartózkodik, de ajánlott a körülötte levő 8 részre is. Lövedék becsapódásának x,y,z koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. Előnye, hogy ezt a legegyszerűbb megadni, és ehhez képest elég nagy gyorsulást tapasztalhatunk. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, minden tárgy nélkül. Ennek kiküszöbölésére találták ki a négyes, és az oktális fát.
+Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva felosztjuk a teret egy felosztási részletességet megadva. Meg kell adnunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található, ez látható \aref{fig:grid} ábrán. A karakterek ütközésvizsgálatánál elég, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyiken épp tartózkodik, de ajánlott a körülötte levő 8 részre is. Lövedék becsapódásának $(x, y, z)$ koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. Előnye, hogy ezt a legegyszerűbb megadni, és ehhez képest elég nagy gyorsulást tapasztalhatunk. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, minden tárgy nélkül. Azért, hogy a felosztott térrészekben való keresés hatékonyabb legyen, a felosztást egy fa struktúra szerint tesszük meg. A felosztásban szereplő régiók számának logaritmusával lesz majd arányos a keresés lépéseinek a száma.
 
 \begin{figure}[h]
 \centering
@@ -102,7 +105,7 @@ Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva 
 
 \subsection{Négyes fa és az oktális fa}
 
-A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát síkbeli, az oktális fát pedig térbeli felosztásra használják. Olyan, kivételes esetekben használható jól a négyes fa térben, ha a játéktér nem nagy magassággal rendelkezik. Használatánál az első feladatunk a fa gyökerének meghatározása, ami a teljes játékteret magában foglalja. Négyes fa esetén a síkot mindig 4 részre osztjuk mindaddig, még a fa mélysége el nem éri a maximális, előre definiált értéket, vagy az adott cellában az objektumok száma nem több mint egy előre definiált érték. Ugyanez a módszer érvényesül az oktális fánál, annyi különbséggel, hogy ott 8 felé osztjuk a teret. A négyes fa \aref{fig:quadtree} ábrán látható, hogyan is működik.
+A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát síkbeli, míg az oktális fát térbeli felosztásra használják. Olyan, kivételes esetekben használható jól a négyes fa térben, ha a játéktér nem nagy magassággal rendelkezik. Használatánál az első feladatunk a fa gyökerének meghatározása, ami a teljes játékteret magában foglalja. Négyes fa esetén a síkot mindig 4 részre osztjuk mindaddig, még a fa mélysége el nem éri a maximális, előre definiált értéket, vagy az adott cellában az objektumok száma nem több mint egy előre definiált érték. Ugyanez a módszer érvényesül az oktális fánál, annyi különbséggel, hogy ott 8 felé osztjuk a teret. A négyes fa \aref{fig:quadtree} ábrán látható, hogy hogyan is működik.
 
 \begin{figure}[h]
 \centering
@@ -113,14 +116,17 @@ A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát sí
 
 \subsection{Optimalizálási módszer kiválasztása}
 
-A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrásigényt, a fölösleges számításokat mellőzve. Felvetődhet a kérdés, hogy miért négyes fát alkalmaztam, mikor a játék három dimenziós? Egyrészt azért, mivel ezt könnyebb megvalósítani. Másrészt, mint ahogy korábban is említettem, ha nincs a térnek nagy magassága, akkor tökéletesen elegendő lehet a négyes fa is, mivel az oktális fa ilyen esetben nem feltétlen hoz annyival jobb eredményt, mint amennyivel több munka van vele.
+A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrások felhasználását a fölösleges számítások mellőzésével.
+
+Azért a négyes fa alkalmazására esett a választás, mert ezt egyszerűbb volt implementálni, és a térrész magassága eleve limitált, így a $z$ összetevőnek kisebb a jelentősége.
 
 \subsection{Négyes fa megvalósítása}
 
-Megvalósítás során meg kell adnunk a gyökér node-ot, ami a teljes, felosztani kívánt területet takarja. Egy node a következő adattagokat tartalmazza:
+% TODO: Ezt itt korrigálni kellene, mert a szélesség és magasság megadására nincs szükség. Elegendő csak felváltva tárolni az $x$ és $y$ szerinti felosztáshoz használt értékeket.
 
+Megvalósítás során meg kell adnunk a gyökér csomópontot, ami a teljes, felosztani kívánt területet takarja. Egy csomópont a következő adattagokat tartalmazza:
 \begin{itemize}
-\item X és Y pozíció
+\item $x$ és $y$ pozíció
 \item Szélesség és magasság
 \item 4 darab gyerek node (ha nincs, akkor az adott node értéke NULL)
 \item Pont tömb, amelynek mérete a programozó által meghatározott
@@ -140,4 +146,3 @@ Ezután meg kell adnunk az objektumok helyét, amelyeket figyelembe véve tört�
    }
  \caption{Négyes fa területfelosztás}
 \end{algorithm}
-
