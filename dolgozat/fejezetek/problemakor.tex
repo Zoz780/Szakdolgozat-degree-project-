@@ -5,15 +5,16 @@
 
 Új játék fejlesztésénél két fő lehetőség adott. Az első, hogy választunk egy kész, elérhető grafikus vagy játékmotort, amely majd a játék alapját adja. Amennyiben nem találunk megfelelőt, akkor írhatunk egyet saját magunknak.
 
-% TODO: Kellene még hivatkozás az összes említett játékmotorra!
+Meglévő motorok például az Unreal engine, Cryengine, Quake engine (ID Tech), amelyekről részletesen a következő forrásokon olvashat:
+\begin{verbatim}
+https://en.wikipedia.org/wiki/Unreal_Engine
+https://hu.wikipedia.org/wiki/CryEngine
+https://en.wikipedia.org/wiki/Id_Tech
+\end{verbatim}
 
-Meglévő motorok például az Unreal engine, Cryengine, Quake engine (ID Tech). Az Unreal engine első változata 1998-ban jelent meg, az első játék, amelyik ezt használta az Unreal nevű játék volt. A motor jelenlegi, legújabb verziója a 4.17-es. Nagyon sokat fejlődött az évek során.
+Az Unreal engine első változata 1998-ban jelent meg, az első játék, amelyik ezt használta az Unreal nevű játék volt. A motor jelenlegi, legújabb verziója a 4.17-es. Nagyon sokat fejlődött az évek során, mind modellezés, UV, világítás, animációk, és hangok kezelése terén.
 
-% TODO: Az Unreal fejlődésével kapcsolatban lehet még említeni pár dolgot.
-
-A Cryengine-t először a Far Cry (\ref{fig:farcry}. ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral.
-
-% TODO: Itt is lehet még konkretizálni, hogy a szépsége miből adódik.
+A Cryengine-t először a Far Cry (\ref{fig:farcry}. ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral. Az első változat már támogatta a pixel és vertex shaderek 3.0-ás változatát, illetve a HDR megvilágítást.
 
 Az általam írt motorhoz a legközelebb a Quake engine (ID tech) 2-es és 3-mas verziója áll. Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, például lövés pályájának számítása, játék fizikájának számításai, ütközésdetektálás, billentyűzet és egérkezelés, hangokkal kapcsolatos számítások, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítése a motor adta eszközökkel. Praktikusan arra kell törekednünk, hogy olyan játékmotort válasszunk, amelyikben minél több kész funkció elérhető számunkra.
 
@@ -48,15 +49,11 @@ Egy játékhoz hozzátartoznak a hangeffektek, zenék is, amik élvezetessé tes
 
 \subsection{Magasságmező}
 
-% TODO: Itt sem kellene még belemenni az implementációba. Ami itt van, az elég, ha egy kicsit később szerepel majd. Ide az kellene, hogy a domborzat az mennyiben illeszkedik az eltervezett játék térképének kialakításához.
-
-A játékteret adó domborzatot, a játék egy fekete-fehér, 384x384 pixeles képből számolja ki. Az adott képen minél magasabb egy pont, annál fehérebb, így a fehér adja a legmagasabb, a fekete szín a legalacsonyabb pontot. Ezekből az adatokból vissza lehet számolni a játékos függőleges pozícióját is, illetve az átmeneteket nézve, meredekségnek megfelelően a visszacsúszást. Mindez tehát megadja a játékteret minden szempontból (vizualitás, játékos mozgástere).
+A játékteret adó domborzat magasságmezővel lett kialakítva. A játék végleges verziójának alap elrendezését, útvonalait határozza meg, az azokon elhelyezkedő díszletek, illetve egyéb objektumok nélkül. Fontos az is, hogy a kép, amelyből a magasságmezőt számolja a program, bárki számára módosítható legyen, képes legyen saját egyedi pályát létrehozni egy egyszerű rajzolóprogram segítségével.
 
 \subsection{Modellek kezelése}
 
-% TODO: A modell tárolási formátumot kellene kicsit pontosítani!
-
-A játéktér adatait tehát képből kinyertük, de ez még nem jelenti azt, hogy látjuk is a monitoron. Ehhez a VBO-s (Vertex Buffer Object) kirajzolási módszert választottam, ami a videókártyának a legoptimálisabb adatstruktúrában adja át azt a lehető leggyorsabb kirajzoláshoz.
+A játéktér domborzatának adatait egy képből, az egyéb modelleket pedig .obj kiterjesztésű fájlból olvassa be a játék. De csak a beolvasás még nem jelenti azt, hogy látjuk is azokat a kijelzőn. Ehhez a VBO-s (Vertex Buffer Object) kirajzolási módszert választottam, ami a videókártyának a legoptimálisabb adatstruktúrában adja át azt a lehető leggyorsabb kirajzoláshoz.
 
 \subsection{A csapda, mint játékelem}
 

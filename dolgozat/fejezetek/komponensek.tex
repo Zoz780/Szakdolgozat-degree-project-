@@ -14,6 +14,7 @@ https://hu.wikipedia.org/wiki/Simple_DirectMedia_Layer
 \end{verbatim}
 
 % TODO: Itt is kellene kicsit részletezni, hogy mi található a linken!
+Ez egy olyan alkalmazás, vagy játékfejlesztési segédeszköz, amelynek komponenseit felhasználva platformfüggetlenül lefordítható a forráskód. Működik Linux-on, Windows-on, MacOSX-en, illetve bármely egyéb operációs rendszeren.
 
 \section{Az alkalmazás fő részei}
 
@@ -21,11 +22,9 @@ A fő részek, és azok kapcsolatainak szemléltetéséhez egy osztálydiagramot
 
 A \texttt{MainGame} a játék fő osztálya. Ehhez kapcsolódik minden egyéb komponens, és ez felel az ablak inicializálásáért, felhasználói interakciók kezeléséért. A játékbeli interakciók kezeléséért az \texttt{Action} osztály felelős, ez kezeli az állapotokat, például hogy éppen előre vagy hátra haladunk, ugrunk, vagy futunk. Ennek megfelelően az \texttt{Action} osztály kimenetei alapján a \texttt{Player} osztály végzi el a játékoshoz kapcsolódó cselekvéseket. A \texttt{MainGame}-hez kapcsolódik még közvetlen a \texttt{Map}, a \texttt{Sound}, a \texttt{MainMenu} osztály. 
 
-% TODO: A DrawHeightMap névválasztás nem kimondottan szerencsés, mert az osztályok neve inkább főnév szokott lenni.
+A \texttt{Map} a játéktér elemeit, és az azokhoz kapcsolódó objektumokat fogja össze. Ide kapcsolódik a \texttt{HeightMapDrawer}, amin keresztül betölti, kirajzolja a játék alapját képző domborzatot, és kiszámolja a karakter ütközésvizsgálatához szükséges gradienst is. A \texttt{VboDrawer} és őse, a \texttt{ModelLoader} az egyéb játékbeli objektumok (fák, tárgyak) betöltéséért, kirajzolásáért felelős. A \texttt{BulletCalcs3D} a lövéshez kapcsolódó háttérszámításokat végzi, és az adott háromszöggel kapcsolatos x,y,z metszéspontot adja vissza. A \texttt{Materials} osztály az anyagjellemzők beállításáért felelős.
 
-A \texttt{Map} a játéktér elemeit, és az azokhoz kapcsolódó objektumokat fogja össze. Ide kapcsolódik a \texttt{DrawHeightMap}, amin keresztül betölti, kirajzolja a játék alapját képző domborzatot, és kiszámolja a karakter ütközésvizsgálatához szükséges gradienst is. A \texttt{VboDrawer} és őse, a \texttt{ModelLoader} az egyéb játékbeli objektumok (fák, tárgyak) betöltéséért, kirajzolásáért felelős. A \texttt{BulletCalcs3D} a lövéshez kapcsolódó háttérszámításokat végzi, és az adott háromszöggel kapcsolatos x,y,z metszéspontot adja vissza. A \texttt{Materials} osztály az anyagjellemzők beállításáért felelős.
-
-A játék részét képezik a játékos informálásáért és segítéséért felelős 2D-s elemek is, amelyekért az \texttt{IngameElements3D} osztály felelős. Ez jeleníti meg a célkeresztet, rajzolja ki az életerő és a lőszer mennyiséget jelző textúrát is, amelyeket viszont a \texttt{Texture} osztály tölt be.
+A játék részét képezik a játékos informálásáért és segítéséért felelős 2D-s elemek is, amelyekért az \texttt{IngameElements2D} osztály felelős. Ez jeleníti meg a célkeresztet, rajzolja ki az életerő és a lőszer mennyiséget jelző textúrát is, amelyeket viszont a \texttt{Texture} osztály tölt be.
 
 A \texttt{MainMenu} osztályban a főmenühöz kapcsolódó elemek vannak, amelyek a menü háttere, illetve a kijelölések lekezelése vizuálisan. Ezeket az elemeket is a \texttt{VboDrawer} és őse a \texttt{ModelLoader} tölti be, rajzolja ki.
 
@@ -73,7 +72,7 @@ A játékban egy karaktert irányíthatunk az ő szemszögéből. A karakternek 
 
 % TODO: Ezt az irányítás megvalósításánál kellene megemlíteni.
 
-% A kamerához van forgatva a fegyvere, és az ő szemszögéből látható testrészei. Minden cselekedetéhez tartozik egy bool (két állapotú) változó. Például ha tegyük fel előre megyünk, akkor az ehhez tartozó változó „true (igaz)” értéket vesz fel, amihez különböző eseményeket lehet kötni, mint például a kamera előre mozgatását, bizonyos animációk lejátszását. Továbbá a játékosra folyamatosan hat egy gravitációs erő, ami egy float típusú szám. Ezzel lehet elérni azt, hogy ha ugrunk, a játékos visszaessen a talajra.
+% A kamerához van forgatva a fegyvere, és az ő szemszögéből látható testrészei. Minden cselekedetéhez tartozik egy bool (két állapotú) változó. Például ha tegyük fel előre megyünk, akkor az ehhez tartozó változó „true (igaz)” értéket vesz fel, amelyhez különböző eseményeket lehet kötni, mint például a kamera előre mozgatását, bizonyos animációk lejátszását. Továbbá a játékosra folyamatosan hat egy gravitációs erő, ami egy float típusú szám. Ezzel lehet elérni azt, hogy ha ugrunk, a játékos visszaessen a talajra.
 
 \subsection{Hangok betöltése és lejátszása}
 

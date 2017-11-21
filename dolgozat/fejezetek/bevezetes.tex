@@ -1,8 +1,6 @@
 \Chapter{Bevezetés}
 \label{Chap:bevezetes}
 
-% TODO: Bővíteni kellene még a végén szereplő kommentek szerint például.
-
 Egy FPS (\textit{First-Person Shooter}) játék elkészítése különféle számítási- és optimalizálási problémákat vet fel. A számítógépes grafika és a játékfejlesztés segítségével lehetőség adódott a termelésinformatikához kapcsolódó optimalizálási problémák bemutatására.
 
 Azon számítógépes játékoknak, amelyek célja a minél valószerűbb megjelenítés, számos olyan eleme van, amely optimalizálás nélkül olyan erőforrásigényes lenne, amely a manapság elérhető csúcskategóriás számítógépeken sem futna megfelelően. Ilyen elem például a karakterek mozgásterének definiálása, a lövés során eltalált objektumok metszéspontjának számítása, az ellenfelek viselkedésének szimulálása.
@@ -13,6 +11,8 @@ A problémakör egyik fontos eleme az ellenfelek bejárható területének kezel
 
 Az ütközésvizsgálat egy másik tipikus esete az ilyen jellegű játékokban a lövedékek útjának és metszéspontjainak kiszámítása. Ennél például jelentős optimalizációt érhetünk el, ha csak azon objektumokat vesszük figyelembe, amelyek a lövedék haladási irányába esnek.
 
-% TODO: Hitbox-okról néhány dolog.
+% ÚJ RÉSZ
 
-% TODO: Viselkedésmodellezésről kb. egy bekezdés még.
+Az ellenfelek találatregisztrálásához az optimális teljesítmény érdekében, nem közvetlen a játékos számára látható, komplex geometriára végezzük el. Ezen egyszerűbb geometria részletességének meghatározása nagyon fontos tényező, mert ha túl egyszerű, nem lesz pontos a találatregisztrálás, ha túl komplex, akkor pedig túl nagy lesz az erőforrásigénye.
+
+Fontos eleme egy játéknak az ellenfelek viselkedésének modellezése is. Minden ellenfélnek van egy elsődleges célpontja, viszont különböző környezeti tényezők befolyásolhatják azt. Fontos, hogy a játékos úgy érezze, hogy a mesterséges intelligencia ésszerűen cselekszik, ennek megvalósítását is részletezi a későbbiekben a dolgozat.
