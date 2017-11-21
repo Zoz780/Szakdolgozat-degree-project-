@@ -24,7 +24,7 @@ GLfloat light_ambient[] = { 0.8f,0.8f,0.8f,1.0f };
 
 Vec3 Plane[4];
 Vec3 Upper[2];
-Vec3 Lower[2];                                  
+Vec3 Lower[2];
 
 void init()
 {
@@ -38,7 +38,6 @@ void init()
 	Plane[3].InitValues(-10, -1, 10);
 	Upper[0].InitValues(1, 1, 1);
 }
-
 
 static void resize(int width, int height)    
 {
@@ -193,6 +192,21 @@ void set_far_point(float h_rot, float v_rot, Vec3 pos, float *far_x, float *far_
 	*far_x = pos.x + dx, *far_y = pos.y + dy, *far_z = pos.z + dz;
 }
 
+void draw_joint(float x, float y, float z)
+{
+	glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	GLUquadric* joint = gluNewQuadric();
+	gluQuadricDrawStyle(joint, GLU_FILL);
+	gluQuadricOrientation(joint, GLU_OUTSIDE);
+	gluQuadricNormals(joint, GLU_SMOOTH);
+	glTranslatef(x, y, z);
+	gluSphere(joint, 0.05, 25, 25);
+	gluDeleteQuadric(joint);
+	glEnd();
+	glPopMatrix();
+}
+
 
 static void display(void)                
 {
@@ -224,6 +238,10 @@ static void display(void)
 		Lower[0].z = Upper[1].z;
 		set_far_point(lower_rotation.y, lower_rotation.x, Lower[0], &Lower[1].x, &Lower[1].y, &Lower[1].z);
 	}
+
+	draw_joint(Upper[0].x, Upper[0].y, Upper[0].z);
+	draw_joint(Lower[0].x, Lower[0].y, Lower[0].z);
+	draw_joint(Lower[1].x, Lower[1].y, Lower[1].z);
 
 	glBegin(GL_QUADS);
 	switch (control_flag)
