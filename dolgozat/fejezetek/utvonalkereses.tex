@@ -65,17 +65,17 @@ Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
 
 \section{Az A*-algoritmus}
 
-% TODO: Keresni A*-algoritmusos irodalmat/hivatkozást.
-
 Ezt az algoritmust a hatékonysága miatt gyakran használják gráfokban való legrövidebb útvonalak kereséséhez. Bemenetként a gráf két pontját adjuk meg, eredményül pedig az ezek között lévő legrövidebb útvonalat várjuk.
 
-A gyakorlati problémák jelentős részében nem közvetlenül egy gráf áll a rendelkezésünkre. Ahhoz, hogy az A* algoritmust mégis használni tudjuk, a bejárandó területet (amelyben a legrövidebb útvonalat keressük) egy ráccsal közelíthetjük. Ez a rácsos kialakítás több szempontból is előnyös. A pontok minden esetben egymástól egyenlő távolságra helyezkednek el, így ezeket nem kell számolni. Továbbá ha csak a bejárható helyekre helyeznénk pontokat, külön olyan algoritmusra lenne szükség, amely meghatározza azt, hogy melyik pontból melyikbe haladhatunk. A gráf összes csomópontjának és élének a tárolására szükség lenne, amely indokolatlanul sok adat kezelését jelentené. Jelen esetben egy egyenközű rácsot alkalmazva a kereséshez használt gráfhoz, elegendő csak megadni a rácspontokban, hogy az adott pont bejárható vagy nem.
+A gyakorlati problémák jelentős részében nem közvetlenül egy gráf áll a rendelkezésünkre. Ahhoz, hogy az A* algoritmust mégis használni tudjuk, a bejárandó területet (amelyben a legrövidebb útvonalat keressük) egy ráccsal közelíthetjük. Ez a rácsos kialakítás több szempontból is előnyös. A pontok minden esetben egymástól egyenlő távolságra helyezkednek el, így ezeket nem kell számolni. Továbbá ha csak a bejárható helyekre helyeznénk pontokat, külön olyan algoritmusra lenne szükség, amely meghatározza azt, hogy melyik pontból melyikbe haladhatunk. A gráf összes csomópontjának és élének a tárolására szükség lenne, amely indokolatlanul sok adat kezelését jelentené. Jelen esetben egy egyenközű rácsot alkalmazva a kereséshez használt gráfhoz, elegendő csak megadni a rácspontokban, hogy az adott pont bejárható vagy nem. Az algoritmusról további információk:
 
-Négyzetrács esetében eldöntendő kérdés, hogy az átlók mentén haladhatunk-e.
+\begin{verbatim}
+http://project.mit.bme.hu/mi_almanach/books/aima/ch04s01
+\end{verbatim}
 
-% TODO: Itt melyik eset, és miért előnyös? Lehet haladni átlóban?
+Négyzetrács esetében eldöntendő kérdés, hogy az átlók mentén haladhatunk-e. Jelen esetben az tűnt megfelelőbbnek, hogy az átlók menténk is haladhatunk, ugyanis a játéktéren nem csak egymásra párhuzamos, és merőleges falak vannak, a domborzat lehet bármilyen elrendezésű.
 
-Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk, ezeket hívjuk nyitott (Open) illetve zár t (Closed) csomópont listáknak. A nyitott csomópontok listája az, amelyek vizsgálatára még a későbbiekben szükség lehet, a zárt csomópont lista pedig a már vizsgált pontok halmaza.
+Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk, ezeket hívjuk nyitott (Open) illetve zárt (Closed) csomópont listáknak. A nyitott csomópontok listája az, amelyek vizsgálatára még a későbbiekben szükség lehet, a zárt csomópont lista pedig a már vizsgált pontok halmaza.
 
 % TODO: Ide kellene hivatkozás, hogy a nyitott és a zárt csomópontok listája honnan jött!
 
@@ -121,11 +121,9 @@ A program a játéktér alapját képző domborzatot, egy képből olvassa be. E
 
 A játékteret úgy érdemes kialakítani, hogy jelentős része (körülbelül 95\%) bejárható legyen.
 
-% TODO: A felbontást még érdemes lenne részletezni, mert nem tünik kézenfekvőnek, hogy pont 384x384 legyen.
+A magasságmezőhöz tartozó kép felbontása $384 \times 384$ pixel, amely a térkép megfelelő részletességű megjelenítése miatt ennyi. Ez egy olyan felbontás, amely alatt már nagyon látszik a geometria gyenge részletessége a jelenlegi méret mellett, viszont a nagyobb felbontás már csak nagyon kis mértékben befolyásolná a kinézetet, ellenben növelné az erőforrásigényt. 
 
-A magasságmezőhöz tartozó kép felbontása $384 \times 384$ pixel, amely a térkép megfelelő részletességű megjelenítése miatt ennyi. A waypoint-ok meghatározására több lehetőség is van.
-
-Az egyik lehetőség, ha minden pixelhez rendelünk egy pontot. Ez olyan szempontból lehet előny, hogy pontosabban meg van határozva az összes pont amelyre léphet az ellenfél. Hátránya viszont, hogy ez nagyon sok számításigény, és fölösleges is minden pixelre egy waypoint.
+A waypoint-ok meghatározására több lehetőség is van. Az egyik lehetőség, ha minden pixelhez rendelünk egy pontot. Ez olyan szempontból lehet előny, hogy pontosabban meg van határozva az összes pont amelyre léphet az ellenfél. Hátránya viszont, hogy ez nagyon sok számításigény, és fölösleges is minden pixelre egy waypoint.
 
 A másik lehetőség, ha 8 pixelenként határozunk meg egy waypoint-ot, ami 48x48-as felbontást eredményez. Azért pont erre az értékre esett a választásom, mert ez nagyban gyorsítja a számításokat, viszont még nem megy a bejárható területek rovására, megfelelően pontos. Ez kevesebb memória igényt jelent, és mivel kevesebb adattal is kell számolni, kevésbé terheli a processzort is. Ez látható \aref{fig:diagram_utvonal} ábrán.
 
