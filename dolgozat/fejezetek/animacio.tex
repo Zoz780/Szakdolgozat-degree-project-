@@ -13,12 +13,11 @@
 %- Megnézni azt a cikket, amihez az animációs videó készült.
 %- Felvetni néhány módszert, például ANN vagy evolúciós algoritmus. (Itt még nem kell majd %implementálni, egyelőre csak legyen összegyűjtve.)
 
-Ebben a fejezetben a játékokban alkalmazott animációs módszerekről, azok megvalósításáról lesz szó.
-
+A fejezet a játékokban alkalmazott animációs módszereket módszereket, illetve azok megvalósítási módját mutatja be.
 
 \section{Kulcsképkocka alapú animáció}
 
-Kulcsképkocka alapú mozgatást több területen használnak, például filmkészítés vagy játékfejlesztés. Bármilyen célra is használjuk, az elv nem változik. Meg kell adnunk olyan pontokat, amelyeket szeretnénk ha az adott tárgy, vagy objektum érintene. Ezzel úgymond egy előre meghatározott mozgási útvonalat adunk meg. Legegyszerűbb animációknál egy alapállapot és egy végállapot van megadva, ilyen lehet egy redőny leengedése és felhúzása, ajtó vagy kapu kinyitása, becsukása. Ilyen jellegű, alap szintű animációknál, például ha egy redőnyt le akarunk engedni, annyi a dolgunk hogy megadjuk a kezdő és végpontot, majd időben lineárisan interpolálni. Ahogy \aref{fig:keyframe} ábrán is látható, ez a kulcsképkockák közötti egyenes mozgást eredményezi. Ha már forgatást is szeretnénk, ami tegyük fel egy nyíló bejárati ajtó, akkor mivel alapból a világ koordináta-rendszer középpontjában forog, transzformálnunk kell a középpontot a test forgási pontjába egy külön lépésben, hogy a várt eredményt kapjuk. Így egy lokális koordináta-rendszert kapunk.
+Kulcsképkocka alapú mozgatást több területen használnak, például filmek készítésénél vagy játékok fejlesztésénél. Bármilyen célra is használjuk, az elv nem változik. Meg kell adnunk olyan pontokat, amelyeket szeretnénk ha az adott tárgy, vagy objektum érintene. Ezzel úgymond egy előre meghatározott mozgási útvonalat adunk meg. Legegyszerűbb animációknál egy alapállapot és egy végállapot van megadva, ilyen lehet egy redőny leengedése és felhúzása, ajtó vagy kapu kinyitása, becsukása. Ilyen jellegű, alap szintű animációknál, például ha egy redőnyt le akarunk engedni, annyi a dolgunk hogy megadjuk a kezdő és végpontot, majd időben lineárisan interpolálni. Ahogy \aref{fig:keyframe} ábrán is látható, ez a kulcsképkockák közötti egyenes mozgást eredményezi. Ha már forgatást is szeretnénk, ami tegyük fel egy nyíló bejárati ajtó, akkor mivel alapból a világ koordináta-rendszer középpontjában forog, transzformálnunk kell a középpontot a test forgási pontjába egy külön lépésben, hogy a várt eredményt kapjuk. Így egy lokális koordináta-rendszert kapunk.
 
 \begin{figure}[h]
 \centering
