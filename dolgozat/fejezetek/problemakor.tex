@@ -5,18 +5,13 @@
 
 Új játék fejlesztésénél két fő lehetőség adott. Az első, hogy választunk egy kész, elérhető grafikus vagy játékmotort, amely majd a játék alapját adja. Amennyiben nem találunk megfelelőt, akkor írhatunk egyet saját magunknak.
 
-Meglévő motorok például az Unreal engine, Cryengine, Quake engine (ID Tech), amelyekről részletesen a következő forrásokon olvashat:
-\begin{verbatim}
-https://en.wikipedia.org/wiki/Unreal_Engine
-https://hu.wikipedia.org/wiki/CryEngine
-https://en.wikipedia.org/wiki/Id_Tech
-\end{verbatim}
+Elterjedt játékmotorok például az Unreal engine \cite{Unreal}, Cryengine \cite{CryEngine}, Quake engine (id Tech) \cite{IdTech}.
 
 Az Unreal engine első változata 1998-ban jelent meg, az első játék, amelyik ezt használta az Unreal nevű játék volt. A motor jelenlegi, legújabb verziója a 4.17-es. Nagyon sokat fejlődött az évek során, mind modellezés, UV, világítás, animációk, és hangok kezelése terén.
 
-A Cryengine-t először a Far Cry (\ref{fig:farcry}. ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral. Az első változat már támogatta a pixel és vertex shaderek 3.0-ás változatát, illetve a HDR megvilágítást.
+A CryEngine-t először a Far Cry (\ref{fig:farcry}. ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral. Az első változat már támogatta a pixel és vertex shaderek 3.0-ás változatát, illetve a HDR megvilágítást.
 
-Az általam írt motorhoz a legközelebb a Quake engine (ID tech) 2-es és 3-mas verziója áll. Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, például lövés pályájának számítása, játék fizikájának számításai, ütközésdetektálás, billentyűzet és egérkezelés, hangokkal kapcsolatos számítások, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítése a motor adta eszközökkel. Praktikusan arra kell törekednünk, hogy olyan játékmotort válasszunk, amelyikben minél több kész funkció elérhető számunkra.
+Az általam írt motorhoz a legközelebb a Quake engine (id Tech) 2-es és 3-mas verziója áll. Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, például lövés pályájának számítása, játék fizikájának számításai, ütközésdetektálás, billentyűzet és egérkezelés, hangokkal kapcsolatos számítások, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítése a motor adta eszközökkel. Praktikusan arra kell törekednünk, hogy olyan játékmotort válasszunk, amelyikben minél több kész funkció elérhető számunkra.
 
 \begin{figure}[h]
 \centering
