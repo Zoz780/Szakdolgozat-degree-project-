@@ -17,7 +17,7 @@ A fejezet a játékokban alkalmazott animációs módszereket módszereket, ille
 
 \section{Kulcsképkocka alapú animáció}
 
-Kulcsképkocka alapú mozgatást több területen használnak, például filmek készítésénél vagy játékok fejlesztésénél. Bármilyen célra is használjuk, az elv nem változik. Meg kell adnunk olyan pontokat, amelyeket szeretnénk ha az adott tárgy, vagy objektum érintene. Ezzel úgymond egy előre meghatározott mozgási útvonalat adunk meg. Legegyszerűbb animációknál egy alapállapot és egy végállapot van megadva, ilyen lehet egy redőny leengedése és felhúzása, ajtó vagy kapu kinyitása, becsukása. Ilyen jellegű, alap szintű animációknál, például ha egy redőnyt le akarunk engedni, annyi a dolgunk hogy megadjuk a kezdő és végpontot, majd időben lineárisan interpolálni. Ahogy \aref{fig:keyframe} ábrán is látható, ez a kulcsképkockák közötti egyenes mozgást eredményezi. Ha már forgatást is szeretnénk, ami tegyük fel egy nyíló bejárati ajtó, akkor mivel alapból a világ koordináta-rendszer középpontjában forog, transzformálnunk kell a középpontot a test forgási pontjába egy külön lépésben, hogy a várt eredményt kapjuk. Így egy lokális koordináta-rendszert kapunk.
+Kulcsképkocka alapú mozgatást több területen használnak, például filmek készítésénél vagy játékok fejlesztésénél. Bármilyen célra is használjuk, az elv nem változik. Meg kell adnunk olyan pontokat, amelyeket szeretnénk ha az adott tárgy, vagy objektum áthaladna. Ezzel egy előre meghatározott mozgási útvonalat adunk meg. Az egyszerűbb animációknál egy alapállapot és egy végállapot van megadva, ilyen lehet egy redőny leengedése és felhúzása, ajtó vagy kapu kinyitása, becsukása. Ilyen jellegű, alap szintű animációknál, például ha egy redőnyt le akarunk engedni, annyi a dolgunk hogy megadjuk a kezdő és végpontot, majd idő paraméter szerint interpolálni. Ahogy az \aref{fig:keyframe} ábrán látható, ez a kulcsképkockák közötti mozgást eredményezi.
 
 \begin{figure}[h]
 \centering
@@ -26,30 +26,42 @@ Kulcsképkocka alapú mozgatást több területen használnak, például filmek 
 \label{fig:keyframe}
 \end{figure}
 
-Ezt a fajta animációt 3D játékfejlesztésben karakter mozgatásához a 2000-es évek elejéig használták, mivel sok memóriát használ, és nem eredményez olyan sima mozgást, mint a csontváz alapú animáció. Ezt a technológiát többek között a Quake 1,2 és 3 alkalmazta.
+A vertex alapú animációt a 3D játékfejlesztésben karakterek mozgatásához a 2000-es évek elejéig használták. Megvalósítása egyszerűbb, viszont sok memóriát igényel a tárolása, és nem eredményez olyan természetes mozgást általában, mint a csontváz alapú animáció. Ezt a technológiát többek között a Quake 1, 2 és 3 alkalmazta.
 
 \subsection{Az md2-es formátum}
 
-1997-ben az idSoftware fejlesztette ki a Quake 2 nevű játékához, kulcsképkocka animáción alapul. Tartalmazza az adott modell geometriáit, és a képkockánkénti animációkat. A fájl adatai olyan struktúrában helyezkednek el, hogy könnyedén kirajzoltatható legyen a GL\_TRIANGLE\_FAN és GL\_TRIANGLE\_STRIP parancsokkal. A formátum két fő részből áll: a fejléc (header) és az adatok (data), viszont nem tartalmazza a modell textúráját. A fejléc egy struktúra, rögön a fájl elején, amely tartalmazza az összes olyan információt a további részről, amelyekre szükség lehet az implementáció során. Ilyen például a textúra szélessége, magassága, egy képkocka mérete, képkockák száma. Az animáláshoz én ezt a módszert választottam, mert viszonylag egyszerű implementálni, a legnagyobb hátránya, a sok memóriahasználat a modern korban már nem olyan nagy probléma, illetve jelen esetben elegendő az animáció részletessége is. 
+Az md2-es modelltárolási formátumot az \textit{idSoftware} fejlesztette ki 1997-ben a Quake 2 nevű játékához. A formátum kulcsképkocka animációk tárolására alkalmas. Tartalmazza az adott modell geometriáit, és a képkockánkénti animációkat. A fájl adatai olyan struktúrában helyezkednek el, hogy könnyedén kirajzoltatható legyen a \texttt{GL\_TRIANGLE\_FAN} és \texttt{GL\_TRIANGLE\_STRIP} OpenGL függvényekkel. A formátum két fő részből áll: fejlécből és adatrészből. A fájl nem tartalmazza a modellek textúráját.
+
+A fejléc egy struktúra, amely a fájl elején kezdődik, és tartalmazza az összes, feldolgozás szempontjából lényeges információt a fájl egészéről. Ilyen például a textúra szélessége, magassága, egy képkocka mérete, képkockák száma.
+
+Az animáláshoz ezt a módszert választottam, mert viszonylag egyszerűen implementálható. Egyetlen jelentős hátrányaként az hozható fel, hogy aránylag nagy a tárigénye más formátumokkal összehasonlítva.
 
 \section{Csontváz alapú animáció}
 
-A legtöbb mai játék ezt a módszert alkalmazza karakterek mozgatásához. Ez egy olyan hierarchikus mozgás, amelyet nagyon jól lehet használni komplexebb animációkhoz. Ilyen például egy ember, vagy élőlény mozgása. Ember esetén például a kézfej kapcsolatban van az alkarral, az alkar a felkarral, ami pedig a test többi részével. Minden hajlási pont egy új kapcsolódási pontot jelent. Tehát a az ember felkarját megmozdítjuk, mozdul vele a kezének a többi része is. Ez \aref{fig:skeletal} ábrán látható.
+A legtöbb mai játék ezt a módszert alkalmazza karakterek mozgatásához. Az alapötlete az, hogy a mozgatható részeket hierarchiába szervezi. Az élőlények felépítése általában olyan, hogy ezzel a fajta animálási móddal egyszerűen modellezhetők. 
 
-% Kép forrása: https://www.openflipper.org/media/plugin_images/skeletalAnimation.png
+A csontváz alapú animáció kapcsolódási pontokból (\textit{joint}-okból) építkezik. Ember esetén például a kézfej kapcsolatban van az alkarral, az alkar a felkarral, ami pedig a test többi részével. Minden hajlási pont egy új kapcsolódási pontot jelent. Tehát a az ember felkarját megmozdítjuk, mozdul vele a kezének a többi része is. Ezt szemlélteti \aref{fig:skeletal}. ábra.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{kepek/skeletal_anim.png}
-\caption{Testrészek hierarchikus kapcsolódási pontjai emberen}
+\caption[]{Testrészek hierarchikus kapcsolódási pontjai emberen\footnotemark}
 \label{fig:skeletal}
 \end{figure}
 
-De ez nem csak élőlények mozgásának megvalósításához alkalmazható, ilyen például a naprendszer is. Vannak a naprendszerünk bolygói, amelyek a tengelyük, és a központi csillag, a Nap körül is forognak, ha a Nap elmozdul, mozdul vele a teljes naprendszer is, köztük a Föld, és a Hold is. Előnye hogy könnyen létre lehet így hozni dinamikus animációkat, mivel az összes karakter csontjait lehet forgatni, mozgatni, továbbá megkönnyíti a bonyolultabb animációk elkészítését. Hátránya viszont, hogy komplexebbek, így több processzoridőt igényelnek.
+\footnotetext{forrás: https://www.openflipper.org/media/plugin\_images/skeletalAnimation.png}
 
-\subsection{Csontváz alapú animációhoz tartozó fájlformátum}
+Szerencsére a módszer nem csak élőlények modellezésére alkalmazható hatékonyak. A naprendszerünk szintén modellezhető ilyen módon. Vannak a naprendszerünk bolygói, amelyek a tengelyük, és a központi csillag, a Nap körül is forognak.
 
-Minden, csontváz alapú animáció megvalósításához szükséges fájlformátum két részből áll. Az egyik a modell geometriáit, a másik pedig a csontvázat, kapcsolódási pontokat, eltolást tartalmazza. Ha két csont tartozik minden vertex-hez, a felépítés a következőképp alakul:
+Előnye, hogy könnyen létre lehet így hozni dinamikus animációkat, mivel az összes karakter csontjait lehet forgatni, mozgatni, továbbá megkönnyíti a bonyolultabb animációk elkészítését. Hátránya viszont, hogy komplexebbek, így több processzoridőt igényelnek.
+
+\subsection{Csontváz alapú animációhoz támogató fájlformátum}
+
+A csontváz alapú animációkat tároló formátumok általában két részből állnak. Az egyik a geometriát, a másik pedig a csontvázat és a kapcsolódási pontokat tartalmazza. 
+
+% TODO: Ez itt pontosan mi lenne?
+
+Ha két csont tartozik minden vertex-hez, a felépítés a következőképp alakul:
 \begin{itemize}
 \item A vertex x,y,z koordinátája
 \item Normálvektor x,y,z iránya
@@ -62,11 +74,13 @@ Minden, csontváz alapú animáció megvalósításához szükséges fájlformá
 
 % Interpoláció: https://hu.wikipedia.org/wiki/Interpol%C3%A1ci%C3%B3#Lagrange-interpol.C3.A1ci.C3.B3
 
-Animációkészítés során többféle interpolációt használhatunk, ami azt jelenti, hogy ismert értékek alapján, a köztes részekre, vagyis nem ismert értékekre adunk közelítést. Többféle interpoláció létezik, amelyek egyikét annak megfelelően használjuk, hogy mit szeretnénk megvalósítani. Korábbi példára visszatérve, például egy redőny leengedéséhez tökéletes a lineáris interpoláció, viszont egy labda pattogás görbéjének megadásához már nem.
+Animációkészítés során többféle interpolációt használhatunk, ami azt jelenti, hogy ismert értékek alapján, a közbülső pontokra, vagyis nem ismert értékekre adunk közelítést.
+
+Különféle interpolációs módszerek vannak. A választás közülük nyilván attól függ, hogy pontosan mit szeretnénk megvalósítani. Egyszerűbb esetekben még megfelelő a lineáris interpoláció, viszont általában túlságosan szögletes mozgást eredményez, ezért valamilyen simább görbével való útvonal közelítést érdemes használni.
 
 \subsection{Lineáris interpoláció}
 
-Ez a legegyszerűbb interpolációs módszer, minden pontot egy egyenessel kötünk össze. Nem összetett mozgásoknál ez megfelelő lehet, viszont ha több mozgás követi egymást rögtön, akkor darabos. Minden előre meghatározott pont, amit érinteni kell egy törést jelent, így komplexebb, sima mozgásokhoz nem alkalmas, ez látható \aref{fig:linear} ábrán.
+Ez a legegyszerűbb interpolációs módszer, minden pontot egy egyenessel kötünk össze. Nem összetett mozgásoknál ez megfelelő lehet, viszont ha több mozgás követi egymást rögtön, akkor darabos. Minden előre meghatározott pont, amit érinteni kell egy törést jelent, így komplexebb, sima mozgásokhoz nem alkalmas, ez látható \aref{fig:linear}. ábrán.
 
 \begin{figure}[h]
 \centering
@@ -77,7 +91,9 @@ Ez a legegyszerűbb interpolációs módszer, minden pontot egy egyenessel köt�
 
 \subsection{Lagrange-interpoláció}
 
-Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szeretnénk darabos animációt, ez egy lehetséges megoldás. Mivel a függvény sima, deriváltja folyontos, sokkal életszerűbb megközelítést lehet elérni vele, ez látható \aref{fig:lagrange}-es ábrán. 
+Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szeretnénk darabos animációt, akkor alkalmazhatjuk a Lagrange-interpoláció módszerét. ez egy lehetséges megoldás. Mivel a függvény sima, deriváltja folyontos, sokkal életszerűbb megközelítést lehet elérni vele, ez látható \aref{fig:lagrange}-es ábrán. 
+
+% TODO: Meg kellene nézni, hogy valóban mennyire alkalmas mozgás animációjához!
 
 \begin{figure}[h]
 \centering
@@ -113,3 +129,4 @@ Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y
 \caption{Lagrange-interpolációs demó}
 \label{fig:lagrange_imp}
 \end{figure}
+
