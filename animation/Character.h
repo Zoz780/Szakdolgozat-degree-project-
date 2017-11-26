@@ -21,7 +21,7 @@ public:
 	void DrawLeftLeg(float xPos, float yPos, float zPos, float angle);
 	void DrawRightLeg(float xPos, float yPos, float zPos, float angle);
 	void Load();
-	void Draw();
+	void BuildParts();
 
 private:
 	float leftarm_angle, rightarm_angle, leftleg_angle, rightleg_angle;
@@ -30,6 +30,7 @@ private:
 	float forward, up, side; 
 	float xpos, ypos;
 	float zrot;
+	float distance_v_movement;
 	VboDrawer head;
 	VboDrawer torso;
 	VboDrawer left_arm;

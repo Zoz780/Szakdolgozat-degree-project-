@@ -33,6 +33,7 @@ void MainGame::Init()
 	glDepthFunc(GL_LESS);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
 
 	SDL_GL_SetSwapInterval(1);
 	SDL_SetWindowFullscreen(m_window, GL_FALSE);
@@ -130,16 +131,33 @@ void MainGame::DrawGame()
 	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
-	glRotatef(90.0f, 1, 0, 0);
-	floor.DrawModel(-100, 0.1, -100);
-	floor.DrawModel(-100, 0.1, 100);
-	floor.DrawModel(100, 0.1, 100);
-	floor.DrawModel(100, 0.1, -100);
+		glPushMatrix();
+			glRotatef(90.0f, 1, 0, 0);
+			floor.DrawModel(-100, 0.1, -100);
+			floor.DrawModel(-100, 0.1, 100);
+			floor.DrawModel(100, 0.1, 100);
+			floor.DrawModel(100, 0.1, -100);
+		glPopMatrix();
+		robot.BuildParts();
 	glPopMatrix();
 
-	robot.Draw();
-
 	SDL_GL_SwapWindow(m_window);
+}
+
+void MainGame::SetPlayableArea()
+{
+	if (xpos > 150.0f) {
+		xpos = 150.0f;
+	}
+	if (xpos < -200.0f) {
+		xpos = -200.0f;
+	}
+	if (ypos > 220.0f) {
+		ypos = 220.0f;
+	}
+	if (ypos < -150.0f) {
+		ypos = -150.0f;
+	}
 }
 
 void MainGame::CameraMovementHandler(double elapsed_time)
@@ -150,12 +168,14 @@ void MainGame::CameraMovementHandler(double elapsed_time)
 			double angle = hrot * M_PI / 180.0f;
 			xpos += cos(angle) * 40.0f * elapsed_time;
 			ypos += sin(angle) * 40.0f * elapsed_time;
+			SetPlayableArea();
 		}
 
 		if (action.needGoBackward()) {
 			double angle = hrot * M_PI / 180.0f;
 			xpos -= cos(angle) * 40.0f * elapsed_time;
 			ypos -= sin(angle) * 40.0f * elapsed_time;
+			SetPlayableArea();
 		}
 
 		if (action.needTurnLeft()) {
@@ -185,6 +205,7 @@ void MainGame::CameraMovementHandler(double elapsed_time)
 			xpos += cos(angle) * 25.0f * elapsed_time;
 			ypos += sin(angle) * 25.0f * elapsed_time;
 			robot.Animate(elapsed_time);
+			SetPlayableArea();
 			action.stopBackward();
 		}
 
@@ -193,6 +214,7 @@ void MainGame::CameraMovementHandler(double elapsed_time)
 			xpos -= cos(angle) * 25.0f * elapsed_time;
 			ypos -= sin(angle) * 25.0f * elapsed_time;
 			robot.Animate(elapsed_time);
+			SetPlayableArea();
 			action.stopForward();
 		}
 

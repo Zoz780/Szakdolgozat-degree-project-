@@ -26,6 +26,7 @@ private:
 	double CalcElapsedTime();
 	void ProcessKeyPress();
 	void ProcessKeyRelease();
+	void SetPlayableArea();
 	void CameraMovementHandler(double elapsed_time);
 	float ToRad(float angle_degrees);
 

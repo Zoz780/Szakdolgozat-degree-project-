@@ -7,6 +7,7 @@ Character::Character()
 	dleftarm_angle = 30;  drightarm_angle = -30;
 	dleftleg_angle = -30; drightleg_angle = 30;
 	forward = 0, side = 0;
+	distance_v_movement = 5.0;
 	zrot = 0;
 	xpos = 0, ypos = 0;
 }
@@ -33,8 +34,8 @@ void Character::Animate(double dt) {
 	if (leftleg_angle < 150) { dleftleg_angle = 30; drightleg_angle = -30; }
 	if (rightleg_angle < 150) { dleftleg_angle = -30; drightleg_angle = 30; }
 
-	forward += fabs(5 * (sin((rightleg_angle - 180) * M_PI / 180) - sin((oldleg_angle - 180) * M_PI / 180)));
-	up = (float)(5.0 * cos((rightleg_angle - 180) * M_PI / 180) - 5.0);
+	forward += fabs(distance_v_movement * (sin((rightleg_angle - 180) * M_PI / 180) - sin((oldleg_angle - 180) * M_PI / 180)));
+	up = (float)(distance_v_movement * cos((rightleg_angle - 180) * M_PI / 180) - distance_v_movement);
 }
 
 void Character::SetXpos(float x) { xpos = x; }
@@ -78,7 +79,7 @@ void Character::DrawRightLeg(float xPos, float yPos, float zPos, float angle)
 	right_leg.DrawModel(0, 0, 0);
 	glPopMatrix();                  
 }
-void Character::Draw() 
+void Character::BuildParts() 
 {
 	glPushMatrix();
 	glTranslatef(xpos, ypos, up);
