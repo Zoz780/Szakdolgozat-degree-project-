@@ -5,7 +5,12 @@ Enemy::Enemy()
 	position.SetX(5);
 	position.SetY(5);
 	pathfinder.LoadWaypoints();
+	fear_radius = gluNewQuadric();
+	is_visible_fear = false;
 }
+
+void Enemy::ChangeFearCircleVisibility() { is_visible_fear = !is_visible_fear; }
+
 
 void Enemy::SetDestinaiton(float x, float y, bool flag)
 {
@@ -102,4 +107,13 @@ void Enemy::Draw()
 	glColor3f(1, 0, 0);
 	glVertex2f(position.GetX(), position.GetY());
 	glEnd();
+
+	if (is_visible_fear)
+	{
+		glPushMatrix();
+		glColor3f(0.3, 0.3, 0.3);
+		glTranslatef(position.GetX(), position.GetY(), 0);
+		gluDisk(fear_radius, character.fear - 1, character.fear, 50, 10);
+		glPopMatrix();
+	}
 }

@@ -17,11 +17,8 @@ public:
 	Enemy();
 
 	void SetDestinaiton(float x, float y, bool flag);
-
 	void MoveToDestination(double elapsed_time);
-
 	void SetCharacteristics(float fear, float speed);
-
 	bool SetRoundEnd(float x, float y);
 
 	void SetPosX(float x);
@@ -30,11 +27,16 @@ public:
 	void SetPosY(float y);
 	float GetPosY();
 
+	void ChangeFearCircleVisibility();
+
 	void Draw();
 
 private:
 	Characteristics character;
 	Vec2 destination;
 	PathFinder pathfinder;
+	GLUquadric *fear_radius;
+
+	bool is_visible_fear;
 };
 

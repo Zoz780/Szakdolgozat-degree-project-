@@ -70,7 +70,7 @@ double CalcElapsedTime()
 	return elapsed_time_in_secs;
 }
 
-static void resize(int width, int height)    
+static void Resize(int width, int height)    
 {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
@@ -80,9 +80,9 @@ static void resize(int width, int height)
 
 }
 
-void timer(int) {
+void Timer(int) {
 	glutPostRedisplay();
-	glutTimerFunc(1000 / 120, timer, 0);
+	glutTimerFunc(1000 / 120, Timer, 0);
 	elapsed_time = CalcElapsedTime();
 	float posx, posy;
 
@@ -118,7 +118,7 @@ void timer(int) {
 
 }
 
-static void display(void)              
+static void Display(void)              
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -155,7 +155,7 @@ static void display(void)
 
 }
 
-static void key(unsigned char key, int x, int y)
+static void ProcessKeyPress(unsigned char key, int x, int y)
 {
 	if (is_alive)
 	{
@@ -172,6 +172,12 @@ static void key(unsigned char key, int x, int y)
 			break;
 		case 'd':
 			go_right = true;
+			break;
+		case 'e':
+			for (int i = 0; i < NUM_OF_ENEMIES; i++)
+			{
+				enemy[i].ChangeFearCircleVisibility();
+			}
 			break;
 		}
 	}
@@ -192,7 +198,7 @@ static void key(unsigned char key, int x, int y)
 	glutPostRedisplay();          
 }
 
-static void keyup(unsigned char key, int x, int y)
+static void ProcessKeyRelease(unsigned char key, int x, int y)
 {
 	float posx, posy;
 	switch (key)
@@ -225,11 +231,11 @@ int main(int argc, char *argv[])
 	glutCreateWindow("Behavior Demo");
 	Init();
 
-	glutReshapeFunc(resize);
-	glutDisplayFunc(display);
-	glutKeyboardFunc(key);
-	glutKeyboardUpFunc(keyup);
-	glutTimerFunc(0, timer, 0);
+	glutReshapeFunc(Resize);
+	glutDisplayFunc(Display);
+	glutKeyboardFunc(ProcessKeyPress);
+	glutKeyboardUpFunc(ProcessKeyRelease);
+	glutTimerFunc(0, Timer, 0);
 
 	glClearColor(0.0, 0.0, 0.0, 1);                 
 
