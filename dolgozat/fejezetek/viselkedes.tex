@@ -53,6 +53,35 @@ Bosszú & Az ellenfél bosszúállósága.\\
 
 A bemeneti adatok alapján a program egy modulja kiértékeli az eseményeket, és annak kimeneti értékei határozzák meg a következményeket. Minden kimenet egy végrehajtható akciót jelöl (támadás, menekülés, életerő vagy lőszer töltés). A döntési fa az csak az állapotot határozza meg. Minden iterációban ki kell értékelni, és minden lehetséges esethez meg kell írni azt a kódrészt, ami az adott cselekvésfolyamatot elindítja. \Aref{fig:behavior}-es ábrán kékkel vannak jelölve a bemeneti paraméterek, zölddel és pirossal pedig azok következményei, vagyis a kimenetek.
 
+\subsection{Program: Behavior Demo}
+
+Ezen a program elkészítésével az volt a célom, hogy minél egyszerűbben, vizuálisan lehessen bemutatni az ellenfelek viselkedését. A termelésinformatikában ennek az algoritmusnak a segítségével különböző döntési tényezőket lehet definiálni, hogy a robot azoknak megfelelően cselekedjen. Jelen esetben a játékost fehér, az ellenfeleket piros, a biztonságos pontokat kék négyzet jelöli. A biztonságos pontok azok a helyek, ahova egy ellenfél vissza tud vonulni, ha a játékos megmozdul. Minden ellenfél a korábban leírtaknak megfelelően rendelkezik egy karakterisztikával, amely minden esetben két tulajdonságból áll, a sebességből, és a félelemfaktorból. Utóbbi azt határozza meg, hogy ha megmozdul a játékos, mekkora legyen az a sugár, amelybe ha egy biztonságos pont beleesik, visszavonuljon. Ha több pont esik az adott sugárba, akkor azok közül is a legközelebbit választja.
+
+A félelemfaktor függ az ellenfél sebességétől is, tehát gyors ellenfél esetén csak alacsony értékeket, lassú ellenfél esetén pedig csak magas értékeket vehet fel, ezzel életszerűbbé teszi a viselkedést. A mintaprogram felépítése \aref{fig:behavior_uml} ábrán látható.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{kepek/behavior_uml.png}
+\caption{A viselkedést bemutató program felépítése}
+\label{fig:behavior_uml}
+\end{figure}
+
+\Aref{fig:behavior_settings} ábrán látható módon, az elindítás után minden ellenfélnek véletlenszerűen generál egy karakterisztikát, olyan módon, hogy a sebességet és a félelemfaktort beállítja egy adott értékre. A felhasználónak lehetősége van ezeket újragenerálni, illetve minden ellenfélnek a félelemfaktorát vizuálisan megjeleníteni, amely \aref{fig:behavior_demo} ábrán látható.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{kepek/anim_random_values.png}
+\caption{Az ellenfelek félelemfaktora}
+\label{fig:behavior_settings}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.4]{kepek/behavior_demo.png}
+\caption{Az ellenfelek félelemfaktora}
+\label{fig:behavior_demo}
+\end{figure}
+
 \section{Véletlenszerű tényezők}
 
 A játékban el vannak helyezve különböző használható elemek, amelyek kihatással vannak a játékmenetre. Viszont az, hogy annak milyen mértékben van hatása pozitív irányban, csak akkor derül ki, ha már felvettük azt. Különböző típusú elemek léteznek, amiket a mesterséges intelligencia által vezérelt ellenfelek is tudnak hasznosítani. A játéktéren találhatunk életerőre, lőszerre és csapda megjelenési idejére hatással levő elemeket.

@@ -27,8 +27,6 @@ Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
 \item A célpontot elérve már csak az adott karakterhez vagy objektumhoz kell egyenes úton eljutni.
 \end{itemize}
 
-% TODO: Készíteni egy demo-t az A*-algoritmushoz, és megnézni, hogy a legközelebbi pontok keresése pontosan hogy nézne ki, és egyáltalán kell-e hozzá külön heurisztika.
-
 \begin{algorithm}[H]
   \KwData{ \\
     $S \in \mathbb{R}^2$, a kezdőpont, aktuális pozíció \\
@@ -41,81 +39,51 @@ Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
   \caption{A legközelebbi pont megkeresése}
 \end{algorithm} 
 
-% TODO: Itt az algoritmust még pontosítani kellene, illetve megnézni, hogy az A*-ot nem elegendő-e közvetlenül alkalmazni!
-
-\begin{algorithm}[H]
- \KwData{Waypoint vegso\_pont\;\\ Vec2 legkozelebbi\_pont\;\\double pont\_tav, temp, x\_tav, y\_tav\;\\ float x, y\; }
- \KwResult{Legközelebbi pont x és y koordinátája}
- pont\_tav := 100000\;
- \For {Waypoint pont : waypointokon}{
- 	x := pont.x;\\
-	y := pont.y;\\
-	x\_tav := |(x – jelenlegi\_xpoz)|;\\
-	y\_tav := |(y – jelenlegi\_ypoz)|;\\
-	temp := sqrtf(x\_tav * x\_tav +  y\_tav * y\_tav)\;
-  \If{temp < pont\_tav}{
-   		pont\_tav := temp;\\
-		vegso\_pont := pont\;
-   }
-   legkozelebbi\_pont.x := vegso\_pont.x;\\
-   legkozelebbi\_pont.y := vegso\_pont.y\;
- }
- \caption{A legközelebbi pont megkeresése}
-\end{algorithm} 
-
 \section{Az A*-algoritmus}
 
 Ezt az algoritmust a hatékonysága miatt gyakran használják gráfokban való legrövidebb útvonalak kereséséhez. Bemenetként a gráf két pontját adjuk meg, eredményül pedig az ezek között lévő legrövidebb útvonalat várjuk.
 
-A gyakorlati problémák jelentős részében nem közvetlenül egy gráf áll a rendelkezésünkre. Ahhoz, hogy az A* algoritmust mégis használni tudjuk, a bejárandó területet (amelyben a legrövidebb útvonalat keressük) egy ráccsal közelíthetjük. Ez a rácsos kialakítás több szempontból is előnyös. A pontok minden esetben egymástól egyenlő távolságra helyezkednek el, így ezeket nem kell számolni. Továbbá ha csak a bejárható helyekre helyeznénk pontokat, külön olyan algoritmusra lenne szükség, amely meghatározza azt, hogy melyik pontból melyikbe haladhatunk. A gráf összes csomópontjának és élének a tárolására szükség lenne, amely indokolatlanul sok adat kezelését jelentené. Jelen esetben egy egyenközű rácsot alkalmazva a kereséshez használt gráfhoz, elegendő csak megadni a rácspontokban, hogy az adott pont bejárható vagy nem. Az algoritmusról további információk:
-
-\begin{verbatim}
-http://project.mit.bme.hu/mi_almanach/books/aima/ch04s01
-\end{verbatim}
+A gyakorlati problémák jelentős részében nem közvetlenül egy gráf áll a rendelkezésünkre. Ahhoz, hogy az A* algoritmust mégis használni tudjuk, a bejárandó területet (amelyben a legrövidebb útvonalat keressük) egy ráccsal közelíthetjük. Ez a rácsos kialakítás több szempontból is előnyös. A pontok minden esetben egymástól egyenlő távolságra helyezkednek el, így ezeket nem kell számolni. Továbbá ha csak a bejárható helyekre helyeznénk pontokat, külön olyan algoritmusra lenne szükség, amely meghatározza azt, hogy melyik pontból melyikbe haladhatunk. A gráf összes csomópontjának és élének a tárolására szükség lenne, amely indokolatlanul sok adat kezelését jelentené. Jelen esetben egy egyenközű rácsot alkalmazva a kereséshez használt gráfhoz, elegendő csak megadni a rácspontokban, hogy az adott pont bejárható vagy nem. Az algoritmusról további információk a \cite{Astar}-ös hivatkozáson.
 
 Négyzetrács esetében eldöntendő kérdés, hogy az átlók mentén haladhatunk-e. Jelen esetben az tűnt megfelelőbbnek, hogy az átlók menténk is haladhatunk, ugyanis a játéktéren nem csak egymásra párhuzamos, és merőleges falak vannak, a domborzat lehet bármilyen elrendezésű.
 
-Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk, ezeket hívjuk nyitott (Open) illetve zárt (Closed) csomópont listáknak. A nyitott csomópontok listája az, amelyek vizsgálatára még a későbbiekben szükség lehet, a zárt csomópont lista pedig a már vizsgált pontok halmaza.
-
-% TODO: Ide kellene hivatkozás, hogy a nyitott és a zárt csomópontok listája honnan jött!
+Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk, ezeket hívjuk nyitott (Open) illetve zárt (Closed) csomópont listáknak. A nyitott csomópontok listája az, amelyek vizsgálatára még a későbbiekben szükség lehet, a zárt csomópont lista pedig a már vizsgált pontok halmaza \cite{Astar2}.
 
 A csomópontokhoz tárolni kell az addig bejárt távolságot, illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található. Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, ugyanis ezekből az adatokból számolja ki egy adott pont prioritását (kezdőponttól való táv + célponttól való táv), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, tehát arra kell tovább indulni.
 
-Az A* algoritmus leírása pszeudokóddal:
-A célpontot jelöljük goal\_node-dal, a kezdőpontot pedig start\_node-dal.
+Az A* algoritmus implementálásának menetéről a \cite{Astar3}-es hivatkozáson olvashat.
 
-% TODO: A szöveges leírásokat ahol lehet tömörebb, képletes formában kellene megadni!
+%\begin{verbatim}
+%1.Helyezük a start_node-ot az Open listába. f(start_node)=h(start_node)
+%2.Amíg az Open lista nem üres
+%3.	Vegyük a az Open listából azt a node-ot, amely a legkisebb költségű
+%4.		f(current_node) = g(current_node) + h(current_node)
+%5.	ha current_node a célpont, megtaláltuk a megoldást; break
+%6.	Generáljunk minden állapothoz successor_node-ot, ami a 
+%		current_node-ból származik
+%7.	ciklus minden current_node successor_node-ján
+%8.		Állítsuk be a successor_current_költséget, amely g(current_node) 
+%				+ w(current_node, successor_node)
+%9.		ha successor_node az Open listában van
+%10.			ha g(successor_node) <= successor_current_költség ugrás 19-re
+%11.			különben ha successor_node a Closed listában van
+%12.			ha g(successor_node) <= successor_current_költség ugrás 19-re
+%13.			Mozgassuk successor_node-ot a Closed listából az Open listába
+%14.		    különben
+%15.			Adjuk hozzá successor_node-ot az Open listához
+%16.			Állítsuk a h(successor_node)-ot hogy megkapjuk a heurisztikus 
+%				távolságot a célig
+%17.		Legyen egyenlő g(successor_node) a successor_current_költséggel
+%18.		Állítsuk be node_successor szülőjét current_node-nak
+%19.	Adjuk hozzá a current_node-ot a Closed listához
+%20.ha(current_node != goal_node) lépjünk ki a következővel: 
+%						(az Open lista üres)
+%\end{verbatim}
 
-% TODO: Ezt, vagy valami hasonlót be kellene hivatkozni: http://mat.uab.cat/~alseda/MasterOpt/AStar-Algorithm.pdf
+%\section{A keresési algoritmus implementációja}
+\section{Program: Pathfinder Demo}
 
-\begin{verbatim}
-1.Helyezük a start_node-ot az Open listába. f(start_node)=h(start_node)
-2.Amíg az Open lista nem üres
-3.	Vegyük a az Open listából azt a node-ot, amely a legkisebb költségű
-4.		f(current_node) = g(current_node) + h(current_node)
-5.	ha current_node a célpont, megtaláltuk a megoldást; break
-6.	Generáljunk minden állapothoz successor_node-ot, ami a 
-		current_node-ból származik
-7.	ciklus minden current_node successor_node-ján
-8.		Állítsuk be a successor_current_költséget, amely g(current_node) 
-				+ w(current_node, successor_node)
-9.		ha successor_node az Open listában van
-10.			ha g(successor_node) <= successor_current_költség ugrás 19-re
-11.			különben ha successor_node a Closed listában van
-12.			ha g(successor_node) <= successor_current_költség ugrás 19-re
-13.			Mozgassuk successor_node-ot a Closed listából az Open listába
-14.		    különben
-15.			Adjuk hozzá successor_node-ot az Open listához
-16.			Állítsuk a h(successor_node)-ot hogy megkapjuk a heurisztikus 
-				távolságot a célig
-17.		Legyen egyenlő g(successor_node) a successor_current_költséggel
-18.		Állítsuk be node_successor szülőjét current_node-nak
-19.	Adjuk hozzá a current_node-ot a Closed listához
-20.ha(current_node != goal_node) lépjünk ki a következővel: 
-						(az Open lista üres)
-\end{verbatim}
-
-\section{A keresési algoritmus implementációja}
+Ezen program célja, hogy bemutassa az A* algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, áruszállítás esetén meghatározhatjuk a legrövidebb útvonalat A-tól B pontig, akár mozgó B pont esetén is.
 
 A program a játéktér alapját képző domborzatot, egy képből olvassa be. Ez a magasságmező, ahol egy adott pont magasságát a világossága határozza meg, minél világosabb, annál magasabb pontot jelent a domborzaton, így 256 féle magasság lehetséges, ami az aktuális változathoz megfelelő felbontásnak bizonyult. 
 
@@ -127,12 +95,10 @@ A waypoint-ok meghatározására több lehetőség is van. Az egyik lehetőség,
 
 A másik lehetőség, ha 8 pixelenként határozunk meg egy waypoint-ot, ami 48x48-as felbontást eredményez. Azért pont erre az értékre esett a választásom, mert ez nagyban gyorsítja a számításokat, viszont még nem megy a bejárható területek rovására, megfelelően pontos. Ez kevesebb memória igényt jelent, és mivel kevesebb adattal is kell számolni, kevésbé terheli a processzort is. Ez látható \aref{fig:diagram_utvonal} ábrán.
 
-% TODO: Ez az ábra így nagyon apróbetűs. Érdemes lehet egy kisebb felbontású, inkább sraffozott, vagy szinezett megoldást választani.
-
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{kepek/utvonal_szamitas_diagram_waypointokra.png}
-\caption{Számításigény a felbontás és idő függvényében}
+\caption{Számításigény a felbontás és idő(mp) függvényében}
 \label{fig:diagram_utvonal}
 \end{figure}
 
@@ -140,7 +106,7 @@ Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges 
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.22]{kepek/mi_printscreen.png}
+\includegraphics[scale=0.23]{kepek/mi_printscreen.png}
 \caption{Útvonal meghatározó algoritmus működése}
 \label{fig:mi_printscreen}
 \end{figure}
@@ -149,7 +115,7 @@ A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olva
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.42]{kepek/magassagmezo_kuszobertek_diagram.png}
+\includegraphics[scale=0.44]{kepek/magassagmezo_kuszobertek_diagram.png}
 \caption{Küszöbérték a még bejárható terület meghatározásához}
 \label{fig:kuszobertek}
 \end{figure}
@@ -158,4 +124,5 @@ A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olva
 
 De a küszöbérték megadása nem mindig elegendő, ugyanis lehetnek olyan helyek a pályán, amelyek fal magasságúak, de bejárhatók, mert alacsony meredekségű emelkedő vezet fel oda. Ezt a problémát gradiens számítással lehet megoldani, ezzel van megoldva az is, hogy a játékos ne tudjon kimenni a játéktérből. Ahol túl nagy a meredekség, ott a waypoint típusát nem bejárhatóra kell állítani.
 
+\newpage
 A pontok típusának a pálya alapján legenerálása után, az A*-algoritmus segítségével meghatározza a program a legrövidebb útvonalat a cél waypointig, természetesen a pontok típusait figyelembe véve. Ezt másodpercenként legalább 15x újra kell számolni, ugyanis a játékos mozog, és a cél waypoint mindig a játékoshoz legközelebb eső pont, ami ezzel együtt változik.

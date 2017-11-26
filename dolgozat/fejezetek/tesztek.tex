@@ -13,14 +13,14 @@ Alapvetően két fő kirajzolási módszer létezik az OpenGL-ben. Az egyik a r�
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.35]{kepek/old_method_fps.png}
+\includegraphics[scale=0.34]{kepek/old_method_fps.png}
 \caption{A terep kirajzoltatása a régebbi módszerrel}
 \label{fig:old_fps}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.35]{kepek/vbo_method_fps.png}
+\includegraphics[scale=0.34]{kepek/vbo_method_fps.png}
 \caption{A terep kirajzoltatása az újabb, VBO-s módszerrel}
 \label{fig:vbo_fps}
 \end{figure}
@@ -29,7 +29,7 @@ Alapvetően két fő kirajzolási módszer létezik az OpenGL-ben. Az egyik a r�
 
 A játék egyes elemeinek betöltéséről, kirajzolásáról diagramok készültek. Minden ábrán, a függőleges tengelyen az adott objektum, vagy elem neve látható, a vízszintes tengelyen pedig az idő van feltüntetve milliszekundumban.
 
-\Aref{fig:start_diag}-as ábrán a játék indításának folyamatának időigénye látható, illetve hogy az egyes elemek létrehozása, betöltése hogyan oszlik el a teljes időhöz képest.
+\Aref{fig:start_diag}-as ábra a játékindítás folyamatának időigényét részletezi, hogy az egyes elemek létrehozása, betöltése hogyan oszlik el a teljes időhöz képest. Mint látható, az időtartam nagy részét a képi elemek betöltése teszi ki, a további négy elem szinte elhanyagolható ilyen szempontból.
 
 \begin{figure}[h]
 \centering
@@ -56,7 +56,8 @@ Mivel a magasságmező betöltésének ideje nagyon kiugró, külön megvizsgál
 \label{fig:height_map_diag}
 \end{figure}
 
-Végső soron megvizsgáltam, hogy egy képkocka elkészülése során, melyik játékkomponens megjelenítése vagy számítása hogyan oszlik el a teljes képkocka idejének elkészüléséhez képest. Ez \aref{fig:frame_draw}-os ábrán látható.
+Végső soron megvizsgáltam, hogy egy képkocka elkészülése során, melyik játékkomponens megjelenítése vagy számítása hogyan oszlik el a teljes képkocka idejének elkészüléséhez képest, amely fix 120 másodpercenként képkockaszám (FPS) mellett lett kiszámolva. Tudjuk, hogy 120FPS esetén a képkockák kirajzolása között eltelt időtartam 8,33ms, így elég volt csak a modellek, illetve a magasságmező kirajzolásának idejét mérni, a maradék értelem szerűen a további háttérszámításokat teszi ki.
+A másik ok, ami miatt fix FPS-t választottam a méréshez, az a túl magas másodpercenkénti képkockaszám (átlag 2000FPS) korlátozás nélkül. Ilyen esetben a képkockák kirajzolása között eltelt időtartam annyira kicsi volt, hogy még milliszekundumban is mérhetetlen volt.
 
 \begin{figure}[h]
 \centering

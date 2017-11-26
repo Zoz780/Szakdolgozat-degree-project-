@@ -58,6 +58,8 @@ A problémát az egyenes és a háromszög metszéspontjának számítására ve
 \label{fig:wireframe}
 \end{figure}
 
+\subsection{Program: Collision Detection Demo}
+
 Első lépésként, meg kell határozni azt az egyenest, amely azt írja le, amerre néz az adott karakter. Az egyenes megadható két pontjával. Az egyik az adott karakter pozíciójával egyezik meg. A másik, távoli pontot jelen esetben egy, az OpenGL-ben definiált függvényből, a \texttt{GluLookAt} függvényből határozzuk meg, aminek 9 paramétere van. Az első három a karakter jelenlegi pozíciója, a második három azt a pontot írja le merre nézünk (referencia pont), az utolsó három pedig azt határozza meg, hogy melyik tengelyen, és merre néz a felfelé vektor. A 9 paraméter közül a középső háromból lehet a második pontot  meghatározni.
 
 Második lépésként ki kell számolni ennek az egyenesnek a háromszögekkel vett metszéspontját. A háromszögeket a három csúcspontjukkal írjuk le. Kell lennie egy függvénynek, amelynek a háromszög három csúcspontját, és az egyenes két végpontját átadva, visszakapjuk a metszéspont $(x, y, z)$ koordinátáját. A számítás eredményének egy szemléltetését \aref{fig:triangle} ábrán láthatjuk.
@@ -116,13 +118,14 @@ A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát sí
 
 \subsection{Optimalizálási módszer kiválasztása}
 
-A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrások felhasználását a fölösleges számítások mellőzésével.
+A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrások felhasználását a fölösleges számítások mellőzésével, de ez a módszer felhasználható még akár egy raktárépület területének felosztására, hogy a keresést optimalizáljuk, így kevesebb időt vegyen igénybe.
 
 Azért a négyes fa alkalmazására esett a választás, mert ezt egyszerűbb volt implementálni, és a térrész magassága eleve limitált, így a $z$ összetevőnek kisebb a jelentősége.
 
-\subsection{Négyes fa megvalósítása}
+\subsection{Program: Quadtree Demo}
 
 % TODO: Ezt itt korrigálni kellene, mert a szélesség és magasság megadására nincs szükség. Elegendő csak felváltva tárolni az $x$ és $y$ szerinti felosztáshoz használt értékeket.
+
 
 Megvalósítás során meg kell adnunk a gyökér csomópontot, ami a teljes, felosztani kívánt területet takarja. Egy csomópont a következő adattagokat tartalmazza:
 \begin{itemize}

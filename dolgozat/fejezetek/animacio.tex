@@ -30,11 +30,11 @@ A vertex alapú animációt a 3D játékfejlesztésben karakterek mozgatásához
 
 \subsection{Az md2-es formátum}
 
+% TODO: GL\_TRIANGLE\_FAN belelóg a margóba!
+
 Az md2-es modelltárolási formátumot az \textit{idSoftware} fejlesztette ki 1997-ben a Quake 2 nevű játékához. A formátum kulcsképkocka animációk tárolására alkalmas. Tartalmazza az adott modell geometriáit, és a képkockánkénti animációkat. A fájl adatai olyan struktúrában helyezkednek el, hogy könnyedén kirajzoltatható legyen a \texttt{GL\_TRIANGLE\_FAN} és \texttt{GL\_TRIANGLE\_STRIP} OpenGL függvényekkel. A formátum két fő részből áll: fejlécből és adatrészből. A fájl nem tartalmazza a modellek textúráját.
 
 A fejléc egy struktúra, amely a fájl elején kezdődik, és tartalmazza az összes, feldolgozás szempontjából lényeges információt a fájl egészéről. Ilyen például a textúra szélessége, magassága, egy képkocka mérete, képkockák száma.
-
-Az animáláshoz ezt a módszert választottam, mert viszonylag egyszerűen implementálható. Egyetlen jelentős hátrányaként az hozható fel, hogy aránylag nagy a tárigénye más formátumokkal összehasonlítva.
 
 \section{Csontváz alapú animáció}
 
@@ -51,24 +51,40 @@ A csontváz alapú animáció kapcsolódási pontokból (\textit{joint}-okból) 
 
 \footnotetext{forrás: https://www.openflipper.org/media/plugin\_images/skeletalAnimation.png}
 
-Szerencsére a módszer nem csak élőlények modellezésére alkalmazható hatékonyak. A naprendszerünk szintén modellezhető ilyen módon. Vannak a naprendszerünk bolygói, amelyek a tengelyük, és a központi csillag, a Nap körül is forognak.
+Szerencsére a módszer nem csak élőlények modellezésére alkalmazható hatékonyan. A naprendszerünk szintén modellezhető ilyen módon. Vannak a naprendszerünk bolygói, amelyek a tengelyük, és a központi csillag, a Nap körül is forognak.
 
 Előnye, hogy könnyen létre lehet így hozni dinamikus animációkat, mivel az összes karakter csontjait lehet forgatni, mozgatni, továbbá megkönnyíti a bonyolultabb animációk elkészítését. Hátránya viszont, hogy komplexebbek, így több processzoridőt igényelnek.
 
-\subsection{Csontváz alapú animációhoz támogató fájlformátum}
+\subsection{Program: Animation Demo}
 
-A csontváz alapú animációkat tároló formátumok általában két részből állnak. Az egyik a geometriát, a másik pedig a csontvázat és a kapcsolódási pontokat tartalmazza. 
+Ennek a programnak az a célja, hogy bemutasson egy animációs módszert, amelyet bárki fel tud használni karakteranimációhoz játékfejlesztésnél. Az animációt megvalósító algoritmus hasznos lehet még egy automatizált gyártósor robotkarjainak mozgatásához is olyan esetekben, amikor például két vagy több karnak mindig egy adott szög tartása mellett, összehangolva kell mozogniuk. A \texttt{Character} osztályban az összes mozgatással és azok pontos megjelenítésével kapcsolatos számítások találhatók. Az \texttt{Action} az állapotok kezeléséért, a \texttt{ModelLoader} és a \texttt{VboDrawer} a modellek (testrészek) betöltéséért, kirajzolásáért felelős, amelyeket a \texttt{MainGame} osztály fog össze. A konkrét felépítés \aref{fig:anim_uml} ábrán látható.
 
-% TODO: Ez itt pontosan mi lenne?
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.6]{kepek/animation_uml.png}
+\caption[]{Az animációt bemutató demó felépítése}
+\label{fig:anim_uml}
+\end{figure}
 
-Ha két csont tartozik minden vertex-hez, a felépítés a következőképp alakul:
-\begin{itemize}
-\item A vertex x,y,z koordinátája
-\item Normálvektor x,y,z iránya
-\item Textúra u,v koordinátái
-\item Indexek (index1, index2) a csont/eltolás mátrix tömbjéhez (2 csont esetében)
-\item Weight1, weight2, ami az egyes csontok átfedési tényezője (2 csont esetében)
-\end{itemize}
+\Aref{fig:anim_demo} ábrán látható, futó programban egy egyszerű robotot tudunk irányítani, illetve ha a kamerát szabad mozgás módba váltjuk, meg tudjuk tekinteni a testrészek hierarchikus mozgását több szögből is. A robot részei több .obj kiterjesztésű modellből vannak betöltve, amelyek azért vannak külön modellbe tárolva, hogy egymástól függetlenül tudjuk őket mozgatni, ne csak egyben a teljes robotot. A törzshöz csatlakozik a fej, a két kéz, és a két láb. Utóbbi kettő mindig 60 fokos szögkülönbséggel rendelkezik, és ha elérik a maximális, előre megadott kitérési értéket, a mozgás iránya megfordul. Az elérni kívánt mozgásmechanika implementálása után, meg kell adnunk a testrészek pozícióját. A \texttt{Character} oszályban lévő \textsl{BuildParts()} függvény a \texttt{ModelLoader} és a \texttt{VboDrawer} által betöltött és kirajzolt részek megfelelő pozícióba való elhelyezéséért felel, hogy azok egy egész robottá álljanak össze.
+
+Járás közben az adott karakter előre is halad, illetve minimálisan fel és lefelé is mozog a járásból adódóan, és a testrészek fix szögben való mozgatásán kívül definiálnunk kell ezeket is. Figyelni kell, és számításba kell venni azt a jelenséget is, hogy járás közben egy élő ember  földre leért lába fix, azzal lendíti előre magát, így a láb végéhez képest kell megadnunk a hierarchiában feljebb lévő testrészek mozgását is, ezt nevezzük inverz kinematikának. Az előre és a fel-le irányba való mozgást a következő összefüggéssel írhatjuk fel:\\
+
+forward += fabs(distance\_v\_movement * (sin((rightleg\_angle - 180) * M\_PI / 180)\\ - sin((oldleg\_angle - 180) * M\_PI / 180)));\\
+up = (float)(distance\_v\_movement * cos((rightleg\_angle - 180) * M\_PI / 180)\\ - distance\_v\_movement);\\
+
+A \textsl{forward} az előrehaladás, az \textsl{up} a függőleges irányú animációért felel. Utóbbi maximális mértékét a \textsl{distance\_v\_movement} jelöli.
+
+Az animálásért felelős részek időfüggőek, ugyanis garantálni kell hogy a különböző teljesítményű gépeken ugyanolyan gyors legyen az animáció. A két kirajzolt képkocka közötti eltelt időt a \textsl{CalcElapsedTime()} függvény számolja, amelynek a kimeneti értéke s = v * t képletben a t komponens. Minél több a másodpercenként megjelenített képkockák száma, annál kisebb a köztük eltelt idő, és a mozgást annál kisebb értékkel szorozza be, így minden esetben ugyanolyan gyors lesz az animáció sebessége.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.4]{kepek/animation_demo.png}
+\caption[]{Pillanatkép az animációt bemutató demóból}
+\label{fig:anim_demo}
+\end{figure}
+
+A kamera alapesetben a robot mögé van elhelyezve, és annak mozgását követi, amelyet szintén a felhasználó tud irányítani. Az animáció bármikor félbeszakítható, nem áll vissza az alapértelmezett állásba, hogy megtekinthető legyen a mozgás minden fázisa.
 
 \section{Interpolációs módszerek}
 
@@ -102,7 +118,7 @@ Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szere
 \label{fig:lagrange}
 \end{figure}
 
-\subsubsection{Megvalósítás}
+\subsection{Program: Lagrange Interpolation Demo}
 
 A felhasználónak lehetősége van beírni egy x értéket, amelyhez a program kiszámolja az y koordinátát Lagrange-interpolációval. Ez a program azért készült, hogy bemutassa, hogyan működik ez a fajta interpolálás.
 Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y értékeit. A num a tömbök elemeinek számát, az input pedig a bevitt értéket takarja.
