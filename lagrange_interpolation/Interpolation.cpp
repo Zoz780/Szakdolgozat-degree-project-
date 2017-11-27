@@ -1,5 +1,4 @@
-#include <iostream>
-using namespace std;
+#include <stdio.h>
 
 /**
 		** Implementation of lagrange interpolation
@@ -26,41 +25,37 @@ bool LagrangeInterpolation(float x[], float y[], int num, float in, float *resul
 
 int main(void)
 {
-	float *x, *y, input, result = 0;
+	float x[100], y[100], input, result = 0;
 	int number_of_pairs, i, j, isContinue = 1;
-	cout << "Adja meg hany x es y erteket szeretne beirni: ";
-	cin >> number_of_pairs;
+	printf("Adja meg hany x es y erteket szeretne beirni: ");
+	scanf("%d", &number_of_pairs);
 	if (number_of_pairs == 0)
 	{
-		return 0;
+		return false;
 	}
-	else
-	{
-		x = (float *)malloc(number_of_pairs * sizeof(float));
-		y = (float *)malloc(number_of_pairs * sizeof(float));
-	}
-	cout << "Irja be az x es y ertekeket: \n";
+	printf("Irja be az x es y ertekeket: \n");
 	for (i = 0; i<number_of_pairs; i++)
 	{
-		cin >> x[i];
-		cin >> y[i];
+		scanf("%f", &x[i]);
+		scanf("%f", &y[i]);
 	}
-	cout << "A bevitt ertekek a kovetkezok: \n";
+	printf("A bevitt ertekek a kovetkezok: \n");
 	for (i = 0; i<number_of_pairs; i++)
 	{
-		cout << x[i] << "\t" << y[i] << endl;
+		printf("%0.3f\t%0.3f", x[i], y[i]);
+		printf("\n");
 	}
 	while (isContinue == 1)
 	{
 		result = 0;
-		cout << "\nIrja be azt az x erteket, amelyhez meg szeretne tudni az y-t: ";
-		cin >> input;
+		printf("\nIrja be azt az x erteket, amelyhez meg szeretne tudni az y-t: ");
+		scanf("%f", &input);
 
 		LagrangeInterpolation(x, y, number_of_pairs, input, &result);
 
-		cout << "\nA beirt x-hez tartozo y ertek: " << result;
-		cout << "\nSzeretne meg egy y-t kiszamolni?\nNyomja meg az 1-es gombot ha igen, barmelyik mas szamot, ha nem.";
-		cin >> isContinue;
+		printf("\nA beirt x-hez tartozo y ertek: %f", result);
+		printf("\nSzeretne meg egy y-t kiszamolni?\nNyomja meg az 1-es gombot ha igen, barmelyik mas szamot, ha nem.");
+		scanf("%d", &isContinue);
 	}
 	return 0;
 }
