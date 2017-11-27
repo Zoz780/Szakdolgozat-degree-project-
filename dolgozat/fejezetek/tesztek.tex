@@ -56,7 +56,7 @@ Mivel a magasságmező betöltésének ideje nagyon kiugró, külön megvizsgál
 \label{fig:height_map_diag}
 \end{figure}
 
-Végső soron megvizsgáltam, hogy egy képkocka elkészülése során, melyik játékkomponens megjelenítése vagy számítása hogyan oszlik el a teljes képkocka idejének elkészüléséhez képest, amely fix 120 másodpercenként képkockaszám (FPS) mellett lett kiszámolva. Tudjuk, hogy 120FPS esetén a képkockák kirajzolása között eltelt időtartam 8,33ms, így elég volt csak a modellek, illetve a magasságmező kirajzolásának idejét mérni, a maradék értelem szerűen a további háttérszámításokat teszi ki.
+Végső soron megvizsgáltam, hogy egy képkocka elkészülése során, melyik játékkomponens megjelenítése vagy számítása hogyan oszlik el a teljes képkocka idejének elkészüléséhez képest. Ez fix 120 másodpercenkénti képkockaszám (FPS) mellett lett kiszámolva. Tudjuk, hogy 120FPS esetén a képkockák kirajzolása között eltelt időtartam 8,33ms, így elég volt csak a modellek, illetve a magasságmező kirajzolásának idejét mérni, a maradék értelemszerűen a további háttérszámításokat teszi ki.
 A másik ok, ami miatt fix FPS-t választottam a méréshez, az a túl magas másodpercenkénti képkockaszám (átlag 2000FPS) korlátozás nélkül. Ilyen esetben a képkockák kirajzolása között eltelt időtartam annyira kicsi volt, hogy még milliszekundumban is mérhetetlen volt.
 
 \begin{figure}[h]
