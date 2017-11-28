@@ -9,18 +9,49 @@ class Character
 {
 public:
 	Character();
+	//Értékek beállítása, visszaadása---------------------------------------------
 	void SetXpos(float x);
 	float GetXpos();
 	void SetYpos(float y);
 	float GetYpos();
 	void Turn(float angle);
 	float GetTurn();
+
+	//-----------------------------------------------------------------------------
+
+	/**
+			*Karakter animációja
+	*/
 	void Animate(double dt);
+
+	/**
+			*Adott rész kirajzolása
+	*/
 	void DrawLeftArm(float xPos, float yPos, float zPos, float angle);
+
+	/**
+			*Adott rész kirajzolása
+	*/
 	void DrawRightArm(float xPos, float yPos, float zPos, float angle);
+
+	/**
+			*Adott rész kirajzolása
+	*/
 	void DrawLeftLeg(float xPos, float yPos, float zPos, float angle);
+
+	/**
+			*Adott rész kirajzolása
+	*/
 	void DrawRightLeg(float xPos, float yPos, float zPos, float angle);
+
+	/**
+			*Robot részeinek betöltése (VBO)
+	*/
 	void Load();
+
+	/**
+			*Robot felépítése a betöltött modellekbõl
+	*/
 	void BuildParts();
 
 private:
