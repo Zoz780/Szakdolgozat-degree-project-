@@ -15,14 +15,39 @@ class MainGame
 {
 public:
 	MainGame();
+
+	/**
+			*Futtatás
+	*/
 	void Run();
 
 private:
+	/**
+			*Elemek inicializálása
+	*/
 	void Init();
+
+
 	void GameLoop();
+
+	/**
+			*Bevitel figyelése
+	*/
 	void ProcessInput();
+
+	/**
+			*Elemek kirajzolása
+	*/
 	void DrawGame();
+
+	/**
+			*A billentyûk lenyomásának figyelése
+	*/
 	void ProcessKeyPress();
+
+	/**
+			*Szög radiánba váltása
+	*/
 	float ToRad(float angle_degrees);
 
 	VboDrawer raptor;
