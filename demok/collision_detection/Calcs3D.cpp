@@ -9,11 +9,8 @@ Vec3 Calcs3D::Cross(Vec3 vVector1, Vec3 vVector2)
 {
 	Vec3 Normal;
 	Normal.x = ((vVector1.y * vVector2.z) - (vVector1.z * vVector2.y));
-
 	Normal.y = ((vVector1.z * vVector2.x) - (vVector1.x * vVector2.z));
-
 	Normal.z = ((vVector1.x * vVector2.y) - (vVector1.y * vVector2.x));
-
 	return Normal;										
 }
 
@@ -151,7 +148,7 @@ Vec3 Calcs3D::IntersectionPoint(Vec3 vNormal, Vec3 vLine[], double distance)
 }
 
 
-bool Calcs3D::InsidePolygon(Vec3 vIntersection, Vec3 Poly[], long verticeCount)
+bool Calcs3D::InsideTrinagle(Vec3 vIntersection, Vec3 Poly[], long verticeCount)
 {
 	const double MATCH_FACTOR = 0.9999;		
 	double Angle = 0.0;						
@@ -173,7 +170,7 @@ bool Calcs3D::InsidePolygon(Vec3 vIntersection, Vec3 Poly[], long verticeCount)
 }
 
 
-bool Calcs3D::IntersectedPolygon(Vec3 vPoly[], Vec3 vLine[], int verticeCount)
+bool Calcs3D::IntersectedTriangle(Vec3 vPoly[], Vec3 vLine[], int verticeCount)
 {
 	Vec3 vNormal;
 	vNormal.x = 0;
@@ -187,7 +184,7 @@ bool Calcs3D::IntersectedPolygon(Vec3 vPoly[], Vec3 vLine[], int verticeCount)
 
 	Vec3 vIntersection = IntersectionPoint(vNormal, vLine, originDistance);
 
-	if (InsidePolygon(vIntersection, vPoly, verticeCount))
+	if (InsideTrinagle(vIntersection, vPoly, verticeCount))
 	{
 		cout << "Intersection: Xpoint: " << vIntersection.x << ", Ypoint: " << vIntersection.y << ", Zpoint: " << vIntersection.z << endl;
 		return true;
