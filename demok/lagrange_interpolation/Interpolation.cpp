@@ -66,7 +66,7 @@ bool ValuesReader()
 		}
 		min_x_value = x[0];
 		max_x_value = x[0];
-		int max_index = 0;
+		int min_index = 0, max_index = 0;
 		for (int i = 0; i < number_of_pairs; i++)
 		{
 			if (x[i] > max_x_value)
@@ -77,6 +77,7 @@ bool ValuesReader()
 			if (x[i] < min_x_value)
 			{
 				min_x_value = x[i];
+				min_index = i;
 			}
 		}
 
@@ -85,7 +86,7 @@ bool ValuesReader()
 
 
 		int index = 0;
-		for (int i = x[0]; i <= x[max_index]; i++)
+		for (int i = x[min_index]; i <= x[max_index]; i++)
 		{
 			result = 0;
 			LagrangeInterpolation(x, y, number_of_pairs, i, &result);
