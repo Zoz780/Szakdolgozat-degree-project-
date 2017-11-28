@@ -1,222 +1,161 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include "QuadTree.h"
 
-struct Point
+QuadTree::QuadTree() { }
+
+void QuadTree::SetPointArraySize(int size) { point_array_size = size; }
+void QuadTree::SetRange(int value) { range = value; }
+void QuadTree::SetMaxPointsInArea(int num_of_points) { max_points_in_area = num_of_points; }
+
+void QuadTree::SetNode(Node *xy, int x, int y, int w, int h)
 {
-		int x;
-		int y;
-};
+	int i;
+	xy->pointArray = (Point*)malloc(point_array_size * sizeof(Point));
+	xy->position.x = x;
+	xy->position.y = y;
+	xy->length.x = w;
+	xy->length.y = h;
+	for (i = 0; i<point_array_size; i++)
+	{
+		xy->pointArray[i].x = out_of_range;
+		xy->pointArray[i].y = out_of_range;
+	}
+	for (int i = 0; i < 4; i++)
+		xy->child[i] = nullptr;
+}
 
-struct Node	
-{	
-		int posX;
-		int posY;
-		int width;
-		int height;
-		Node *child[4];
-		Point pointArray[5000];
-};
-
-void BuildQuadTree(Node *n);
-void PrintQuadTree(Node *n, int depth = 0);
-void DeleteQuadTree(Node *n);
-Node *BuildNode(Node *n, Node  *nParent, int index);
-
-void SetNode(Node *xy, int x, int y, int w, int h)
+int QuadTree::PointArraySize(Node *n)
 {
-		int i;
-		xy->posX = x;
-		xy->posY = y;
-		xy->width = w;
-		xy->height = h;
-		for (i = 0; i<5000; i++)
+	int num_of_valuable_points = 0, i;
+	for (i = 0; i <= point_array_size; i++)
+		if (n->pointArray[i].x >= 0 && n->pointArray[i].y >= 0)
+			num_of_valuable_points++;
+	return (num_of_valuable_points + 1);
+}
+
+Node *QuadTree::BuildNode(Node *n, Node *nParent, int index)
+{
+	int numParentPoints, i, j = 0;
+	SetNode(n, 0, 0, 0, 0);
+	switch (index)
+	{
+	case 0:
+		n->position.x = nParent->position.x + nParent->length.x / 2;
+		n->position.y = nParent->position.y + nParent->length.y / 2;
+		break;
+	case 1:
+		n->position.x = nParent->position.x;
+		n->position.y = nParent->position.y + nParent->length.y / 2;
+		break;
+	case 2:
+		n->position.x = nParent->position.x;
+		n->position.y = nParent->position.y;
+		break;
+	case 3:
+		n->position.x = nParent->position.x + nParent->length.x / 2;
+		n->position.y = nParent->position.y;
+		break;
+	}
+	n->length.x = nParent->length.x / 2;
+	n->length.y = nParent->length.y / 2;
+	n->pointArray = (Point*)malloc(point_array_size * sizeof(Point));
+
+	numParentPoints = PointArraySize(nParent);
+
+	switch (index)
+	{
+	case 0:
+		for (i = 0; i < numParentPoints - 1; i++)
 		{
-				xy->pointArray[i].x = 560;
-				xy->pointArray[i].y = 560;
+			if (nParent->pointArray[i].x <= range && nParent->pointArray[i].x > nParent->position.x + nParent->length.x / 2 && nParent->pointArray[i].y > nParent->position.y + nParent->length.y / 2 && nParent->pointArray[i].x <= nParent->position.x + nParent->length.x && nParent->pointArray[i].y <= nParent->position.y + nParent->length.y)
+			{
+				n->pointArray[j].x = nParent->pointArray[i].x;
+				n->pointArray[j].y = nParent->pointArray[i].y;
+				j++;
+			}
 		}
-		for (int i = 0; i < 4; i++)
-			xy->child[i] = NULL;
-}
-int RandNum()
-{
-		int a;
-		a = rand() % 100;
-		return a;
+		break;
+	case 1:
+		for (i = 0; i < numParentPoints - 1; i++)
+		{
+			if (nParent->pointArray[i].x <= range && nParent->pointArray[i].x > nParent->position.x && nParent->pointArray[i].y > nParent->position.y + nParent->length.y / 2 && nParent->pointArray[i].x <= nParent->position.x + nParent->length.x / 2 && nParent->pointArray[i].y <= nParent->position.y + nParent->length.y)
+			{
+				n->pointArray[j].x = nParent->pointArray[i].x;
+				n->pointArray[j].y = nParent->pointArray[i].y;
+				j++;
+			}
+		}
+		break;
+	case 2:
+		for (i = 0; i < numParentPoints - 1; i++)
+		{
+			if (nParent->pointArray[i].x <= range && nParent->pointArray[i].x > nParent->position.x && nParent->pointArray[i].y > nParent->position.y && nParent->pointArray[i].x <= nParent->position.x + nParent->length.x / 2 && nParent->pointArray[i].y <= nParent->position.y + nParent->length.y / 2)
+			{
+				n->pointArray[j].x = nParent->pointArray[i].x;
+				n->pointArray[j].y = nParent->pointArray[i].y;
+				j++;
+			}
+		}
+		break;
+	case 3:
+		for (i = 0; i < numParentPoints - 1; i++)
+		{
+			if (nParent->pointArray[i].x <= range && nParent->pointArray[i].x > nParent->position.x + nParent->length.x / 2 && nParent->pointArray[i].y > nParent->position.y && nParent->pointArray[i].x <= nParent->position.x + nParent->length.x && nParent->pointArray[i].y <= nParent->position.y + nParent->length.y / 2)
+			{
+				n->pointArray[j].x = nParent->pointArray[i].x;
+				n->pointArray[j].y = nParent->pointArray[i].y;
+				j++;
+			}
+		}
+		break;
+	}
+	return n;
 }
 
-int PointArraySize(Node *n)
+void QuadTree::BuildQuadTree(Node *n)
 {
-		int m = 0, i;
-		for (i = 0; i <= 5000; i++)
-			if (n->pointArray[i].x <= 500 && n->pointArray[i].y <= 500)
-				m++;
-		return (m + 1);
+	Node *nodeIn = new Node;
+	int points = PointArraySize(n);
+	if (points > max_points_in_area)
+	{
+		for (int k = 0; k < 4; k++)
+		{
+			n->child[k] = new Node;
+			nodeIn = BuildNode(n->child[k], n, k);
+			BuildQuadTree(nodeIn);
+		}
+	}
 }
 
-void BuildQuadTree(Node *n)
+void QuadTree::PrintQuadTree(Node *n, int depth)
 {
-		Node * nodeIn = new Node;
+	for (int i = 0; i < depth; i++)
+		cout << "\t";
+	if (n->child[0] == nullptr)
+	{
 		int points = PointArraySize(n);
-		if (points > 100)
-		{
-				for (int k = 0; k < 4; k++)
-				{
-						n->child[k] = new Node;
-						nodeIn = BuildNode(n->child[k], n, k);
-						BuildQuadTree(nodeIn);
-				}
-		}
-}
-
-void PrintQuadTree(Node *n, int depth)
-{
-		for (int i = 0; i < depth; i++)
-			printf("\t");
-		if (n->child[0] == NULL)
-		{
-				int points = PointArraySize(n);
-				printf("Points: %d\n", points);
-				return;
-		}
-		else if (n->child[0] != NULL)
-		{
-				printf("Children:\n");
-				for (int i = 0; i < 4; i++)
-					PrintQuadTree(n->child[i], depth + 1);
-				return;
-		}
-}
-
-void DeleteQuadTree(Node *n)
-{
-		if (n->child[0] == NULL)
-		{
-				delete n;
-				return;
-		}
-		else if (n->child[0] != NULL)
-		{
-				for (int i = 0; i < 4; i++)
-					DeleteQuadTree(n->child[i]);
-				return;
-		}
-}
-
-Node *BuildNode(Node *n, Node *nParent, int index)
-{
-		int numParentPoints, i, j = 0;
-		SetNode(n, 0, 0, 0, 0);
-		switch (index)
-		{
-		case 0:
-				n->posX = nParent->posX + nParent->width / 2;
-				n->posY = nParent->posY + nParent->height / 2;
-				break;
-		case 1:
-				n->posX = nParent->posX;
-				n->posY = nParent->posY + nParent->height / 2;
-				break;
-		case 2:
-				n->posX = nParent->posX;
-				n->posY = nParent->posY;
-				break;
-		case 3:
-				n->posX = nParent->posX + nParent->width / 2;
-				n->posY = nParent->posY;
-				break;
-		}
-		n->width = nParent->width / 2;
-		n->height = nParent->height / 2;
-
-		numParentPoints = PointArraySize(nParent);
-
-		switch (index)
-		{
-		case 0:
-				for (i = 0; i < numParentPoints - 1; i++)
-				{
-						if (nParent->pointArray[i].x <= 500 && nParent->pointArray[i].x > nParent->posX + nParent->width / 2 && nParent->pointArray[i].y > nParent->posY + nParent->height / 2 && nParent->pointArray[i].x <= nParent->posX + nParent->width && nParent->pointArray[i].y <= nParent->posY + nParent->height)
-						{
-								n->pointArray[j].x = nParent->pointArray[i].x;
-								n->pointArray[j].y = nParent->pointArray[i].y;
-								j++;
-						}
-				}
-				break;
-		case 1:
-				for (i = 0; i < numParentPoints - 1; i++)
-				{
-						if (nParent->pointArray[i].x <= 500 && nParent->pointArray[i].x > nParent->posX && nParent->pointArray[i].y > nParent->posY + nParent->height / 2 && nParent->pointArray[i].x <= nParent->posX + nParent->width / 2 && nParent->pointArray[i].y <= nParent->posY + nParent->height)
-						{
-								n->pointArray[j].x = nParent->pointArray[i].x;
-								n->pointArray[j].y = nParent->pointArray[i].y;
-								j++;
-						}
-				}
-				break;
-		case 2: 
-				for (i = 0; i < numParentPoints - 1; i++)
-				{
-						if (nParent->pointArray[i].x <= 500 && nParent->pointArray[i].x > nParent->posX && nParent->pointArray[i].y > nParent->posY && nParent->pointArray[i].x <= nParent->posX + nParent->width / 2 && nParent->pointArray[i].y <= nParent->posY + nParent->height / 2)
-						{
-								n->pointArray[j].x = nParent->pointArray[i].x;
-								n->pointArray[j].y = nParent->pointArray[i].y;
-								j++;
-						}
-				}
-				break;
-		case 3:
-				for (i = 0; i < numParentPoints - 1; i++)
-				{
-						if (nParent->pointArray[i].x <= 500 && nParent->pointArray[i].x > nParent->posX + nParent->width / 2 && nParent->pointArray[i].y > nParent->posY && nParent->pointArray[i].x <= nParent->posX + nParent->width && nParent->pointArray[i].y <= nParent->posY + nParent->height / 2)
-						{
-								n->pointArray[j].x = nParent->pointArray[i].x;
-								n->pointArray[j].y = nParent->pointArray[i].y;
-								j++;
-						}
-				}
-				break;
-		}
-		return n;
-}
-
-int main()
-{
-	Node * rootNode = new Node;
-	int i, x[5000], y[5000];
-	FILE *fp;
-	SetNode(rootNode, 0, 0, 500, 500);
-
-	fp = fopen("output.txt", "w");
-
-	if (fp == NULL)
-	{
-		puts("Cannot open file");
-		exit(1);
+		cout << "Points: " << points << endl;
+		return;
 	}
-	for (i = 0; i<5000; i++)
+	else if (n->child[0] != nullptr)
 	{
-		x[i] = RandNum();
-		y[i] = RandNum();
-		fprintf(fp, "%d,%d\n", x[i], y[i]);
+		cout << "Children:\n";
+		for (int i = 0; i < 4; i++)
+			PrintQuadTree(n->child[i], depth + 1);
+		return;
 	}
-	fclose(fp);
+}
 
-	fp = fopen("output.txt", "r");
-	for (i = 0; i<5000; i++)
+void QuadTree::DeleteQuadTree(Node *n)
+{
+	if (n->child[0] == nullptr)
 	{
-		if (fscanf(fp, "%d,%d", &x[i], &y[i]) != EOF)
-		{
-			rootNode->pointArray[i].x = x[i];
-			rootNode->pointArray[i].y = y[i];
-		}
+		delete n;
+		return;
 	}
-
-	fclose(fp);
-
-	BuildQuadTree(rootNode);
-	PrintQuadTree(rootNode);
-	DeleteQuadTree(rootNode);
-	getchar();
-	return 0;
+	else if (n->child[0] != nullptr)
+	{
+		for (int i = 0; i < 4; i++)
+			DeleteQuadTree(n->child[i]);
+		return;
+	}
 }
