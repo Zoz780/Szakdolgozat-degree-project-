@@ -12,6 +12,9 @@ public:
 	void SetPosY(float y);
 	float GetPosY();
 
+	/**
+			*Játákos pontjának kirajzolása
+	*/
 	void Draw();
 
 private:

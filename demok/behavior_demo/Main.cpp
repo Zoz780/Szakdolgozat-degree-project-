@@ -14,15 +14,18 @@ bool go_forward = false;
 bool go_backward = false;
 bool go_right = false;
 bool go_left = false;
-bool is_moving = false;
+bool is_moving = false; // Tárolja, hogy a játékos éppen mozog, vagy nem
 double m_time = 0.0;
-bool is_alive_array[NUM_OF_ENEMIES];
-bool is_alive = true;
+bool is_alive_array[NUM_OF_ENEMIES]; //Tömb, ami azt tárolja, hogy az adott ellenfél elkapta-e a játékost
+bool is_alive = true; // Ha akár 1 ellenfél is eléri a játékost, ez hamis értéket vesz fel
 double elapsed_time;
 
 Player player;
-Enemy enemy[NUM_OF_ENEMIES];
+Enemy enemy[NUM_OF_ENEMIES]; //Ellenfelek lértehozása
 
+/**
+		*Értékek beállítása, random generálása
+*/
 void Init()
 {
 	srand(time(NULL));
@@ -54,6 +57,9 @@ void Init()
 	}
 }
 
+/**
+		*Eltelt idõ számítása
+*/
 double CalcElapsedTime()
 {
 	int current_time;
@@ -70,6 +76,9 @@ double CalcElapsedTime()
 	return elapsed_time_in_secs;
 }
 
+/**
+		*Ablak méretezése
+*/
 static void Resize(int width, int height)    
 {
 	glViewport(0, 0, width, height);
@@ -80,6 +89,9 @@ static void Resize(int width, int height)
 
 }
 
+/**
+		*Animáció számolása
+*/
 void Timer(int) {
 	glutPostRedisplay();
 	glutTimerFunc(1000 / 120, Timer, 0);
@@ -118,6 +130,9 @@ void Timer(int) {
 
 }
 
+/**
+		*Elemek rajzolása
+*/
 static void Display(void)              
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -155,6 +170,9 @@ static void Display(void)
 
 }
 
+/**
+		*Billentyûk lenyomásának figyelése
+*/
 static void ProcessKeyPress(unsigned char key, int x, int y)
 {
 	if (is_alive)
@@ -198,6 +216,9 @@ static void ProcessKeyPress(unsigned char key, int x, int y)
 	glutPostRedisplay();          
 }
 
+/**
+		*Billentyûk felengedésének figyelése
+*/
 static void ProcessKeyRelease(unsigned char key, int x, int y)
 {
 	float posx, posy;

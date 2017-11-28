@@ -11,11 +11,19 @@ public:
 	void SetY(float y);
 	float GetY();
 
-
+	/**
+			*Távolság kiszámolása
+	*/
 	float GetLength() const;
 
+	/**
+			*Értékek normalizálása
+	*/
 	void Normalize();
 
+	/**
+			*Értékek beállítása távolság függvényében
+	*/
 	void SetMagnitude(float magnitude);
 
 private:
