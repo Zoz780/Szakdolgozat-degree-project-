@@ -12,7 +12,7 @@ float dynamic_width, dynamic_height;
 int number_of_pairs;
 
 /**
-** Implementation of lagrange interpolation
+		*Lagrange interpoláció implementációja
 */
 bool LagrangeInterpolation(float x[], float y[], int num, float in, float *result)
 {
@@ -34,6 +34,10 @@ bool LagrangeInterpolation(float x[], float y[], int num, float in, float *resul
 	return true;
 }
 
+
+/**
+		*Értékbekérés a felhasználótól
+*/
 bool ValuesReader()
 {
 	float input, result = 0;
@@ -111,6 +115,9 @@ bool ValuesReader()
 	return true;
 }
 
+/**
+		*Értékek felskálázása az adott ablak felbontásához
+*/
 void CalcLimits(int width, int height)
 {
 	if (max_y_value > abs(min_y_value))
@@ -119,10 +126,13 @@ void CalcLimits(int width, int height)
 	}
 	else min_y_value = abs(min_y_value);
 
-	multiply_x = (width / max_x_value) * 0.98;
-	multiply_y = ((height / 2) / min_y_value) * 0.98;
+	multiply_x = (width / max_x_value) * 0.98; //Szorozva 0.98-al, hogy ne pont az ablak szélére essen a függvény vége
+	multiply_y = ((height / 2) / min_y_value) * 0.98; //Szorozva 0.98-al, hogy ne pont az ablak szélére essen a függvény vége
 }
 
+/**
+		*Ablak méretezése
+*/
 static void resize(int width, int height)    
 {
 	glViewport(0, 0, width, height);
@@ -135,6 +145,9 @@ static void resize(int width, int height)
 	CalcLimits(width, height);
 }
 
+/**
+		*Függvény rajzolása OpenGL-el
+*/
 static void display(void)                
 {
 	glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
@@ -197,7 +210,7 @@ int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	glutInitWindowPosition(100, 100);              
+	glutInitWindowPosition(0, 0);              
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA);
 
 	glutCreateWindow("Lagrange Interpolation Demo");         
