@@ -1,7 +1,7 @@
 \Chapter{Animáció}
 \label{Chap:animacio}
 
-A fejezet a játékokban alkalmazott animációs módszereket módszereket, illetve azok megvalósítási módját mutatja be.
+A fejezet a játékokban alkalmazott animációs módszereket, illetve azok megvalósítási módját mutatja be.
 
 \section{Kulcsképkocka alapú animáció}
 
@@ -28,7 +28,7 @@ A fejléc egy struktúra, amely a fájl elején kezdődik, és tartalmazza az ö
 
 A legtöbb mai játék ezt a módszert alkalmazza karakterek mozgatásához. Az alapötlete az, hogy a mozgatható részeket hierarchiába szervezi. Az élőlények felépítése általában olyan, hogy ezzel a fajta animálási móddal egyszerűen modellezhetők. 
 
-A csontváz alapú animáció kapcsolódási pontokból (\textit{joint}-okból) építkezik. Ember esetén például a kézfej kapcsolatban van az alkarral, az alkar a felkarral, ami pedig a test többi részével. Minden hajlási pont egy új kapcsolódási pontot jelent. Tehát a az ember felkarját megmozdítjuk, mozdul vele a kezének a többi része is. Ezt szemlélteti \aref{fig:skeletal}. ábra.
+A csontváz alapú animáció kapcsolódási pontokból (\textit{joint}-okból) építkezik. Ember esetén például a kézfej kapcsolatban van az alkarral, az alkar a felkarral, ami pedig a test többi részével. Minden hajlási pont egy új kapcsolódási pontot jelent. Tehát ha az ember felkarját megmozdítjuk, mozdul vele a kezének a többi része is. Ezt szemlélteti \aref{fig:skeletal}. ábra.
 
 \begin{figure}[h]
 \centering
@@ -56,14 +56,16 @@ Ennek a programnak az a célja, hogy bemutasson egy animációs módszert, amely
 
 \Aref{fig:anim_demo} ábrán látható, futó programban egy egyszerű robotot tudunk irányítani, illetve ha a kamerát szabad mozgás módba váltjuk, meg tudjuk tekinteni a testrészek hierarchikus mozgását több szögből is. A robot részei több .obj kiterjesztésű modellből vannak betöltve, amelyek azért vannak külön modellbe tárolva, hogy egymástól függetlenül tudjuk őket mozgatni, ne csak egyben a teljes robotot. A törzshöz csatlakozik a fej, a két kéz, és a két láb. Utóbbi kettő mindig 60 fokos szögkülönbséggel rendelkezik, és ha elérik a maximális, előre megadott kitérési értéket, a mozgás iránya megfordul. Az elérni kívánt mozgásmechanika implementálása után, meg kell adnunk a testrészek pozícióját. A \texttt{Character} oszályban lévő \textsl{BuildParts()} függvény a \texttt{ModelLoader} és a \texttt{VboDrawer} által betöltött és kirajzolt részek megfelelő pozícióba való elhelyezéséért felel, hogy azok egy egész robottá álljanak össze.
 
-Járás közben az adott karakter előre is halad, illetve minimálisan fel és lefelé is mozog a járásból adódóan, és a testrészek fix szögben való mozgatásán kívül definiálnunk kell ezeket is. Figyelni kell, és számításba kell venni azt a jelenséget is, hogy járás közben egy élő ember  földre leért lába fix, azzal lendíti előre magát, így a láb végéhez képest kell megadnunk a hierarchiában feljebb lévő testrészek mozgását is, ezt nevezzük inverz kinematikának. Az előre és a fel-le irányba való mozgást a következő összefüggéssel írhatjuk fel:\\
+Járás közben az adott karakter előre is halad, illetve minimálisan fel és lefelé is mozog a járásból adódóan, és a testrészek fix szögben való mozgatásán kívül definiálnunk kell ezeket is. Figyelni kell, és számításba kell venni azt a jelenséget is, hogy járás közben egy élő ember  földre leért lába fix, azzal lendíti előre magát, így a láb végéhez képest kell megadnunk a hierarchiában feljebb lévő testrészek mozgását is, ezt nevezzük inverz kinematikának. Az előre és a fel-le irányba való mozgást a következő összefüggéssel írhatjuk fel:
+$$
+\Delta f = \left|
+d \cdot \sin(\alpha)
+\right|, \quad u = d \cdot \cos(\alpha),
+$$
 
-forward += fabs(distance\_v\_movement * (sin((rightleg\_angle - 180) * M\_PI / 180)\\ - sin((oldleg\_angle - 180) * M\_PI / 180)));\\
-up = (float)(distance\_v\_movement * cos((rightleg\_angle - 180) * M\_PI / 180)\\ - distance\_v\_movement);\\
+ahol $\Delta f$ az időegység alatt megtett előre mozgásnak a mértéke (\textit{forward}), az $u$ pedig a karakter fel-le mozgásának animálásához szükséges érték (\textit{up}). A $d$ az egységnyi idő alatt megtett távolságot jelöli (\textit{distance}), az $\alpha$ pedig a jobbláb animálásánál figyelembe vett szög értéke.
 
-A \textsl{forward} az előrehaladás, az \textsl{up} a függőleges irányú animációért felel. Utóbbi maximális mértékét a \textsl{distance\_v\_movement} jelöli.
-
-Az animálásért felelős részek időfüggőek, ugyanis garantálni kell hogy a különböző teljesítményű gépeken ugyanolyan gyors legyen az animáció. A két kirajzolt képkocka közötti eltelt időt a \textsl{CalcElapsedTime()} függvény számolja, amelynek a kimeneti értéke s = v * t képletben a t komponens. Minél több a másodpercenként megjelenített képkockák száma, annál kisebb a köztük eltelt idő, és a mozgást annál kisebb értékkel szorozza be, így minden esetben ugyanolyan gyors lesz az animáció sebessége.
+Az animálásért felelős részek időfüggőek, ugyanis garantálni kell hogy a különböző teljesítményű gépeken ugyanolyan gyors legyen az animáció. A két kirajzolt képkocka közötti eltelt időt a \texttt{CalcElapsedTime} függvény számolja, amelynek a kimeneti értéke az $s = v \cdot t$ képlettel számolható, ahol $s$ a megtett út, $v$ a sebesség, $t$ pedig az eltelt idő. Minél több a másodpercenként megjelenített képkockák száma, annál kisebb a köztük eltelt idő, és a mozgást annál kisebb értékkel szorozza be, így minden esetben ugyanolyan gyorsan fog mozogni az objektumunk, csak az animáció folytonosságában lesz különbség.
 
 \begin{figure}[h]
 \centering
@@ -72,7 +74,7 @@ Az animálásért felelős részek időfüggőek, ugyanis garantálni kell hogy 
 \label{fig:anim_demo}
 \end{figure}
 
-A kamera alapesetben a robot mögé van elhelyezve, és annak mozgását követi, amelyet szintén a felhasználó tud irányítani. Az animáció bármikor félbeszakítható, nem áll vissza az alapértelmezett állásba, hogy megtekinthető legyen a mozgás minden fázisa.
+A kamera alapesetben a robot mögött van, és annak mozgását követi, amelyet szintén a felhasználó tud irányítani. Az animáció bármikor félbeszakítható, nem áll vissza az alapértelmezett állásba, hogy megtekinthető legyen a mozgás minden fázisa.
 
 \section{Interpolációs módszerek}
 

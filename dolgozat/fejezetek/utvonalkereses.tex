@@ -43,15 +43,13 @@ Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
 
 Ezt az algoritmust a hatékonysága miatt gyakran használják gráfokban való legrövidebb útvonalak kereséséhez. Bemenetként a gráf két pontját adjuk meg, eredményül pedig az ezek között lévő legrövidebb útvonalat várjuk.
 
-A gyakorlati problémák jelentős részében nem közvetlenül egy gráf áll a rendelkezésünkre. Ahhoz, hogy az A* algoritmust mégis használni tudjuk, a bejárandó területet (amelyben a legrövidebb útvonalat keressük) egy ráccsal közelíthetjük. Ez a rácsos kialakítás több szempontból is előnyös. A pontok minden esetben egymástól egyenlő távolságra helyezkednek el, így ezeket nem kell számolni. Továbbá ha csak a bejárható helyekre helyeznénk pontokat, külön olyan algoritmusra lenne szükség, amely meghatározza azt, hogy melyik pontból melyikbe haladhatunk. A gráf összes csomópontjának és élének a tárolására szükség lenne, amely indokolatlanul sok adat kezelését jelentené. Jelen esetben egy egyenközű rácsot alkalmazva a kereséshez használt gráfhoz, elegendő csak megadni a rácspontokban, hogy az adott pont bejárható vagy nem. Az algoritmusról további információk a \cite{Astar}-ös hivatkozáson.
+A gyakorlati problémák jelentős részében nem közvetlenül egy gráf áll a rendelkezésünkre. Ahhoz, hogy az A*-algoritmust mégis használni tudjuk, a bejárandó területet (amelyben a legrövidebb útvonalat keressük) egy ráccsal közelíthetjük. Ez a rácsos kialakítás több szempontból is előnyös. A pontok minden esetben egymástól egyenlő távolságra helyezkednek el, így ezeket nem kell számolni. Továbbá ha csak a bejárható helyekre helyeznénk pontokat, külön olyan algoritmusra lenne szükség, amely meghatározza azt, hogy melyik pontból melyikbe haladhatunk. A gráf összes csomópontjának és élének a tárolására szükség lenne, amely indokolatlanul sok adat kezelését jelentené. Jelen esetben egy egyenközű rácsot alkalmazva a kereséshez használt gráfhoz, elegendő csak megadni a rácspontokban, hogy az adott pont bejárható vagy nem \cite{Astar}.
 
-Négyzetrács esetében eldöntendő kérdés, hogy az átlók mentén haladhatunk-e. Jelen esetben az tűnt megfelelőbbnek, hogy az átlók menténk is haladhatunk, ugyanis a játéktéren nem csak egymásra párhuzamos, és merőleges falak vannak, a domborzat lehet bármilyen elrendezésű.
+Négyzetrács esetében eldöntendő kérdés, hogy az átlók mentén haladhatunk-e. Jelen esetben az tűnt megfelelőbbnek, hogy az átlók mentén is haladhatunk, ugyanis a játéktéren nem csak egymásra párhuzamos, és merőleges falak vannak, a domborzat lehet bármilyen elrendezésű.
 
 Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk, ezeket hívjuk nyitott (Open) illetve zárt (Closed) csomópont listáknak. A nyitott csomópontok listája az, amelyek vizsgálatára még a későbbiekben szükség lehet, a zárt csomópont lista pedig a már vizsgált pontok halmaza \cite{Astar2}.
 
-A csomópontokhoz tárolni kell az addig bejárt távolságot, illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található. Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, ugyanis ezekből az adatokból számolja ki egy adott pont prioritását (kezdőponttól való táv + célponttól való táv), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, tehát arra kell tovább indulni.
-
-Az A* algoritmus implementálásának menetéről a \cite{Astar3}-es hivatkozáson olvashat.
+A csomópontokhoz tárolni kell az addig bejárt távolságot, illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található. Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, ugyanis ezekből az adatokból számolja ki egy adott pont prioritását (a kezdőponttól való távolságának és a célponttól való távolságának összegét), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, tehát arra kell tovább indulni \cite{Astar3}.
 
 %\begin{verbatim}
 %1.Helyezük a start_node-ot az Open listába. f(start_node)=h(start_node)
@@ -83,7 +81,7 @@ Az A* algoritmus implementálásának menetéről a \cite{Astar3}-es hivatkozás
 %\section{A keresési algoritmus implementációja}
 \section{Program: Útvonalkeresés}
 
-Ezen program célja, hogy bemutassa az A* algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, áruszállítás esetén meghatározhatjuk a legrövidebb útvonalat A-tól B pontig, akár mozgó B pont esetén is.
+Ezen program célja, hogy bemutassa az A*-algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, például áruszállítás esetén meghatározhatjuk a legrövidebb útvonalat A-tól B pontig, akár mozgó B pont esetén is.
 
 A program a játéktér alapját képző domborzatot, egy képből olvassa be. Ez a magasságmező, ahol egy adott pont magasságát a világossága határozza meg, minél világosabb, annál magasabb pontot jelent a domborzaton, így 256 féle magasság lehetséges, ami az aktuális változathoz megfelelő felbontásnak bizonyult. 
 

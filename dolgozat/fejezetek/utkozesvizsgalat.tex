@@ -96,7 +96,11 @@ Az ütközésvizsgálatra minden képkocka kiszámítása előtt szükség van. 
 
 \subsection{A játéktér szabályos felosztása}
 
-Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva felosztjuk a teret egy felosztási részletességet megadva. Meg kell adnunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található, ez látható \aref{fig:grid} ábrán. A karakterek ütközésvizsgálatánál elég, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyiken épp tartózkodik, de ajánlott a körülötte levő 8 részre is. Lövedék becsapódásának $(x, y, z)$ koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. Előnye, hogy ezt a legegyszerűbb megadni, és ehhez képest elég nagy gyorsulást tapasztalhatunk. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, minden tárgy nélkül. Azért, hogy a felosztott térrészekben való keresés hatékonyabb legyen, a felosztást egy fa struktúra szerint tesszük meg. A felosztásban szereplő régiók számának logaritmusával lesz majd arányos a keresés lépéseinek a száma.
+Az optimalizálás egyik módja, hogy felosztjuk a játékteret kisebb részekre, majd ezeket olyan struktúrába rendezzük, hogy a bennük való keresés hatékonyabb legyen. Ennek egyik egyszerűbb változata, hogy egyenközű felosztálst alkalmazunk. Ezt követően meg kell határoznunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található. Egyenközű felosztásra láthatunk egy példát \aref{fig:grid}. ábrán.
+
+A karakterek ütközésvizsgálatánál elegendő, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyikben épp tartózkodik az objektum, de ajánlott a körülötte levő 8 részre is.
+
+A lövedék becsapódásának $(x, y, z)$ koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. A módszer implementálása egyszerű, de mégis nagy gyorsulást tapasztalhatunk a számításokban. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, amelyen nincsenek tereptárgyak vagy egyéb objektumok. Azért, hogy a felosztott térrészekben való keresés hatékonyabb legyen, a felosztást egy fa struktúra szerint tesszük meg. A felosztásban szereplő régiók számának logaritmusával lesz majd arányos a keresés lépéseinek a száma.
 
 \begin{figure}[h]
 \centering
@@ -107,7 +111,9 @@ Ez egy olyan módszer, amivel minden egyéb tényezőt figyelmen kívül hagyva 
 
 \subsection{Négyes fa és az oktális fa}
 
-A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát síkbeli, míg az oktális fát térbeli felosztásra használják. Olyan, kivételes esetekben használható jól a négyes fa térben, ha a játéktér nem nagy magassággal rendelkezik. Használatánál az első feladatunk a fa gyökerének meghatározása, ami a teljes játékteret magában foglalja. Négyes fa esetén a síkot mindig 4 részre osztjuk mindaddig, még a fa mélysége el nem éri a maximális, előre definiált értéket, vagy az adott cellában az objektumok száma nem több mint egy előre definiált érték. Ugyanez a módszer érvényesül az oktális fánál, annyi különbséggel, hogy ott 8 felé osztjuk a teret. A négyes fa \aref{fig:quadtree} ábrán látható, hogy hogyan is működik.
+A négyes- és az oktális fa hasonló módszereket takarnak. A négyes fát síkbeli, míg az oktális fát térbeli felosztásra használják. Olyan, kivételes esetekben használható jól a négyes fa térben is, ha a játéktér nem nagy magassággal rendelkezik.
+
+Használatánál az első feladatunk a fa gyökerének meghatározása, ami a teljes játékteret magában foglalja. Négyes fa esetén a síkot mindig 4 egyenlő részre osztjuk mindaddig, amíg a fa mélysége el nem éri a maximális, előre definiált értéket, vagy az adott cellában az objektumok száma nem lesz több, mint egy előre definiált érték. Ugyanez a megközelítés érvényesül az oktális fánál, annyi különbséggel, hogy ott 8 felé osztjuk a teret. A négyes fa felosztásainak szemléltetése \aref{fig:quadtree}. ábrán látható.
 
 \begin{figure}[h]
 \centering
@@ -118,7 +124,7 @@ A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát sí
 
 \subsection{A BSP fa}
 
-Hasonlóan a négyes fához, ez is síkbeli felosztásra alkalmas. A BSP fa mindig két részre osztja a teret, viszont nem az adott térrész felénél, hanem úgy, hogy az objektumok száma a két részben közel egyenlő legyen. Az osztás irányát a fa minden mélységi szintjén változtatja, egyszer vízszintes, egyszer függőleges a vágás. Az adott objektumig úgy jutunk el, hogy mindig kiválasztjuk, hogy az éppen vizsgált térrészben az osztás bal, vagy jobb oldalán van. Kilépési feltételnek, szintén a négyes fához hasonlóan, megadhatjuk a fa maximális mélységét, illetve az adott cellában szereplő maximális objektumszámot.
+A BSP (\textit{Binary Space Partitioning}) egy, a tér felezésére épülő térpartícionáló módszer. Tetszőleges dimenziójú térben alkalmazható. A BSP fa mindig két részre osztja a teret, viszont a vágósík nem a térrész mérete alapján felezi a teret, hanem a benne található objektumok száma alapján. (Páratlan elemszám esetén az egyik térrészben egyel több elem kerül.) Az osztás irányát a fa minden mélységi szintjén változtatja, egyszer vízszintes, egyszer függőleges a vágás. Az adott objektumig úgy jutunk el, hogy mindig kiválasztjuk, hogy az éppen vizsgált objektum az osztás bal, vagy jobb oldalán van. Kilépési feltételnek, szintén a négyes fához hasonlóan, megadhatjuk a fa maximális mélységét, illetve az adott cellában szereplő maximális objektumszámot. Ideális esetben a fa leveleibe egy-egy objektum kerül.
 
 \subsection{Optimalizálási módszer kiválasztása}
 
