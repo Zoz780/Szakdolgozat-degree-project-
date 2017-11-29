@@ -58,7 +58,7 @@ A problémát az egyenes és a háromszög metszéspontjának számítására ve
 \label{fig:wireframe}
 \end{figure}
 
-\subsection{Program: Collision Detection Demo}
+\subsection{Program: Ütközésvizsgálat}
 
 Első lépésként, meg kell határozni azt az egyenest, amely azt írja le, amerre néz az adott karakter. Az egyenes megadható két pontjával. Az egyik az adott karakter pozíciójával egyezik meg. A másik, távoli pontot jelen esetben egy, az OpenGL-ben definiált függvényből, a \texttt{GluLookAt} függvényből határozzuk meg, aminek 9 paramétere van. Az első három a karakter jelenlegi pozíciója, a második három azt a pontot írja le merre nézünk (referencia pont), az utolsó három pedig azt határozza meg, hogy melyik tengelyen, és merre néz a felfelé vektor. A 9 paraméter közül a középső háromból lehet a második pontot  meghatározni.
 
@@ -116,25 +116,21 @@ A négyes és az oktális fa ugyanolyan módszert takar, csak a négyes fát sí
 \label{fig:quadtree}
 \end{figure}
 
+\subsection{A BSP fa}
+
+Hasonlóan a négyes fához, ez is síkbeli felosztásra alkalmas. A BSP fa mindig két részre osztja a teret, viszont nem az adott térrész felénél, hanem úgy, hogy az objektumok száma a két részben közel egyenlő legyen. Az osztás irányát a fa minden mélységi szintjén változtatja, egyszer vízszintes, egyszer függőleges a vágás. Az adott objektumig úgy jutunk el, hogy mindig kiválasztjuk, hogy az éppen vizsgált térrészben az osztás bal, vagy jobb oldalán van. Kilépési feltételnek, szintén a négyes fához hasonlóan, megadhatjuk a fa maximális mélységét, illetve az adott cellában szereplő maximális objektumszámot.
+
 \subsection{Optimalizálási módszer kiválasztása}
 
 A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrások felhasználását a fölösleges számítások mellőzésével, de ez a módszer felhasználható még akár egy raktárépület területének felosztására, hogy a keresést optimalizáljuk, így kevesebb időt vegyen igénybe.
 
 Azért a négyes fa alkalmazására esett a választás, mert ezt egyszerűbb volt implementálni, és a térrész magassága eleve limitált, így a $z$ összetevőnek kisebb a jelentősége.
 
-\subsection{Program: Quadtree Demo}
+\subsection{Program: Négyes fa}
 
-% TODO: Ezt itt korrigálni kellene, mert a szélesség és magasság megadására nincs szükség. Elegendő csak felváltva tárolni az $x$ és $y$ szerinti felosztáshoz használt értékeket.
+Megvalósítás során meg kell adnunk a gyökér csomópontot, ami a teljes, felosztani kívánt területet takarja. Egy csomópont $x$ és $y$ pozíciót, $x$ és $y$ hosszt, 4 darab gyerek node-ot (ha nincs, akkor az adott node értéke $nullptr$), illetve egy pont tömböt tartalmaz.
 
-
-Megvalósítás során meg kell adnunk a gyökér csomópontot, ami a teljes, felosztani kívánt területet takarja. Egy csomópont a következő adattagokat tartalmazza:
-\begin{itemize}
-\item $x$ és $y$ pozíció
-\item 4 darab gyerek node (ha nincs, akkor az adott node értéke NULL)
-\item Pont tömb, amelynek mérete a programozó által meghatározott
-\end{itemize}
-
-Ezután meg kell adnunk az objektumok helyét, amelyeket figyelembe véve történik meg a felosztás. Ha az objektumok száma a meghatározott értéknél nagyobb, az adott node gyerek node-jai meghatározásra kerülnek. Ez az egész folyamat egy rekurzív algoritmus. Gyerek node területének meghatározásánál, mivel a területet 4 felé osztjuk, adott, hogy mindkét oldalát feleznünk kell. A for ciklusban is a terület 4 felé osztása miatt megy az i 4-ig. 
+Meg kell adnunk az objektumok helyét, amelyeket figyelembe véve történik meg a felosztás. Ha az objektumok száma a meghatározott értéknél nagyobb, az adott node gyerek node-jai meghatározásra kerülnek. Ez az egész folyamat egy rekurzív algoritmus. Gyerek node területének meghatározásánál, mivel a területet 4 felé osztjuk, adott, hogy mindkét oldalát feleznünk kell. A for ciklusban is a terület 4 felé osztása miatt megy az i 4-ig. 
 
 \begin{algorithm}[H]
  \KwData{node; pontok\;}
@@ -148,3 +144,12 @@ Ezután meg kell adnunk az objektumok helyét, amelyeket figyelembe véve tört�
    }
  \caption{Négyes fa területfelosztás}
 \end{algorithm}
+
+A program indítása után a felhasználó által megadott objektumok száma, a terület mérete, és az egy területben lévő maximális objektumszám megadása után elvégzi a felosztást. Eredményként ahogy \aref{fig:quad_demo}. ábrán is szerepel, láthatjuk a kialakult struktúrát.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.65]{kepek/quadtree_demo.png}
+\caption{A négyes fa felbontással kialakult struktúra}
+\label{fig:quad_demo}
+\end{figure}

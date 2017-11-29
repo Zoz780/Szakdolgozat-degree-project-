@@ -47,7 +47,7 @@ A játék egyes elemeinek betöltéséről, kirajzolásáról diagramok készül
 \label{fig:map_diag}
 \end{figure}
 
-Mivel a magasságmező betöltésének ideje nagyon kiugró, külön megvizsgáltam (\ref{fig:height_map_diag}-ös ábra), hogy azon belül melyik rész okozza ezt.
+Mivel a magasságmező betöltésének ideje nagyon kiugró, külön megvizsgáltam (\ref{fig:height_map_diag}-ös ábra), hogy azon belül melyik rész okozza ezt. Feltűnő, hogy a magas betöltési időt a textúra betöltése okozza, mert nagy a felbontása. Ezen javítani úgy lehet, hogy kisebb felbontású textúrát választunk, és azt többször helyezzük a magasságmezőre. Ha ezt a megoldást válasszuk, akkor a jelenleg is alkalmazott módszert, miszerint a pálya elrendezésének megfelelően rajzoljuk be a magas pontok textúráit, nem lehet megvalósítani, mivel a többszörös ismétlés miatt nem fog illeszkedni.
  
 \begin{figure}[h]
 \centering
@@ -56,6 +56,7 @@ Mivel a magasságmező betöltésének ideje nagyon kiugró, külön megvizsgál
 \label{fig:height_map_diag}
 \end{figure}
 
+\newpage
 Végső soron megvizsgáltam, hogy egy képkocka elkészülése során, melyik játékkomponens megjelenítése vagy számítása hogyan oszlik el a teljes képkocka idejének elkészüléséhez képest. Ez fix 120 másodpercenkénti képkockaszám (FPS) mellett lett kiszámolva. Tudjuk, hogy 120FPS esetén a képkockák kirajzolása között eltelt időtartam 8,33ms, így elég volt csak a modellek, illetve a magasságmező kirajzolásának idejét mérni, a maradék értelemszerűen a további háttérszámításokat teszi ki.
 A másik ok, ami miatt fix FPS-t választottam a méréshez, az a túl magas másodpercenkénti képkockaszám (átlag 2000FPS) korlátozás nélkül. Ilyen esetben a képkockák kirajzolása között eltelt időtartam annyira kicsi volt, hogy még milliszekundumban is mérhetetlen volt.
 

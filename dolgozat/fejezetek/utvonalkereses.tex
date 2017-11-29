@@ -81,7 +81,7 @@ Az A* algoritmus implementálásának menetéről a \cite{Astar3}-es hivatkozás
 %\end{verbatim}
 
 %\section{A keresési algoritmus implementációja}
-\section{Program: Pathfinder Demo}
+\section{Program: Útvonalkeresés}
 
 Ezen program célja, hogy bemutassa az A* algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, áruszállítás esetén meghatározhatjuk a legrövidebb útvonalat A-tól B pontig, akár mozgó B pont esetén is.
 
@@ -102,16 +102,16 @@ A másik lehetőség, ha 8 pixelenként határozunk meg egy waypoint-ot, ami 48x
 \label{fig:diagram_utvonal}
 \end{figure}
 
-Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 8 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ahogy \aref{fig:kuszobertek}-as ábrán is látható, a például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. \aref{fig:mi_printscreen}  képen „.”-al a bejárható terület, „X”-el a falak, „S”-el az indulópont, „F”-el a célpont, „R”-el a legrövidebb útvonal van jelölve.
+Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 8 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ahogy \aref{fig:kuszobertek}-as ábrán is látható, a például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. \Aref{fig:mi_printscreen} képen feketével a falak, zölddel a kezdőpont, pirossal a célpont, fehérrel az útvonal van jelölve.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.23]{kepek/mi_printscreen.png}
+\includegraphics[scale=0.48]{kepek/mi_printscreen.png}
 \caption{Útvonal meghatározó algoritmus működése}
 \label{fig:mi_printscreen}
 \end{figure}
 
-A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olvasható, a játékon belül a beolvasott magasságmező pontbeli értékei határozzák meg azt. Erre azért van szükség, mert így lehet megoldani azt, hogy a mesterséges intelligencia alkalmazkodjon a környezetéhez. Ha a pályától függetlenül, statikusan lenne az összes waypoint típusa meghatározva, akkor ha a játékos más pályát rajzol, a pontok típusai nem illeszkednének az elrendezésre. Ezt a módszert alkalmazva, meg lehet adni, hogy egy bizonyos magasságnál csak másszon, vagy ugorjon, vagy bármilyen más tevékenységet végezzen. Ez egy fontos tulajdonsága a játéknak, mert azt úgy terveztem, hogy a felhasználó tetszőleges raszteres rajzprogram segítségével elkészíthesse a térképet, ne legyen hozzá szükség speciális szerkesztőeszközre. A program a bejárható teret ebből képes közvetlenül meghatározni, be tudja állítani, hogy a falakon a játékos ne tudjon átmenni, a meredek lejtőkről visszacsússzon.
+A példaprogramban még csak statikusan vannak megadva a falak, de mint ahogy fentebb olvasható, a játékon belül a beolvasott magasságmező pontbeli értékei határozzák meg azt. Erre azért van szükség, mert így lehet megoldani azt, hogy a mesterséges intelligencia alkalmazkodjon a környezetéhez. Ha a pályától függetlenül, statikusan lenne az összes waypoint típusa meghatározva, akkor ha a játékos más pályát rajzol, a pontok típusai nem illeszkednének az elrendezésre. Ezt a módszert alkalmazva, meg lehet adni, hogy egy bizonyos magasságnál csak másszon, vagy ugorjon, vagy bármilyen más tevékenységet végezzen. Ez egy fontos tulajdonsága a játéknak, mert azt úgy terveztem, hogy a felhasználó tetszőleges raszteres rajzprogram segítségével elkészíthesse a térképet, ne legyen hozzá szükség speciális szerkesztőeszközre. A program a bejárható teret ebből képes közvetlenül meghatározni, be tudja állítani, hogy a falakon a játékos ne tudjon átmenni, a meredek lejtőkről visszacsússzon.
 
 \begin{figure}[h]
 \centering
@@ -120,9 +120,7 @@ A képen még csak statikusan vannak megadva a falak, de mint ahogy fentebb olva
 \label{fig:kuszobertek}
 \end{figure}
 
-% TODO: Érdemes lenne a gradienses küszöböléses megoldást is megnézni! (Élkiemelést is lehet hozzá használni.)
-
 De a küszöbérték megadása nem mindig elegendő, ugyanis lehetnek olyan helyek a pályán, amelyek fal magasságúak, de bejárhatók, mert alacsony meredekségű emelkedő vezet fel oda. Ezt a problémát gradiens számítással lehet megoldani, ezzel van megoldva az is, hogy a játékos ne tudjon kimenni a játéktérből. Ahol túl nagy a meredekség, ott a waypoint típusát nem bejárhatóra kell állítani.
 
 \newpage
-A pontok típusának a pálya alapján legenerálása után, az A*-algoritmus segítségével meghatározza a program a legrövidebb útvonalat a cél waypointig, természetesen a pontok típusait figyelembe véve. Ezt másodpercenként legalább 15x újra kell számolni, ugyanis a játékos mozog, és a cél waypoint mindig a játékoshoz legközelebb eső pont, ami ezzel együtt változik.
+A pontok típusának a pálya alapján legenerálása után, az A*-algoritmus segítségével meghatározza a játék a legrövidebb útvonalat a cél waypointig, természetesen a pontok típusait figyelembe véve. Ezt másodpercenként legalább 15x újra kell számolni, ugyanis a játékos mozog, és a cél waypoint mindig a játékoshoz legközelebb eső pont, ami ezzel együtt változik.

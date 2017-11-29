@@ -53,7 +53,7 @@ Bosszú & Az ellenfél bosszúállósága.\\
 
 A bemeneti adatok alapján a program egy modulja kiértékeli az eseményeket, és annak kimeneti értékei határozzák meg a következményeket. Minden kimenet egy végrehajtható akciót jelöl (támadás, menekülés, életerő vagy lőszer töltés). A döntési fa az csak az állapotot határozza meg. Minden iterációban ki kell értékelni, és minden lehetséges esethez meg kell írni azt a kódrészt, ami az adott cselekvésfolyamatot elindítja. \Aref{fig:behavior}-es ábrán kékkel vannak jelölve a bemeneti paraméterek, zölddel és pirossal pedig azok következményei, vagyis a kimenetek.
 
-\subsection{Program: Behavior Demo}
+\subsection{Program: Viselkedés}
 
 Ezen a program elkészítésével az volt a célom, hogy minél egyszerűbben, vizuálisan lehessen bemutatni az ellenfelek viselkedését. A termelésinformatikában ennek az algoritmusnak a segítségével különböző döntési tényezőket lehet definiálni, hogy a robot azoknak megfelelően cselekedjen. Jelen esetben a játékost fehér, az ellenfeleket piros, a biztonságos pontokat kék négyzet jelöli. A biztonságos pontok azok a helyek, ahova egy ellenfél vissza tud vonulni, ha a játékos megmozdul. Minden ellenfél a korábban leírtaknak megfelelően rendelkezik egy karakterisztikával, amely minden esetben két tulajdonságból áll, a sebességből, és a félelemfaktorból. Utóbbi azt határozza meg, hogy ha megmozdul a játékos, mekkora legyen az a sugár, amelybe ha egy biztonságos pont beleesik, visszavonuljon. Ha több pont esik az adott sugárba, akkor azok közül is a legközelebbit választja.
 
@@ -77,7 +77,7 @@ A félelemfaktor függ az ellenfél sebességétől is, tehát gyors ellenfél e
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.4]{kepek/behavior_demo.png}
+\includegraphics[scale=0.42]{kepek/behavior_demo.png}
 \caption{Az ellenfelek félelemfaktora}
 \label{fig:behavior_demo}
 \end{figure}

@@ -1,18 +1,6 @@
 \Chapter{Animáció}
 \label{Chap:animacio}
 
-%A csontváz kezelésének és számítógépen való ábrázolásának bemutatása
-%
-%- Kulcsképkocka animáció
-%- Csontváz alapú animáció
-%- Blender-es animációs formátum
-%- Egyszerűbb görbék bemutatása, amelyeket animációkhoz használnak (interpolációs módszerek)
-%
-%A mesterséges intelligencia és az evolúciós algoritmusok szerepe a probléma megoldásában
-%
-%- Megnézni azt a cikket, amihez az animációs videó készült.
-%- Felvetni néhány módszert, például ANN vagy evolúciós algoritmus. (Itt még nem kell majd %implementálni, egyelőre csak legyen összegyűjtve.)
-
 A fejezet a játékokban alkalmazott animációs módszereket módszereket, illetve azok megvalósítási módját mutatja be.
 
 \section{Kulcsképkocka alapú animáció}
@@ -55,7 +43,7 @@ Szerencsére a módszer nem csak élőlények modellezésére alkalmazható hat�
 
 Előnye, hogy könnyen létre lehet így hozni dinamikus animációkat, mivel az összes karakter csontjait lehet forgatni, mozgatni, továbbá megkönnyíti a bonyolultabb animációk elkészítését. Hátránya viszont, hogy komplexebbek, így több processzoridőt igényelnek.
 
-\subsection{Program: Animation Demo}
+\subsection{Program: Animáció}
 
 Ennek a programnak az a célja, hogy bemutasson egy animációs módszert, amelyet bárki fel tud használni karakteranimációhoz játékfejlesztésnél. Az animációt megvalósító algoritmus hasznos lehet még egy automatizált gyártósor robotkarjainak mozgatásához is olyan esetekben, amikor például két vagy több karnak mindig egy adott szög tartása mellett, összehangolva kell mozogniuk. A \texttt{Character} osztályban az összes mozgatással és azok pontos megjelenítésével kapcsolatos számítások találhatók. Az \texttt{Action} az állapotok kezeléséért, a \texttt{ModelLoader} és a \texttt{VboDrawer} a modellek (testrészek) betöltéséért, kirajzolásáért felelős, amelyeket a \texttt{MainGame} osztály fog össze. A konkrét felépítés \aref{fig:anim_uml} ábrán látható.
 
@@ -107,9 +95,7 @@ Ez a legegyszerűbb interpolációs módszer, minden pontot egy egyenessel köt�
 
 \subsection{Lagrange-interpoláció}
 
-Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szeretnénk darabos animációt, akkor alkalmazhatjuk a Lagrange-interpoláció módszerét. ez egy lehetséges megoldás. Mivel a függvény sima, deriváltja folyontos, sokkal életszerűbb megközelítést lehet elérni vele, ez látható \aref{fig:lagrange}-es ábrán. 
-
-% TODO: Meg kellene nézni, hogy valóban mennyire alkalmas mozgás animációjához!
+Mivel a függvény sima, deriváltja folyontos, sokkal életszerűbb megközelítést lehet elérni vele, mint a lineáris interpolációval. Viszont nagy hátránya, hogy egyes esetekben indokolatlanul nagy hullámzások jelenhetnek meg a kirajzolt függvényen, közvetlen egymás mellett lévő két pont között, ez látható \aref{fig:lagrange}-es ábrán. Így ez az interpoláció animációhoz nem minden esetben alkalmas.
 
 \begin{figure}[h]
 \centering
@@ -118,9 +104,13 @@ Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szere
 \label{fig:lagrange}
 \end{figure}
 
-\subsection{Program: Lagrange Interpolation Demo}
+\subsection{B-spline}
 
-A felhasználónak lehetősége van beírni egy x értéket, amelyhez a program kiszámolja az y koordinátát Lagrange-interpolációval. Ez a program azért készült, hogy bemutassa, hogyan működik ez a fajta interpolálás.
+Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szeretnénk darabos animációt, akkor a B-spline interpolációt is alkalmazhatjuk. Ez esetben a görbe lokálisan vezérelhető, és a lineáris interpolációval ellentétben nem töredezett, így ez a legalkalmasabb folyamatos animációra. A lokális vezérelhetőség adja az előnyét a Lagrange-interpolációval szemben, mert így nem lehetnek kiugró értékek a grafikus képében.
+
+\subsection{Program: Lagrange Interpoláció}
+
+A felhasználónak lehetősége van megadni, hogy hány darab pontot szeretne definiálni, majd a pontok konkrét $x$ és $y$ koordinátáit, amelyekhez a program kiszámolja az y koordinátát Lagrange-interpolációval. Ez a program azért készült, hogy bemutassa, hogyan működik ez a fajta interpolálás.
 Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y értékeit. A num a tömbök elemeinek számát, az input pedig a bevitt értéket takarja.
 
 \begin{algorithm}[H]
@@ -139,10 +129,21 @@ Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y
  \caption{Lagrange-interpoláció implementálása}
 \end{algorithm} 
 
+A függvény grafikus megjelenítése az OpenGL-el lett megvalósítva. Az ablak alapértelmezett felbontása 1280x720, amelyhez a bevitt értékeket a program felskálázza úgy, hogy a függvény még sehol sem lógjon ki az ablakból, de a lehető legnagyobb méretű legyen. A skálázás mértékét mind konzolban, mind grafikusan megjeleníti, utóbbit csak addig, míg a szorzó nagyobb mint 9. Ez alatt az osztás már olyan sűrű 1280x720-as felbontás mellett, hogy értelmetlen, és csúnya a grafikus kirajzolása. 
+\newpage
+A függvény kezdete a legkisebb, a vége pedig a legnagyobb $x$ értéknél van, a köztes részen pedig minden egész $x$-hez kiszámolja a hozzá tartozó $y$-t, majd azokat vonallal összeköti. A konzol eredményei \aref{fig:lagrange_imp}. ábrán, a grafikus megjelenítés pedig \aref{fig:lagrange_demo}. ábrán látható.
+
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{kepek/lagrange_imp.png}
 \caption{Lagrange-interpolációs demó}
 \label{fig:lagrange_imp}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.43]{kepek/lagrange_graphics.png}
+\caption{Lagrange-interpolációs demó}
+\label{fig:lagrange_demo}
 \end{figure}
 
