@@ -108,7 +108,14 @@ Mivel a függvény sima, deriváltja folyontos, sokkal életszerűbb megközelí
 
 \subsection{B-spline}
 
-Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szeretnénk darabos animációt, akkor a B-spline interpolációt is alkalmazhatjuk. Ez esetben a görbe lokálisan vezérelhető, és a lineáris interpolációval ellentétben nem töredezett, így ez a legalkalmasabb folyamatos animációra. A lokális vezérelhetőség adja az előnyét a Lagrange-interpolációval szemben, mert így nem lehetnek kiugró értékek a grafikus képében.
+Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szeretnénk darabos animációt, akkor a B-spline interpolációt is alkalmazhatjuk. Ez esetben a görbe lokálisan vezérelhető, és a lineáris interpolációval ellentétben nem töredezett, így ez a legalkalmasabb folyamatos animációra. A lokális vezérelhetőség adja az előnyét a Lagrange-interpolációval szemben, mert így nem lehetnek kiugró értékek a grafikus képében. \Aref{fig:spline}. ábrán kék pontokkal van jelölve a lineáris interpoláció töréspontjai, és vékonyabb vonallal annak grafikus képe, hogy egyértelműen szemléltethető legyen a különbség.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.43]{kepek/bspline_interpol.png}
+\caption{B-spline interpoláció}
+\label{fig:spline}
+\end{figure}
 
 \subsection{Program: Lagrange Interpoláció}
 
@@ -132,7 +139,7 @@ Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y
 \end{algorithm} 
 
 A függvény grafikus megjelenítése az OpenGL-el lett megvalósítva. Az ablak alapértelmezett felbontása 1280x720, amelyhez a bevitt értékeket a program felskálázza úgy, hogy a függvény még sehol sem lógjon ki az ablakból, de a lehető legnagyobb méretű legyen. A skálázás mértékét mind konzolban, mind grafikusan megjeleníti, utóbbit csak addig, míg a szorzó nagyobb mint 9. Ez alatt az osztás már olyan sűrű 1280x720-as felbontás mellett, hogy értelmetlen, és csúnya a grafikus kirajzolása. 
-\newpage
+
 A függvény kezdete a legkisebb, a vége pedig a legnagyobb $x$ értéknél van, a köztes részen pedig minden egész $x$-hez kiszámolja a hozzá tartozó $y$-t, majd azokat vonallal összeköti. A konzol eredményei \aref{fig:lagrange_imp}. ábrán, a grafikus megjelenítés pedig \aref{fig:lagrange_demo}. ábrán látható.
 
 \begin{figure}[h]
