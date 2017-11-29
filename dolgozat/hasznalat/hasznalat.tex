@@ -2,4 +2,36 @@
 \chapter*{Adathordozó használati útmutató}
 \addcontentsline{toc}{chapter}{Adathordozó használati útmutató}
 
-Ebben a fejezetben kell megadnunk, hogy a szakdolgozathoz mellékelt adathordozót (pl. CD) hogyan lehet elérni, milyen strukturát követ. Minimum 1 maximum 4 oldal a terjedelem. Lehet benne több alszakasz is. A fejezet címe nem módosítható, hasonlóan a következõ részhez (Irodalomjegyzék).
+A szakdolgozathoz elkészült 8 példaprogram, forráskódjával együtt a "Demók" mappában található, amelyben almappák vannak minden demónak. Minden program mappájában található egy futtatható állomány, illetve az "src" mappában a forráskód fájljai.
+
+\subsubsection{Animációs demó}
+
+Indítás után lehetőség van a W-vel előrefelé, S-el hátrafelé haladni, az A-val és D-vel jobbra és balra forogni. A kamerát a C gombbal tudjuk függetleníteni a robottól, így nem fogja követni azt. Ez esetben is a mozgás a WSAD gombokkal lehetséges, viszont a SPACE-el, illetve az X-el tudjuk emelni, és leengedni a kamerát. A C gomb újbóli lenyomásával vissza tudjuk helyezni a kamerát a robot mögé.
+
+\subsubsection{Viselkedés demó}
+
+A képernyőn látható pontok közül a pirosak az ellenfelek, a kékek a biztonsági pontok, ahova az ellenfelek visszavonulnak. Fehér ponttal van ábrázolva a játékos, amely a WSAD gombokkal irányítható. Az R gombbal lehetőség van újragenerálni az ellenfeleket új tulajdonságokkal, az E gombbal pedig megjeleníthető az a kör, amely a félelmüket jelöli. Ha megmozdul a játékos, a körön belül lévő pontok közül a legközelebbihez vonul vissza.
+
+\subsubsection{Ütközésvizsgálat demó}
+
+Lehetőség van a kamera pozíciójának megváltoztatására a WSAD gombokkal, illetve a kamera forgatására a (NUM)8546 gombokkal. Alapértelmezetten két darab piros háromszög jelenik meg, amelyek zöldre váltanak, ha a kamera irányvektora metszi azokat. Konzolban közben látható a pontos metszéspont.
+
+\subsubsection{Magasságmező demó}
+
+Ez a program csak a magasságmező betöltését, és VBO-s kirajzolását szemlélteti, indítása után felhasználói beavatkozásra nincs lehetőség.
+
+\subsubsection{Modellbetöltés demó}
+
+Ez a program csak a .obj kiterjesztésű modell betöltését, és VBO-s kirajzolását szemlélteti, indítása után felhasználói beavatkozásra nincs lehetőség.
+
+\subsubsection{Lagrange-interpolációs demó}
+
+A konzolos felületen meg kell adni, hogy hány pontot szeretnénk definiálni. Ennek beírása után a pontok koordinátáját kell megadnunk sorban, x és y értékeket felváltva, az x értékek csak pozitívak lehetnek. Ezután konzolban az egyes x pontokhoz tartozó y értékek és a skálázás mértéke, a grafikus ablakban pedig a függvény képe látható. További beavatkozásra nincs lehetőség.
+
+\subsubsection{Útvonalkeresés demó}
+
+A képen látható pontok közül feketék a falak, zöld a kezdőpont, piros a célpont, illetve fehérek a legrövidebb útvonal egyes részei. Lehetőség van a piros, azaz a célpont mozgatására, ez esetben a legrövidebb útvonalat mindig újraszámolja.
+
+\subsubsection{Négyes fa demó}
+
+Indítás után meg kell adni hogy mennyi véletlenszerű pontot szeretnénk definiálni, a terület méretét, illetve hogy mekkora legyen az a küszöbérték, amely felett már felossza a területet a program. Ezen értékek megadása után a konzolos ablakban megjelenik a felosztás fa, megjelenítve a területeken lévő pontok számát.
