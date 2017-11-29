@@ -11,7 +11,7 @@ Az Unreal engine első változata 1998-ban jelent meg, az első játék, amelyik
 
 A CryEngine-t először a Far Cry (\ref{fig:farcry}. ábra) nevű játéknál használták 2004-ben, a második, illetve harmadik verziót pedig a Crysis trilógiához. Ezen játékok mindegyike a magas, korát megelőző grafikai megjelenésről lett híres, nagyon szép összképet lehet elérni ezzel a motorral. Az első változat már támogatta a pixel és vertex shaderek 3.0-ás változatát, illetve a HDR megvilágítást.
 
-Az általam írt motorhoz a legközelebb a Quake engine (id Tech) 2-es és 3-mas verziója áll. Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, például lövés pályájának számítása, játék fizikájának számításai, ütközésdetektálás, billentyűzet és egérkezelés, hangokkal kapcsolatos számítások, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítése a motor adta eszközökkel. Praktikusan arra kell törekednünk, hogy olyan játékmotort válasszunk, amelyikben minél több kész funkció elérhető számunkra.
+Az általam írt motorhoz a legközelebb a Quake engine (id Tech) 2-es és 3-as verziója áll. Ezen motorok, összességében bármelyik megoldást is választjuk, a játékunk fő komponenseinek a háttérszámításait végzik, például lövés pályájának számítása, játék fizikájának számításai, ütközésdetektálás, billentyűzet és egérkezelés, hangokkal kapcsolatos számítások, hálózati kommunikáció, animációk, mesterséges intelligencia. A játékmotor kiválasztása vagy megírása után, a következő lépés a játék felépítése a motor adta eszközökkel. Praktikusan arra kell törekednünk, hogy olyan játékmotort válasszunk, amelyikben minél több kész funkció elérhető számunkra.
 
 \begin{figure}[h]
 \centering
@@ -32,15 +32,11 @@ A játékban megvalósítandó elemek között szerepel a lövés, a mestersége
 
 \subsection{Mesterséges intelligencia}
 
-% TODO: Itt még nem ilyen, osztály szintjén kellene tárgyalni a dolgot. Az MI és az ütközésvizsgálat kapcsolatát kellene inkább részletezni kicsit.
-
-Az MI osztálynak elsősorban az a feladata, hogy az ellenfelek egy meghatározott útvonalon mozogjanak, ne menjenek át falakon, menjenek egymásba. A véletlenszerűen lerakott ellenfelet a legközelebbi definiált waypoint-hoz kell irányítani, definiálni kell a célpontot (ami elsődlegesen a játékos), és ki kell számítani a pontokon keresztül vezető legrövidebb útvonalat.
+A mesterséges intelligenciának elsősorban az a feladata, hogy az ellenfelek egy meghatározott útvonalon mozogjanak, ne menjenek át falakon, menjenek egymásba. A véletlenszerűen lerakott ellenfelet a legközelebbi definiált waypoint-hoz kell irányítani, definiálni kell a célpontot (ami elsődlegesen a játékos), és ki kell számítani a pontokon keresztül vezető legrövidebb útvonalat.
 
 \subsection{Hangok}
 
-% TODO: A játékmotorok felsorolása után kellene egy részletesebb leírást csinálni az SDL-ről.
-
-Egy játékhoz hozzátartoznak a hangeffektek, zenék is, amik élvezetessé teszik azt. Egy jól megválasztott zene például nagyon sokat tud javítani a játékélményen. Ezek megszólalásáért az SDL\_mixer felelős, ami lehetővé teszi azt is, hogy több hang egyidőben, átfedésben megszólaljon, és ne várják meg egymást. Ezt a Sound osztályban valósítottam meg. Lehetőség van hangcsatornákat megadni, folyamatos újrajátszást, illetve a hangok egymáshoz viszonyított hangerejét beállítani.
+Egy játékhoz hozzátartoznak a hangeffektek, zenék is, amik élvezetessé teszik azt. Egy jól megválasztott zene például nagyon sokat tud javítani a játékélményen. Ezek megszólalásáért az SDL\_mixer felelős, ami lehetővé teszi azt is, hogy több hang egyidőben, átfedésben megszólaljon, és ne várják meg egymást. Lehetőség van hangcsatornákat megadni, folyamatos újrajátszást, illetve a hangok egymáshoz viszonyított hangerejét beállítani.
 
 \subsection{Magasságmező}
 
@@ -57,8 +53,6 @@ Mindenképp szerettem volna olyan elemet a játékba, ami megkülönbözteti a t
 \subsection{A lövés}
 
 Egy ilyen játékban alapelem az is, hogy tudjunk lőni, mivel e nélkül az egész értelmét vesztené. A játéktér alapvetően egy textúrázott polygonháló. A lövés során azt kell meghatározni, hogy a lövedék melyik háromszögbe ütközne bele, ha a nézet irányába lőnénk, és egyenes pályát feltételeznénk. Ez egy olyan metszéspontszámítást tesz szükségessé, amelyet a játék összes objektumára el kell végeznünk. Megjelenítés szempontjából ez tipikusan egy lövés textúra illesztését jelenti.
-
-% TODO: Az ellenfelekre vonatkozó ütközésvizsgálatnál a hitbox csak addig kell, amíg azt meg sikerül állapítani, hogy a tartalmazó hitbox-ot eltalálta-e a lövés. Azt követően már a konkrét modellre is meg lehet csinálni a vizsgálatot.
 
 \section{A játék szabályai és mechanikája}
 

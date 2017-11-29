@@ -1,7 +1,7 @@
 \Chapter{Ütközésvizsgálat}
 \label{Chap:utkozesvizsgalat}
 
-Ebben a fejezetben az ütközésvizsgálattal kapcsolatos számításokról, optimalizációkról lesz szó. Ütközésvizsgálatra több szempontból is szükség van. Egyrészt, vizsgálni kell, hogy a játékos a játszható területen belül van-e, azaz nem mehet át falakon, tereptárgyakon, nem mehet fel túl meredek emelkedőn. Másrészt, vizsgálni kell, hogy a játékos által leadott lövedék eltalálja-e a domborzatot, tereptárgyakat, jelezni kell a lövedék becsapódását. Harmadrészt regisztrálni kell az ellenfeleket eltaláló leadott lövéseket. A második és harmadik pont nagyon hasonló, de mégis célszerűnek tünt külön kezelni. A magasságmező és az egyéb modellek ütközésvizsgálatának módját azért érdemes külön kezelni, mert a statikus magasságmező esetében másfajta optimalizálási módok állna rendelkezésre, mint az egyéb tereptárgyak, és animált karakterek esetében.
+Ebben a fejezetben az ütközésvizsgálattal kapcsolatos számításokról, optimalizációkról lesz szó. Ütközésvizsgálatra több szempontból is szükség van. Egyrészt, vizsgálni kell, hogy a játékos a játszható területen belül van-e, azaz nem mehet át falakon, tereptárgyakon, nem mehet fel túl meredek emelkedőn. Másrészt, vizsgálni kell, hogy a játékos által leadott lövedék eltalálja-e a domborzatot, tereptárgyakat, jelezni kell a lövedék becsapódását. Harmadrészt regisztrálni kell az ellenfeleket eltaláló leadott lövéseket. A második és harmadik pont nagyon hasonló, de mégis célszerűnek tűnt külön kezelni. A magasságmező és az egyéb modellek ütközésvizsgálatának módját azért érdemes külön kezelni, mert a statikus magasságmező esetében másfajta optimalizálási módok állna rendelkezésre, mint az egyéb tereptárgyak, és animált karakterek esetében.
 
 \section{A karakterek ütközésvizsgálata mozgás szempontjából}
 
@@ -23,7 +23,7 @@ $$
 $$
 ahol $\delta_x$ és $\delta_y$ az $x$ és $y$ tengely szerinti tetszőlegesen kis eltolást jelöli.
 
-A gradiens közelítésének ez az egyik legegyszerűbb módja. Előnyös, mivel az interpolt felület pontbeli értékeit egyébként ki kell számítani, illetve a számítási pontosság megfelelő a játékmotor működéséhez.
+A gradiens közelítésének ez az egyik legegyszerűbb módja. Előnyös, mivel az interpolált felület pontbeli értékeit egyébként ki kell számítani, illetve a számítási pontosság megfelelő a játékmotor működéséhez.
 
 Ezen felül a gravitáció ami nagyon lényeges, mert a pályának vannak olyan magaslati pontjai, amelyekre fel lehet jutni. Ha egy ilyenre felmegyünk, és nincs semmilyen erő, ami a karaktert a föld felé húzná, akkor felfelé ugyan lekövetné a talajmagasságot, de le már nem tudna esni.
 
@@ -47,7 +47,7 @@ A koordinátarendszer és az erők mértékegységének megfelelően szükségü
  
 \section{A domborzat és tereptárgyak üközésvizsgálata a lövés szempontjából}
 
-A domborzattal való ütközésvizsgálat azért fontos, hogy azon keresztül ne lehessen eltalálni az ellenfeleket, illetve ezzel is realisztikussabbá tehetjük a játékot. A nagy poligonszám miatt ez is optimalizációt igényel.
+A domborzattal való ütközésvizsgálat azért fontos, hogy azon keresztül ne lehessen eltalálni az ellenfeleket, illetve ezzel is realisztikusabbá tehetjük a játékot. A nagy poligonszám miatt ez is optimalizációt igényel.
 
 A problémát az egyenes és a háromszög metszéspontjának számítására vezethetjük vissza. A domborzat háromszögeit fekete szegélyekkel láthatjuk \aref{fig:wireframe} ábrán.
 
@@ -88,7 +88,7 @@ A hitbox arra szolgál, hogy egy közelítő becslésünk legyen az ütközésvi
 
 % Ebben az esetben azért nem a pontos, látható geometriára számoljuk a találatokat, mert annak nagyon nagy erőforrásigénye lenne, ellenben az lenne a legpontosabb, tehát amit látunk, az jelenti a találatot. A találatszámításra használt leegyszerűsített geometria előnye, hogy sokkal kevesebb hátérszámításra van szükség. Viszont mivel nem azt találjuk el, amit látunk, előfordulhatnak kellemetlen, vagy érdekes szituációk. Előfordulhat, hogy úgy találjuk el az ellenfelet, hogy ott valójában nem látunk semmit, vagy ennek ellenkezője, hogy elvileg eltaláljuk, de az a rész nem tartozik a hitbox-hoz.
 
-Online lövöldözős játékoknál további problémát jelenthet a hálózati kommunikációból eredő hosszú válaszidő. Ebben az esetben az ellefél játékosok nem minden esetben azon a pozíción vannak, mint ahol látjuk őket, mivel a számunkra megjelenített helyüket a játékmotor lokálisan becsli. Amennyiben a becslés rossz volt (az ellenfél játékos más irányba mozdult el, mint ahová a kliensünk azt várta volna), az általunk leadott pontos lövést érvénytelennek kell tekinteni.
+Online lövöldözős játékoknál további problémát jelenthet a hálózati kommunikációból eredő hosszú válaszidő. Ebben az esetben az ellenfél játékosok nem minden esetben azon a pozíción vannak, mint ahol látjuk őket, mivel a számunkra megjelenített helyüket a játékmotor lokálisan becsli. Amennyiben a becslés rossz volt (az ellenfél játékos más irányba mozdult el, mint ahová a kliensünk azt várta volna), az általunk leadott pontos lövést érvénytelennek kell tekinteni.
 
 \section{Optimalizálási módszerek}
 
@@ -96,7 +96,7 @@ Az ütközésvizsgálatra minden képkocka kiszámítása előtt szükség van. 
 
 \subsection{A játéktér szabályos felosztása}
 
-Az optimalizálás egyik módja, hogy felosztjuk a játékteret kisebb részekre, majd ezeket olyan struktúrába rendezzük, hogy a bennük való keresés hatékonyabb legyen. Ennek egyik egyszerűbb változata, hogy egyenközű felosztálst alkalmazunk. Ezt követően meg kell határoznunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található. Egyenközű felosztásra láthatunk egy példát \aref{fig:grid}. ábrán.
+Az optimalizálás egyik módja, hogy felosztjuk a játékteret kisebb részekre, majd ezeket olyan struktúrába rendezzük, hogy a bennük való keresés hatékonyabb legyen. Ennek egyik egyszerűbb változata, hogy egyenközű felosztást alkalmazunk. Ezt követően meg kell határoznunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található. Egyenközű felosztásra láthatunk egy példát \aref{fig:grid}. ábrán.
 
 A karakterek ütközésvizsgálatánál elegendő, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyikben épp tartózkodik az objektum, de ajánlott a körülötte levő 8 részre is.
 

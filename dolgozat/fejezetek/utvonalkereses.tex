@@ -51,41 +51,13 @@ Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket mé
 
 A csomópontokhoz tárolni kell az addig bejárt távolságot, illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található. Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, ugyanis ezekből az adatokból számolja ki egy adott pont prioritását (a kezdőponttól való távolságának és a célponttól való távolságának összegét), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, tehát arra kell tovább indulni \cite{Astar3}.
 
-%\begin{verbatim}
-%1.Helyezük a start_node-ot az Open listába. f(start_node)=h(start_node)
-%2.Amíg az Open lista nem üres
-%3.	Vegyük a az Open listából azt a node-ot, amely a legkisebb költségű
-%4.		f(current_node) = g(current_node) + h(current_node)
-%5.	ha current_node a célpont, megtaláltuk a megoldást; break
-%6.	Generáljunk minden állapothoz successor_node-ot, ami a 
-%		current_node-ból származik
-%7.	ciklus minden current_node successor_node-ján
-%8.		Állítsuk be a successor_current_költséget, amely g(current_node) 
-%				+ w(current_node, successor_node)
-%9.		ha successor_node az Open listában van
-%10.			ha g(successor_node) <= successor_current_költség ugrás 19-re
-%11.			különben ha successor_node a Closed listában van
-%12.			ha g(successor_node) <= successor_current_költség ugrás 19-re
-%13.			Mozgassuk successor_node-ot a Closed listából az Open listába
-%14.		    különben
-%15.			Adjuk hozzá successor_node-ot az Open listához
-%16.			Állítsuk a h(successor_node)-ot hogy megkapjuk a heurisztikus 
-%				távolságot a célig
-%17.		Legyen egyenlő g(successor_node) a successor_current_költséggel
-%18.		Állítsuk be node_successor szülőjét current_node-nak
-%19.	Adjuk hozzá a current_node-ot a Closed listához
-%20.ha(current_node != goal_node) lépjünk ki a következővel: 
-%						(az Open lista üres)
-%\end{verbatim}
-
-%\section{A keresési algoritmus implementációja}
 \section{Program: Útvonalkeresés}
 
 Ezen program célja, hogy bemutassa az A*-algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, például áruszállítás esetén meghatározhatjuk a legrövidebb útvonalat A-tól B pontig, akár mozgó B pont esetén is.
 
-A program a játéktér alapját képző domborzatot, egy képből olvassa be. Ez a magasságmező, ahol egy adott pont magasságát a világossága határozza meg, minél világosabb, annál magasabb pontot jelent a domborzaton, így 256 féle magasság lehetséges, ami az aktuális változathoz megfelelő felbontásnak bizonyult. 
+A program a játéktér alapját képző domborzatot egy képből olvassa be. Ez a magasságmező, ahol egy adott pont magasságát a világossága határozza meg, minél világosabb, annál magasabb pontot jelent a domborzaton, így 256 különböző magasság lehetséges, amely az aktuális változathoz megfelelő felbontásnak bizonyult. 
 
-A játékteret úgy érdemes kialakítani, hogy jelentős része (körülbelül 95\%) bejárható legyen.
+A játékteret úgy érdemes kialakítani, hogy jelentős része (körülbelül 90\%) bejárható legyen.
 
 A magasságmezőhöz tartozó kép felbontása $384 \times 384$ pixel, amely a térkép megfelelő részletességű megjelenítése miatt ennyi. Ez egy olyan felbontás, amely alatt már nagyon látszik a geometria gyenge részletessége a jelenlegi méret mellett, viszont a nagyobb felbontás már csak nagyon kis mértékben befolyásolná a kinézetet, ellenben növelné az erőforrásigényt. 
 
@@ -121,4 +93,4 @@ A példaprogramban még csak statikusan vannak megadva a falak, de mint ahogy fe
 De a küszöbérték megadása nem mindig elegendő, ugyanis lehetnek olyan helyek a pályán, amelyek fal magasságúak, de bejárhatók, mert alacsony meredekségű emelkedő vezet fel oda. Ezt a problémát gradiens számítással lehet megoldani, ezzel van megoldva az is, hogy a játékos ne tudjon kimenni a játéktérből. Ahol túl nagy a meredekség, ott a waypoint típusát nem bejárhatóra kell állítani.
 
 \newpage
-A pontok típusának a pálya alapján legenerálása után, az A*-algoritmus segítségével meghatározza a játék a legrövidebb útvonalat a cél waypointig, természetesen a pontok típusait figyelembe véve. Ezt másodpercenként legalább 15x újra kell számolni, ugyanis a játékos mozog, és a cél waypoint mindig a játékoshoz legközelebb eső pont, ami ezzel együtt változik.
+A pontok típusának a pálya alapján legenerálása után, az A*-algoritmus segítségével meghatározza a játék a legrövidebb útvonalat a cél waypointig, természetesen a pontok típusait figyelembe véve. Ezt másodpercenként legalább 5x újra kell számolni, ugyanis a játékos mozog, és a cél waypoint mindig a játékoshoz legközelebb eső pont, ami ezzel együtt változik.
