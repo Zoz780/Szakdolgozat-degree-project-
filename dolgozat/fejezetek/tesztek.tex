@@ -3,7 +3,7 @@
 
 Ez a fejezet az általam írt játékmotor, illetve az azzal megvalósított funkciók különböző megvalósításainak tesztjeiről szól. Különböző elemeket, különféle módszerrel lehet implementálni, többféleképp lehet optimalizálni, amelyek kirajzolási idejében különbségek vannak. Léteznek kisebb és nagyobb hatékonyságú algoritmusok a különböző problémák megoldására.
 
-\section{Kirajzolási módszerek}
+\Section{Kirajzolási módszerek}
 
 Alapvetően két fő kirajzolási módszer létezik az OpenGL-ben. Az egyik a régebbi glBegin-glEnd blokkos, a másik a modernebb Vertex Buffer Object-es (VBO). A kettő között a legfőbb különbség a gyorsaság. VBO-s megjelenítési mód esetén, mint ahogy a nevében is benne van, egy buffer-be (tárolóba) betöltjük az összes kirajzolni kívánt elemet, és azt egyben adjuk át a videokártyának, a legmegfelelőbb formátumban. Ez sokkal gyorsabb, mivel a régebbi egyesével adja át a pontokat kirajzolásra. \Aref{fig:old_fps}-es ábrán a régebbi, \aref{fig:vbo_fps}-es  ábrán pedig a VBO-s megjelenítési mód látható. Ugyanazoknak az objektumoknak a kirajzolása sokkal gyorsabb VBO-val, ez látható mindkét képen a bal felső sarokban. Sokkal jobb a hardver kihasználtsága is, és az FPS (képkocka/másodperc) is kicsivel több, mint 8x magasabb.
 
@@ -21,7 +21,7 @@ Alapvetően két fő kirajzolási módszer létezik az OpenGL-ben. Az egyik a r�
 \label{fig:vbo_fps}
 \end{figure}
 
-\section{Profilozás}
+\Section{Profilozás}
 
 A játék egyes elemeinek betöltéséről, kirajzolásáról diagramok készültek. Minden ábrán, a függőleges tengelyen az adott objektum, vagy elem neve látható, a vízszintes tengelyen pedig az idő van feltüntetve milliszekundumban.
 

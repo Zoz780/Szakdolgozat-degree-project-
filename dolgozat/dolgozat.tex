@@ -2,20 +2,31 @@
 
 \usepackage{dolgozat}
 \usepackage[]{algorithm2e}
+\usepackage[breaklinks]{hyperref}
+\usepackage{indentfirst}
+\hypersetup{breaklinks=true}
+
 \linespread{1.2}
 
 \begin{document}
-\include{cimlap/cimlap}
 
-\pagestyle{myheadings}
+\include{cimlap/cimlap}
 
 \include{feladatkiiras/feladatkiiras}
 
+\cleardoublepage
+\pagenumbering{gobble}
 \tableofcontents
+\cleardoublepage
+\pagenumbering{arabic}
 
 \newpage
 
+\pagestyle{myheadings}
 \pagestyle{fancy}
+
+\clearpage
+\setcounter{page}{1}
 
 \include{fejezetek/bevezetes}
 \include{fejezetek/problemakor}

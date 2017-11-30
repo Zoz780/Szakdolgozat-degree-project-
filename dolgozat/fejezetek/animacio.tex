@@ -3,7 +3,7 @@
 
 A fejezet a játékokban alkalmazott animációs módszereket, illetve azok megvalósítási módját mutatja be.
 
-\section{Kulcsképkocka alapú animáció}
+\Section{Kulcsképkocka alapú animáció}
 
 Kulcsképkocka alapú mozgatást több területen használnak, például filmek készítésénél vagy játékok fejlesztésénél. Bármilyen célra is használjuk, az elv nem változik. Meg kell adnunk olyan pontokat, amelyeket szeretnénk ha az adott tárgy, vagy objektum áthaladna. Ezzel egy előre meghatározott mozgási útvonalat adunk meg. Az egyszerűbb animációknál egy alapállapot és egy végállapot van megadva, ilyen lehet egy redőny leengedése és felhúzása, ajtó vagy kapu kinyitása, becsukása. Ilyen jellegű, alap szintű animációknál, például ha egy redőnyt le akarunk engedni, annyi a dolgunk hogy megadjuk a kezdő és végpontot, majd idő paraméter szerint interpolálni. Ahogy az \aref{fig:keyframe} ábrán látható, ez a kulcsképkockák közötti mozgást eredményezi.
 
@@ -16,7 +16,7 @@ Kulcsképkocka alapú mozgatást több területen használnak, például filmek 
 
 A vertex alapú animációt a 3D játékfejlesztésben karakterek mozgatásához a 2000-es évek elejéig használták. Megvalósítása egyszerűbb, viszont sok memóriát igényel a tárolása, és nem eredményez olyan természetes mozgást általában, mint a csontváz alapú animáció. Ezt a technológiát többek között a Quake 1, 2 és 3 alkalmazta.
 
-\subsection{Az md2-es formátum}
+\SubSection{Az md2-es formátum}
 
 Az md2-es modelltárolási formátumot az \textit{idSoftware} fejlesztette ki 1997-ben a Quake 2 nevű játékához. A formátum kulcsképkocka animációk tárolására alkalmas. Tartalmazza az adott modell geometriáit, és a képkockánkénti animációkat. 
 
@@ -24,7 +24,7 @@ A fájl adatai olyan struktúrában helyezkednek el, hogy könnyedén kirajzolta
 
 A fejléc egy struktúra, amely a fájl elején kezdődik, és tartalmazza az összes, feldolgozás szempontjából lényeges információt a fájl egészéről. Ilyen például a textúra szélessége, magassága, egy képkocka mérete, képkockák száma.
 
-\section{Csontváz alapú animáció}
+\Section{Csontváz alapú animáció}
 
 A legtöbb mai játék ezt a módszert alkalmazza karakterek mozgatásához. Az alapötlete az, hogy a mozgatható részeket hierarchiába szervezi. Az élőlények felépítése általában olyan, hogy ezzel a fajta animálási móddal egyszerűen modellezhetők. 
 
@@ -43,9 +43,9 @@ Szerencsére a módszer nem csak élőlények modellezésére alkalmazható hat�
 
 Előnye, hogy könnyen létre lehet így hozni dinamikus animációkat, mivel az összes karakter csontjait lehet forgatni, mozgatni, továbbá megkönnyíti a bonyolultabb animációk elkészítését. Hátránya viszont, hogy komplexebbek, így több processzoridőt igényelnek.
 
-\subsection{Program: Animáció}
+\SubSection{Program: Emberszerű karakter animálása}
 
-Ennek a programnak az a célja, hogy bemutasson egy animációs módszert, amelyet bárki fel tud használni karakteranimációhoz játékfejlesztésnél. Az animációt megvalósító algoritmus hasznos lehet még egy automatizált gyártósor robotkarjainak mozgatásához is olyan esetekben, amikor például két vagy több karnak mindig egy adott szög tartása mellett, összehangolva kell mozogniuk. A \texttt{Character} osztályban az összes mozgatással és azok pontos megjelenítésével kapcsolatos számítások találhatók. Az \texttt{Action} az állapotok kezeléséért, a \texttt{ModelLoader} és a \texttt{VboDrawer} a modellek (testrészek) betöltéséért, kirajzolásáért felelős, amelyeket a \texttt{MainGame} osztály fog össze. A konkrét felépítés \aref{fig:anim_uml} ábrán látható.
+Az \texttt{Animáció} nevű programnak az a célja, hogy bemutasson egy animációs módszert, amelyet bárki fel tud használni karakteranimációhoz játékfejlesztésnél. Az animációt megvalósító algoritmus hasznos lehet még egy automatizált gyártósor robotkarjainak mozgatásához is olyan esetekben, amikor például két vagy több karnak mindig egy adott szög tartása mellett, összehangolva kell mozogniuk. A \texttt{Character} osztályban az összes mozgatással és azok pontos megjelenítésével kapcsolatos számítások találhatók. Az \texttt{Action} az állapotok kezeléséért, a \texttt{ModelLoader} és a \texttt{VboDrawer} a modellek (testrészek) betöltéséért, kirajzolásáért felelős, amelyeket a \texttt{MainGame} osztály fog össze. A konkrét felépítés \aref{fig:anim_uml} ábrán látható.
 
 \begin{figure}[h]
 \centering
@@ -76,13 +76,13 @@ Az animálásért felelős részek időfüggőek, ugyanis garantálni kell hogy 
 
 A kamera alapesetben a robot mögött van, és annak mozgását követi, amelyet szintén a felhasználó tud irányítani. Az animáció bármikor félbeszakítható, nem áll vissza az alapértelmezett állásba, hogy megtekinthető legyen a mozgás minden fázisa.
 
-\section{Interpolációs módszerek}
+\Section{Interpolációs módszerek}
 
-Animációkészítés során többféle interpolációt használhatunk, ami azt jelenti, hogy ismert értékek alapján, a közbülső pontokra, vagyis nem ismert értékekre adunk közelítést.
+Animációkészítés során többféle interpolációt használhatunk, ami azt jelenti, hogy ismert értékek alapján, a közbülső pontokra, vagyis nem ismert értékekre adunk közelítést \cite{curves}.
 
 Különféle interpolációs módszerek vannak. A választás közülük nyilván attól függ, hogy pontosan mit szeretnénk megvalósítani. Egyszerűbb esetekben még megfelelő a lineáris interpoláció, viszont általában túlságosan szögletes mozgást eredményez, ezért valamilyen simább görbével való útvonal közelítést érdemes használni.
 
-\subsection{Lineáris interpoláció}
+\SubSection{Lineáris interpoláció}
 
 Ez a legegyszerűbb interpolációs módszer, minden pontot egy egyenessel kötünk össze. Nem összetett mozgásoknál ez megfelelő lehet, viszont ha több mozgás követi egymást rögtön, akkor darabos. Minden előre meghatározott pont, amit érinteni kell egy törést jelent, így komplexebb, sima mozgásokhoz nem alkalmas, ez látható \aref{fig:linear}. ábrán.
 
@@ -93,7 +93,7 @@ Ez a legegyszerűbb interpolációs módszer, minden pontot egy egyenessel köt�
 \label{fig:linear}
 \end{figure}
 
-\subsection{Lagrange-interpoláció}
+\SubSection{Lagrange-interpoláció}
 
 Mivel a függvény sima, deriváltja folyontos, sokkal életszerűbb megközelítést lehet elérni vele, mint a lineáris interpolációval. Viszont nagy hátránya, hogy egyes esetekben indokolatlanul nagy hullámzások jelenhetnek meg a kirajzolt függvényen, közvetlen egymás mellett lévő két pont között, ez látható \aref{fig:lagrange}-es ábrán. Így ez az interpoláció animációhoz nem minden esetben alkalmas.
 
@@ -104,7 +104,7 @@ Mivel a függvény sima, deriváltja folyontos, sokkal életszerűbb megközelí
 \label{fig:lagrange}
 \end{figure}
 
-\subsection{B-spline}
+\SubSection{B-spline}
 
 Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szeretnénk darabos animációt, akkor a B-spline interpolációt is alkalmazhatjuk. Ez esetben a görbe lokálisan vezérelhető, és a lineáris interpolációval ellentétben nem töredezett, így ez a legalkalmasabb folyamatos animációra. A lokális vezérelhetőség adja az előnyét a Lagrange-interpolációval szemben, mert így nem lehetnek kiugró értékek a grafikus képében. \Aref{fig:spline}. ábrán kék pontokkal van jelölve a lineáris interpoláció töréspontjai, és vékonyabb vonallal annak grafikus képe, hogy egyértelműen szemléltethető legyen a különbség.
 
@@ -115,7 +115,7 @@ Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szere
 \label{fig:spline}
 \end{figure}
 
-\subsection{Program: Lagrange Interpoláció}
+\SubSection{Program: Lagrange Interpoláció}
 
 A felhasználónak lehetősége van megadni, hogy hány darab pontot szeretne definiálni, majd a pontok konkrét $x$ és $y$ koordinátáit, amelyekhez a program kiszámolja az y koordinátát Lagrange-interpolációval. Ez a program azért készült, hogy bemutassa, hogyan működik ez a fajta interpolálás.
 Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y értékeit. A num a tömbök elemeinek számát, az input pedig a bevitt értéket takarja.
