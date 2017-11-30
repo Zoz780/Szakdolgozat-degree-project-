@@ -1,13 +1,28 @@
 \Chapter{Összegzés}
 \label{Chap:osszegzes}
 
-A korábbiakban olyan optimalizálási módszerek kerületek bemutatásra, amelyek nagyban csökkentik egy adott játék, vagy alkalmazás erőforrásigényét. Ezen eszközök együttes használata segíti hozzá a fejlesztőket ahhoz, hogy végül egy jóval komplexebb játékot el tudjanak készíteni. A játékfejlesztés egy nagyon időigényes munka, ugyanis minden összetevőjét nem csak megírni kell, hanem optimalizálni is. Minden elem működhetne optimalizálás nélkül is, és tény, hogy jóval kevesebb munkaóra alatt elkészülne, de vagy sokkal egyszerűbb lenne, vagy sokkal erősebb hardverre lenne szüksége, és a mai technológiával nem lenne megvalósítható. Egy mai modern játék elképesztően komplex, nagy bejárható terület, sok lehetőség, reális fizika, illetve szép, szinte teljesen valósághű grafika jellemzi, amely akár még fél évtizede is elképzelhetetlen volt.
+A dolgozatban olyan optimalizálási módszerek kerületek bemutatásra, amelyek nagyban csökkentik egy adott játék, (vagy általában egy alkalmazás) erőforrásigényét. A bemutatott eszközök gyakran szükségesek ahhoz, hogy egy komplex grafikus alkalmazás optimalizációját a fejlesztők el tudják végezni.
 
-OpenGL-el való megjelenítés esetén a VBO-t érdemes használni, mert ez ad olyan optimális sebességet, amelyre szükségünk van.
+A játékfejlesztés egy nagyon időigényes munka, ugyanis az esetek jelentős részében szükség van a kód optimalizálására. E nélkül az alkalmazások nem lennének képesek a virtuális valóság valós idejű megjelenítésére, vagy csak jóval nagyobb hardverigény mellett. Egy mai modern játékot olyan hatalmas bejárható terület, valószerű fizika, illetve szép, szinte teljesen valósághű grafika jellemez, amely akár még fél évtizede is elképzelhetetlen lett volna.
 
-A négyes fa és az oktális fa a nagy játéktér optimalizálásában segít. A karakter ütközésvizsgálatának szempontjából érdemes nem csak azt a területet figyelembe venni, amelyben éppen tartózkodik, hanem a közvetlen körülötte levőket is minden irányban, mert ha a szélére érve nem váltana valamilyen oknál fogva rögtön a játék, nem történnek nem várt esetek, például nem megyünk át objektumokon, esünk le olyan helyen ahol szilárd talaj van.
+A megjelenítéshez az OpenGL grafikus függvénykönyvár került felhasználásra. Ahhoz, hogy a megjelenítés sebessége elfogadható legyen, vertex buffer objektumok (VBO-k) használatára volt szükség.
 
-Találatregisztrálás minden mai játékban egy leegyszerűsített geometriára történik, ezzel teszik lehetővé azt, hogy minél több játékos lehessen egy időben a pályán. Léteznek olyan többjátékos online játékok, ahol egyszerre akár 100-an is lehetnek, egy időben, egy szerveren. Ez nem csak a kliens, hanem a szerver szempontjából is előnyös.
+A dolgozat bemutatja a négyes fákat és az oktális fákat, amelyek a nagy játéktérben való keresés optimalizálásában segítenek. A karakter ütközésvizsgálatának szempontjából a probléma annyival komplexebb, hogy ott mozgó karakterről van szó, amelynél az ütközésvizsgálatot a karakter több pontjára is el kell végeznünk.
 
-Mivel egy modern játék esetében az egyik fő cél az, hogy minél valóságszerűbb legyen a játékmenet, csontváz animációt használnak az élőlények mozgatásához, hogy minél simább, életszerű mozgásokat láthasson a játékos.
+A lövések esetében a találatok regisztrálását egy egyszerűsített geometriára szokták elvégezni. Ez szintén egy olyan optimalizálási módszer, ami ahhoz szükséges, hogy a játék futási ideje elfogadható legyen, még nagyobb méretű térképek esetében is.
 
+Mivel egy modern játék esetében az egyik fő cél az, hogy minél valóságszerűbb legyen a játékmenet, ezért a karakterek mozgatására is kiemelt figyelmet kell fordítani. A dolgozat bemutatja az ezek mozgatásához gyakran használt csontváz alapú karakteranimálási módot és ehhez kapcsolódóan az elterjedt interpolációs görbéket.
+
+\Chapter{Summary}
+
+The thesis presents some of the well-known optimization methods, which are able to decrease the resource requirements of a computer game or an application. The mentioned methods are essential for developers for creating complex graphical applications.
+
+The game development is a time consuming task, because we have to optimize the resulted source code for achieving acceptable performance. Without these steps, the applications were not able to render the frames of the virtual reality in real-time. The modern computer games have large, explorable areas, realistic physics and photorealistic graphics, which was unimaginable a half decade ago.
+
+The application uses OpenGL for rendering. For the acceptable performance we have to use vertex buffer objects (VBO).
+
+This work explains the concept and implementation of quadtrees and octrees, which makes the searching in large game space efficient. The collision detection of characters is much more complex, because the characters can move and they have more points.
+
+In the case of bullets, the registration of the hits is usually applied to a simplified geometry. It is also an optimization method which necessary for real-time games in the case of large maps.
+
+The realistic game mechanics is also one of the main goal of modern games. Therefore, we have to consider the details of character animations. This work presents the frequently used skeleton-based animation methods and the corresponding interpolation curves.
