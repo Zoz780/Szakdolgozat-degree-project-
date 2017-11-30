@@ -120,6 +120,13 @@ Komplexebb animációknál, mint például egy élőlény mozgása, ha nem szere
 A felhasználónak lehetősége van megadni, hogy hány darab pontot szeretne definiálni, majd a pontok konkrét $x$ és $y$ koordinátáit, amelyekhez a program kiszámolja az y koordinátát Lagrange-interpolációval. Ez a program azért készült, hogy bemutassa, hogyan működik ez a fajta interpolálás.
 Adott két tömb, amelyek tartalmazzák a függvény megadott pontjainak x és y értékeit. A num a tömbök elemeinek számát, az input pedig a bevitt értéket takarja.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.4]{kepek/lagrange_graphics.png}
+\caption{Lagrange-interpolációs demó}
+\label{fig:lagrange_demo}
+\end{figure}
+
 \begin{algorithm}[H]
  \KwData{x[]; y[]; num; input; s; t; eredmeny\;}
  \KwResult{Adott x-hez tartozó y koordináta}
@@ -145,12 +152,5 @@ A függvény kezdete a legkisebb, a vége pedig a legnagyobb $x$ értéknél van
 \includegraphics[scale=0.9]{kepek/lagrange_imp.png}
 \caption{Lagrange-interpolációs demó}
 \label{fig:lagrange_imp}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.43]{kepek/lagrange_graphics.png}
-\caption{Lagrange-interpolációs demó}
-\label{fig:lagrange_demo}
 \end{figure}
 
