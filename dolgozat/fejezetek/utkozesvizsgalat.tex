@@ -53,7 +53,7 @@ A problémát az egyenes és a háromszög metszéspontjának számítására ve
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.45]{kepek/map_wireframe.png}
+\includegraphics[scale=0.44]{kepek/map_wireframe.png}
 \caption{A térkép geometriájának határvonalai}
 \label{fig:wireframe}
 \end{figure}
@@ -64,7 +64,7 @@ Az \texttt{Ütközésvizsgálat} nevű program mutatja be az implementációját
 
 Második lépésként ki kell számolni ennek az egyenesnek a háromszögekkel vett metszéspontját. A háromszögeket a három csúcspontjukkal írjuk le. Kell lennie egy függvénynek, amelynek a háromszög három csúcspontját, és az egyenes két végpontját átadva, visszakapjuk a metszéspont $(x, y, z)$ koordinátáját. A számítás eredményének egy szemléltetését \aref{fig:triangle} ábrán láthatjuk.
 
-\begin{figure}[h]
+\begin{figure}[htb]
 \centering
 \includegraphics[scale=0.5]{kepek/one_triangle.png}
 \caption{Egyenes és háromszög metszéspontja vizualizációval}
@@ -77,7 +77,7 @@ A számításhoz a függvény először megvizsgálja, hogy azt a síkot, amelye
 
 Ennek a működése hasonló, mint a domborzat és tereptárgyak üközésvizsgálatánál, azzal a különbséggel, hogy itt azt kell vizsgálni, hogy az ellenfelek körül lévő, a játékosok számára láthatatlan hengerrel van-e metszéspontja az adott egyenesnek. Ezt a hengert nevezzük jelen esetben \textit{hitbox}-nak. Ennek a megválasztása hatással van egyrészt az ütközésvizsgálat pontosságára, másrészt pedig a számítási időre.
 
-\begin{figure}[h]
+\begin{figure}[htb]
 \centering
 \includegraphics[scale=0.38]{kepek/hitbox.png}
 \caption{Különböző részletességű hitbox-ok}
@@ -136,8 +136,6 @@ A \texttt{Négyesfa} programon szemléltettem az eljárás implementációját. 
 
 Meg kell adnunk az objektumok helyét, amelyeket figyelembe véve történik meg a felosztás. Ha az objektumok száma a meghatározott értéknél nagyobb, az adott node gyerek node-jai meghatározásra kerülnek. Ez az egész folyamat egy rekurzív algoritmus. Gyerek node területének meghatározásánál, mivel a területet 4 felé osztjuk, adott, hogy mindkét oldalát feleznünk kell. A for ciklusban is a terület 4 felé osztása miatt megy az i 4-ig. 
 
-\newpage
-
 \begin{algorithm}[H]
  \KwData{node; pontok\;}
  \KwResult{A teljes terület összes része}
@@ -150,6 +148,8 @@ Meg kell adnunk az objektumok helyét, amelyeket figyelembe véve történik meg
    }
  \caption{Négyes fa területfelosztás}
 \end{algorithm}
+
+\newpage
 
 A program indítása után a felhasználó által megadott objektumok száma, a terület mérete, és az egy területben lévő maximális objektumszám megadása után elvégzi a felosztást. Eredményként ahogy \aref{fig:quad_demo}. ábrán is szerepel, láthatjuk a kialakult struktúrát.
 
