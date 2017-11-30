@@ -1,7 +1,7 @@
 \Chapter{Komponensek}
 \label{Chap:komponensek}
 
-\section{Felhasznált technológiák}
+\Section{Felhasznált technológiák}
 
 Windows operációs rendszeren az egyik legnépszerűbb integrált fejlesztőkörnyezet a Microsoft Visual Studio, amelynek a 2015-ös verzióját használom. Ennek felülete a fejlesztők számára egyszerűen áttekinthető, kényelmesen elérhetővé teszi a szükséges funkciókat. A játék megírásához a C++ programozási nyelv tűnt a legmegfelelőbbnek. A mai játékok jó részét szintén ezen a nyelven írják, mivel a fordítást követően natívan fut a program. A játékok esetében általában hatékonyabb erőforrás kihasználást tesz lehetővé.
 
@@ -9,7 +9,7 @@ A képi világ kirajzolásához, illetve a hangok megszólaltatásához az SDL 2
 
 Ez egy olyan alkalmazás, vagy játékfejlesztési segédeszköz, amelynek komponenseit felhasználva platformfüggetlenül lefordítható a forráskód. Működik Linux-on, Windows\\-on, MacOSX-en, illetve bármely egyéb operációs rendszeren.
 
-\section{Az alkalmazás fő részei}
+\Section{Az alkalmazás fő részei}
 
 A fő részek, és azok kapcsolatainak szemléltetéséhez egy osztálydiagramot készítettem (\ref{fig:uml} ábra.). Ezen megtekinthető a játék felépítése, melyik osztálynak melyik az őse, illetve mely osztályok vannak kapcsolatban egymással. Továbbá feltüntetésre kerültek a kapcsolatokhoz szükséges adattagok, metódusok.
 
@@ -30,7 +30,7 @@ A \texttt{Sound} a hangok megszólalásáért, a megfelelő zenék lejátszásá
 \label{fig:uml}
 \end{figure}
 
-\subsection{Magasságmező betöltése, textúrázása}
+\SubSection{Magasságmező betöltése, textúrázása}
 
 A játék \texttt{.obj} kiterjesztésű modelleket használ, és ezekre húzza rá a textúrát. A megjelenítéshez VBO-t, azaz \textit{Vertex Buffer Object}-et használ, ami a modell adatait tárolja, és egyben, a legmegfelelőbb formátumban adja át a videókártyának.
 
@@ -59,7 +59,7 @@ Ez egy fekete fehér kép 256 színárnyalatából tud 256 különböző magass�
 \label{fig:screenshot}
 \end{figure}
 
-\subsection{A karakter irányítása és a játék fizikája}
+\SubSection{A karakter irányítása és a játék fizikája}
 
 A játékban egy karaktert irányíthatunk az ő szemszögéből. A karakternek van magassága, térbeli pozíciója, nézési iránya. A nézeti iránynak megfelelő térrészt láthatjuk a játékos szemszögéből. A látható térrész alsó részén látszik a karakterhez tartozó fegyver, illetve annak a keze.
 
@@ -67,7 +67,7 @@ A játékban egy karaktert irányíthatunk az ő szemszögéből. A karakternek 
 
 % A kamerához van forgatva a fegyvere, és az ő szemszögéből látható testrészei. Minden cselekedetéhez tartozik egy bool (két állapotú) változó. Például ha tegyük fel előre megyünk, akkor az ehhez tartozó változó „true (igaz)” értéket vesz fel, amelyhez különböző eseményeket lehet kötni, mint például a kamera előre mozgatását, bizonyos animációk lejátszását. Továbbá a játékosra folyamatosan hat egy gravitációs erő, ami egy float típusú szám. Ezzel lehet elérni azt, hogy ha ugrunk, a játékos visszaessen a talajra.
 
-\subsection{Hangok betöltése és lejátszása}
+\SubSection{Hangok betöltése és lejátszása}
 
 Egyidejűleg több hang lejátszására is szükség lehet, amelyet valamilyen események váltanak ki. A karakter előrehaladása közben egyidejűleg ha lövünk, az már több hangcsatornát igényel. Ha csak egy csatorna lenne, akkor a lépéshang lejátszása után, vagy azt megszakítva lehetne csak lejátszani a lövés hangját. A játék alatti zenéhez szintén szükséges egy külön csatorna.
 
@@ -78,11 +78,11 @@ Egyidejűleg több hang lejátszására is szükség lehet, amelyet valamilyen e
 \label{fig:menu}
 \end{figure}
 
-\subsection{Lövéssel kapcsolatos számítások}
+\SubSection{Lövéssel kapcsolatos számítások}
 
 A lövés háttérszámításait egy külön komponens végzi. A számítások elvégzésére minden képkocka renderelése előtt szükség van. Ennek első lépése, hogy kiszámítjuk azt a vektort, amerre a játékos néz. Mivel a világ háromszögekből épül fel, ezért ki kell számolni az egyenes háromszöggel való metszéspontját. Bemeneti adatként tehát a játékteret alkotó háromszögek vannak benne, a játékos irányvektor, kimenetként pedig azon $(x, y, z)$ koordinátákat várjuk, amely pontban az ütközés bekövetkezett, illetve plusz információnként a metszett objektumot is tudnunk kell azonosítani. Több százezer háromszögről beszélünk, ezért ez további optimalizálandó problémákat vet fel, amit a későbbiekben mutat be részletesen a dolgozat.
 
-\subsection{Mesterséges intelligencia}
+\SubSection{Mesterséges intelligencia}
 
 Mivel nem egy elsősorban online játszható, FPS játékról van szó, így mindenképpen szükséges egy, az ellenfelek mozgását irányító mesterséges intelligencia. Az ellenfelek mozgásához az útvonalak keresése A* algoritmus segítségével történik. A játék véletlenszerűen, különböző helyekre kirak adott mennyiségű ellenfelet, amiknek közeledni kell a játékos felé, különböző kritériumoknak megfelelve. Ezek a kritériumok azért kellenek, mert a pályán vannak játékelemek, amiken nem lehet átmenni, illetve az ellenfelek sem mehetnek egymásba. 
 
@@ -91,7 +91,7 @@ Az alapötlet az, hogy a pályán le lesznek rakva pontok (úgynevezett \textit{
 Bemeneti adatként a waypointok állnak rendelkezésre, kimenetként pedig az útvonalat várjuk, amerre az ellenfelek mozogni szeretnének. Az ellenfél elsődleges célpontja a játékos, de adódhatnak olyan helyzetek amikor előtte egyéb dolgokat helyez előtérbe, mint például az életerő töltés, vagy lőszer felvétel. Itt fontos szerepet kap az ellenfél karakterisztikája, ami szintén bemeneti paraméter.
 
 \newpage
-\section{A játékindítás folyamata}
+\Section{A játékindítás folyamata}
 
 A játék indításának folyamata \aref{fig:starting}. ábrán látható.
 

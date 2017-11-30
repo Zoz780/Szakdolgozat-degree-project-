@@ -3,19 +3,19 @@
 
 A fejezet az útvonalkeresésnél alkalmazott módszereket mutatja be.
 
-\section{A waypoint-ok fogalma és jellemzői}
+\Section{A waypoint-ok fogalma és jellemzői}
 
 A waypoint a tér egy meghatározott pontja, amely nem látható a játékos számára. A mesterséges intelligencia ezeket használja fel az ellenfelek mozgási útvonalainak meghatározásához. Azért van rájuk szükség, mert a pályán különféle terepakadályok vannak (például falak), különböző játékelemek, amiken nem lehet átmenni, és ezekkel a pontokkal egyértelműen meg lehet határozni a bejárható helyeket.
 
 A waypoint-okhoz rendelhetünk különféle többletinformációkat. Ilyenek lehetnek például, hogy az adott pontban a gépi játékosnak meg kell állnia, le kell guggolnia.
 
-\section{A waypoint-hoz tartozó adatok}
+\Section{A waypoint-hoz tartozó adatok}
 
 A waypoint-ok pozícióját két dimenziós Descartes koordináta rendszerben $(x, y)$ koordinátákkal adhatjuk meg. Annak ellenére, hogy térben vagyunk, nincs szükség $z$ koordinátára, mert a talaj magassága külön kezelendő, mivel az hatással lesz az ellenfelek viselkedésére. Ennek köszönhetően mindig az adott pálya talajmagasságához tud igazodni, nem szükséges azt külön megadni.
 
 Fontos, hogy a waypoint-nak legyen egy típusa, amely meghatározza, hogy az adott pont milyen szerepet játszik. Ennek segítségével ki lehet számolni, hogy a játékban szereplő karakterek hova mehetnek.
 
-\section{Útvonalkeresés waypoint-ok alapján}
+\Section{Útvonalkeresés waypoint-ok alapján}
 
 Tegyük fel, hogy a gép létrehoz egy ellenfelet egy véletlenszerű pozícióba. (Ezt a szakzsargonban \textit{spawn}-olásnak hívják.) Az ellenfeleknek az a fő feladatuk, hogy a lehető legrövidebb útvonalon eljussanak a játékoshoz, és megtámadják azt. 
 
@@ -39,7 +39,7 @@ Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
   \caption{A legközelebbi pont megkeresése}
 \end{algorithm} 
 
-\section{Az A*-algoritmus}
+\Section{Az A*-algoritmus}
 
 Ezt az algoritmust a hatékonysága miatt gyakran használják gráfokban való legrövidebb útvonalak kereséséhez. Bemenetként a gráf két pontját adjuk meg, eredményül pedig az ezek között lévő legrövidebb útvonalat várjuk.
 
@@ -51,9 +51,9 @@ Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket mé
 
 A csomópontokhoz tárolni kell az addig bejárt távolságot, illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található. Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, ugyanis ezekből az adatokból számolja ki egy adott pont prioritását (a kezdőponttól való távolságának és a célponttól való távolságának összegét), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, tehát arra kell tovább indulni \cite{Astar3}.
 
-\section{Program: Útvonalkeresés}
+\Section{Program: Útvonalkeresés A*-algoritmussal}
 
-Ezen program célja, hogy bemutassa az A*-algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, például áruszállítás esetén meghatározhatjuk a legrövidebb útvonalat A-tól B pontig, akár mozgó B pont esetén is.
+Az \texttt{Útvonalkeresés} nevű program célja, hogy bemutassa az A*-algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, például áruszállítás vagy mobil robotok útvonatltervezése esetén meghatározhatjuk a legrövidebb útvonalat $A$-tól $B$ pontig, akár mozgó $B$ pont esetén is \cite{mobile}.
 
 A program a játéktér alapját képző domborzatot egy képből olvassa be. Ez a magasságmező, ahol egy adott pont magasságát a világossága határozza meg, minél világosabb, annál magasabb pontot jelent a domborzaton, így 256 különböző magasság lehetséges, amely az aktuális változathoz megfelelő felbontásnak bizonyult. 
 
