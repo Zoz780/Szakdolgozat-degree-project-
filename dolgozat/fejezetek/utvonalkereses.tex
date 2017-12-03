@@ -19,7 +19,7 @@ Fontos, hogy a waypoint-nak legyen egy típusa, amely meghatározza, hogy az ado
 
 Tegyük fel, hogy a gép létrehoz egy ellenfelet egy véletlenszerű pozícióba. (Ezt a szakzsargonban \textit{spawn}-olásnak hívják.) Az ellenfeleknek az a fő feladatuk, hogy a lehető legrövidebb útvonalon eljussanak a játékoshoz, és megtámadják azt. 
 
-Az útvonalkeresés folyamata a következő fő lépésekből épül fel.
+Az útvonalkeresés folyamata a következő fő lépésekből épül fel:
 \begin{itemize}
 \item A waypoint-ok közül megkeressük az adott karakterhez vagy objektumhoz legközelebbit. Először ezt a pontot kell megközelíteni.
 \item A waypoint-ok közül meghatározzuk a célponthoz legközelebbit, ez lesz majd a célpont.
@@ -49,11 +49,11 @@ Négyzetrács esetében eldöntendő kérdés, hogy az átlók mentén haladhatu
 
 Az algoritmus végrehajtásához listát kell vezetni azon pontokról amiket még nem jártunk be, illetve azokról is, amelyeket bejártunk, ezeket hívjuk nyitott (Open) illetve zárt (Closed) csomópont listáknak. A nyitott csomópontok listája az, amelyek vizsgálatára még a későbbiekben szükség lehet, a zárt csomópont lista pedig a már vizsgált pontok halmaza \cite{Astar2}.
 
-A csomópontokhoz tárolni kell az addig bejárt távolságot, illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található. Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, ugyanis ezekből az adatokból számolja ki egy adott pont prioritását (a kezdőponttól való távolságának és a célponttól való távolságának összegét), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, tehát arra kell tovább indulni \cite{Astar3}.
+A csomópontokhoz tárolni kell az addig bejárt távolságot, illetve le kell tárolni egy prioritás változót is, amiben az eddig megtett út, és a még hátralevő út távolságainak összege található. Fontos ugyanis az algoritmus működése szempontjából az eddig megtett, és a hátralévő út, mert ezekből az adatokból számolja ki egy adott pont prioritását (a kezdőponttól való távolságának és a célponttól való távolságának összegét), és így dönti el milyen pontokat részesítsen előnyben. A prioritás minél kisebb érték, annál jobb, tehát arra kell tovább indulni \cite{Astar3}.
 
 \Section{Program: Útvonalkeresés A*-algoritmussal}
 
-Az \texttt{Útvonalkeresés} nevű program célja, hogy bemutassa az A*-algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is, például áruszállítás vagy mobil robotok útvonatltervezése esetén meghatározhatjuk a legrövidebb útvonalat $A$-tól $B$ pontig, akár mozgó $B$ pont esetén is \cite{mobile}.
+Az \texttt{Útvonalkeresés} nevű program célja, hogy bemutassa az A*-algoritmus egy lehetséges alkalmazását, amely felhasználható egyéb területeken is. Áruszállítás, vagy például mobil robotok útvonatltervezése esetén meghatározhatjuk a legrövidebb útvonalat $A$-tól $B$ pontig, akár mozgó $B$ pont esetén is \cite{mobile}.
 
 A program a játéktér alapját képző domborzatot egy képből olvassa be. Ez a magasságmező, ahol egy adott pont magasságát a világossága határozza meg, minél világosabb, annál magasabb pontot jelent a domborzaton, így 256 különböző magasság lehetséges, amely az aktuális változathoz megfelelő felbontásnak bizonyult. 
 
@@ -72,7 +72,7 @@ A másik lehetőség, ha 8 pixelenként határozunk meg egy waypoint-ot, ami 48x
 \label{fig:diagram_utvonal}
 \end{figure}
 
-Első lépésként, létre kell hozni a waypoint hálót, amiken a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 8 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ahogy \aref{fig:kuszobertek}-as ábrán is látható, a például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. \Aref{fig:mi_printscreen} képen feketével a falak, zölddel a kezdőpont, pirossal a célpont, fehérrel az útvonal van jelölve.
+Első lépésként, létre kell hozni a waypoint hálót, amelyen a mesterséges intelligencia végig fog menni, elkerülvén hogy átmenjen a tereptárgyakon, falakon. Ezek a pontok 8 pixelenként, függetlenül az adott pixel színétől meghatározásra kerülnek, viszont a típusa az adott pixel színének megfelelően lesz beállítva. Ahogy \aref{fig:kuszobertek}-as ábrán is látható, a például egy pont színéből 50-nél nagyobb érték jön ki, akkor a pont típusa zártra állítódik, így ebbe az irányba nem lesz lehetséges a továbbhaladás. \Aref{fig:mi_printscreen}. képen feketével a falak, zölddel a kezdőpont, pirossal a célpont, fehérrel az útvonal van jelölve.
 
 \begin{figure}[h]
 \centering

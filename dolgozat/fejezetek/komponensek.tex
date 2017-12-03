@@ -63,10 +63,6 @@ Ez egy fekete fehér kép 256 színárnyalatából tud 256 különböző magass�
 
 A játékban egy karaktert irányíthatunk az ő szemszögéből. A karakternek van magassága, térbeli pozíciója, nézési iránya. A nézeti iránynak megfelelő térrészt láthatjuk a játékos szemszögéből. A látható térrész alsó részén látszik a karakterhez tartozó fegyver, illetve annak a keze.
 
-% TODO: Ezt az irányítás megvalósításánál kellene megemlíteni.
-
-% A kamerához van forgatva a fegyvere, és az ő szemszögéből látható testrészei. Minden cselekedetéhez tartozik egy bool (két állapotú) változó. Például ha tegyük fel előre megyünk, akkor az ehhez tartozó változó „true (igaz)” értéket vesz fel, amelyhez különböző eseményeket lehet kötni, mint például a kamera előre mozgatását, bizonyos animációk lejátszását. Továbbá a játékosra folyamatosan hat egy gravitációs erő, ami egy float típusú szám. Ezzel lehet elérni azt, hogy ha ugrunk, a játékos visszaessen a talajra.
-
 \SubSection{Hangok betöltése és lejátszása}
 
 Egyidejűleg több hang lejátszására is szükség lehet, amelyet valamilyen események váltanak ki. A karakter előrehaladása közben egyidejűleg ha lövünk, az már több hangcsatornát igényel. Ha csak egy csatorna lenne, akkor a lépéshang lejátszása után, vagy azt megszakítva lehetne csak lejátszani a lövés hangját. A játék alatti zenéhez szintén szükséges egy külön csatorna.
@@ -80,13 +76,13 @@ Egyidejűleg több hang lejátszására is szükség lehet, amelyet valamilyen e
 
 \SubSection{Lövéssel kapcsolatos számítások}
 
-A lövés háttérszámításait egy külön komponens végzi. A számítások elvégzésére minden képkocka renderelése előtt szükség van. Ennek első lépése, hogy kiszámítjuk azt a vektort, amerre a játékos néz. Mivel a világ háromszögekből épül fel, ezért ki kell számolni az egyenes háromszöggel való metszéspontját. Bemeneti adatként tehát a játékteret alkotó háromszögek vannak benne, a játékos irányvektor, kimenetként pedig azon $(x, y, z)$ koordinátákat várjuk, amely pontban az ütközés bekövetkezett, illetve plusz információnként a metszett objektumot is tudnunk kell azonosítani. Több százezer háromszögről beszélünk, ezért ez további optimalizálandó problémákat vet fel, amit a későbbiekben mutat be részletesen a dolgozat.
+A lövés háttérszámításait egy külön komponens végzi. A számítások elvégzésére minden képkocka renderelése előtt szükség van. Ennek első lépése, hogy kiszámítjuk azt a vektort, amerre a játékos néz. Mivel a világ háromszögekből épül fel, ezért ki kell számolni az egyenes háromszöggel való metszéspontját. Bemeneti adatként tehát a játékteret alkotó háromszögek vannak benne, a játékos irányvektora, kimenetként pedig azon $(x, y, z)$ koordinátákat várjuk, amely pontban az ütközés bekövetkezett, illetve plusz információnként a metszett objektumot is tudnunk kell azonosítani.
 
 \SubSection{Mesterséges intelligencia}
 
 Mivel nem egy elsősorban online játszható, FPS játékról van szó, így mindenképpen szükséges egy, az ellenfelek mozgását irányító mesterséges intelligencia. Az ellenfelek mozgásához az útvonalak keresése A* algoritmus segítségével történik. A játék véletlenszerűen, különböző helyekre kirak adott mennyiségű ellenfelet, amiknek közeledni kell a játékos felé, különböző kritériumoknak megfelelve. Ezek a kritériumok azért kellenek, mert a pályán vannak játékelemek, amiken nem lehet átmenni, illetve az ellenfelek sem mehetnek egymásba. 
 
-Az alapötlet az, hogy a pályán le lesznek rakva pontok (úgynevezett \textit{waypointok}), amelyek csak az ellenfelek számára lesznek láthatók. Ha kikerül egy adott ellenfél a pályára, az első feladata az lesz, hogy megkeresse a hozzá legközelebb eső waypointot. Ezután az A* algoritmus segítségével meghatározza a játékoshoz legközelebb eső waypointhoz vezető legrövidebb utat, végigmegy rajta, majd ha elérte, akkor onnantól a játékos lesz a közvetlen elsődleges célpontja. Mivel a játékos folyamatosan mozog, mindezt másodpercenként legalább 15-30x kell kiszámolni.
+Az alapötlet az, hogy a pályán le lesznek rakva pontok (úgynevezett \textit{waypointok}), amelyek csak az ellenfelek számára lesznek láthatók. Ha kikerül egy adott ellenfél a pályára, az első feladata az lesz, hogy megkeresse a hozzá legközelebb eső waypointot. Ezután az A* algoritmus segítségével meghatározza a játékoshoz legközelebb eső waypointhoz vezető legrövidebb utat, végigmegy rajta, majd ha elérte, akkor onnantól a játékos lesz a közvetlen elsődleges célpontja.
 
 Bemeneti adatként a waypointok állnak rendelkezésre, kimenetként pedig az útvonalat várjuk, amerre az ellenfelek mozogni szeretnének. Az ellenfél elsődleges célpontja a játékos, de adódhatnak olyan helyzetek amikor előtte egyéb dolgokat helyez előtérbe, mint például az életerő töltés, vagy lőszer felvétel. Itt fontos szerepet kap az ellenfél karakterisztikája, ami szintén bemeneti paraméter.
 
@@ -95,7 +91,7 @@ Bemeneti adatként a waypointok állnak rendelkezésre, kimenetként pedig az ú
 
 A játék indításának folyamata \aref{fig:starting}. ábrán látható.
 
-Első lépésben a játék létrehozza az SDL ablakot, és konkrétan beállítja annak pozícióját, függőleges és vízszintes felbontását, a teljes képernyős módot, illetve elrejti az egérkurzort.
+Első lépésben a játék létrehozza az SDL ablakot, és konkrétan beállítja annak pozícióját, függőleges és vízszintes felbontását, illetve a teljes képernyős módot.
 
 A második lépés hogy az előtte létrehozott ablakot beállítja aktívra, és OpenGL megjelenítésre. Létre kell hozni egy érvényes OpenGL kirajzolás kontextust, hogy inicializáljuk a belépési pontokat. Ez használhatóvá teszi az összes elérhető funkciót, amit az OpenGL magban definiáltak. Ezután betölti a főmenü megjelenítéséhez szükséges modelleket, textúrákat.
 
@@ -105,7 +101,7 @@ A negyedik lépésben aktiválja az eseménykezelő komponenst, ami a felhaszná
 
 A menübe érkezés után a felhasználónak lehetősége nyílik a játékteret betölteni, vagy kilépni. 
 
-A „Start” gombra kattintás után, betöltődik a magasságmező kezelő komponens, a kamera a kezdőpontra pozícionálódik, elkezdődnek a játékmenethez elengedhetetlen háttérszámítások, és egy új zene lejátszása, betöltődnek a játéktér modelljei, elemei, illetve átvált azok kirajzolására. Hogy a játékos informálva legyen, ez idő alatt megjelenik a betöltőképernyő.
+A „Start” gombra kattintás után, betöltődik a magasságmező kezelő komponens, a kamera a kezdőpontra pozícionálódik, elkezdődnek a játékmenethez elengedhetetlen háttérszámítások és egy új zene lejátszása, betöltődnek a játéktér modelljei, elemei, átvált azok kirajzolására, illetve elrejti az egérkurzort. Hogy a játékos informálva legyen, ez idő alatt megjelenik a betöltőképernyő.
 
 \begin{figure}[h]
 \centering

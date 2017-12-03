@@ -22,21 +22,21 @@ Az általam írt motorhoz a legközelebb a Quake engine (id Tech) 2-es és 3-as 
 
 \Section{Egyedi igények és megoldandó problémák}
 
-A saját játékom tervezésekor, megvizsgáltam, hogy milyen jellegű programra, milyen funkciókra van szükség, azt hogyan tervezem majd megvalósítani. Egy kész játékmotor használata helyett egy saját játékmotor implementálására esett a választás. A döntést részben az indokolta, hogy az egyedi funkciók implementálására egy kész játékmotor esetében is szükség lenne. A fő ok viszont az volt, hogy egy játékmotor fejlesztése kimondottan alkalmas különféle matematikával (geometriával, optimalizálással) és programfejlesztéssel (szoftver architektúrával és implementációval)  kapcsolatos problémák vizsgálatára, szemléltetésére és megoldására.
+A saját játékom tervezésekor megvizsgáltam, hogy milyen jellegű programra, milyen funkciókra van szükség, azt hogyan tervezem majd megvalósítani. Egy kész játékmotor használata helyett egy saját játékmotor implementálására esett a választás. A döntést részben az indokolta, hogy az egyedi funkciók implementálására egy kész játékmotor esetében is szükség lenne. A fő ok viszont az volt, hogy egy játékmotor fejlesztése kimondottan alkalmas különféle matematikával (geometriával, optimalizálással) és programfejlesztéssel (szoftver architektúrával és implementációval) kapcsolatos problémák vizsgálatára, szemléltetésére és megoldására.
 
 \Section{Optimalizálási problémák}
 
-A játékban megvalósítandó elemek között szerepel a lövés, a mesterséges intelligencia, az ütközésvizsgálat, és mindnek megvannak a maga optimalizálási problémái. Ütközésvizsgálatra szükség van a játékos karakterének az ellenfeleknek és a lövéshez is a találatok regisztrálására, pontos helyének számolására. A játéktér háromszögekből áll. A lövés megvalósításához szükségünk van háromszög, és egyenes metszéspontjának számítására, hogy vizualizálható legyen a lövedék becsapódásának helye a talajon, falakon, illetve egyéb játékbeli elemeken. Ez alapjában véve egy matematikai probléma, amit ki kell számoltatni, le kell programozni. Meg kell határozni azt az egyenest, ami azt mutatja meg, éppen merre nézünk, majd vizsgálni kell, hogy az adott egyenes metszi-e a teret alkotó háromszögek egyikét. De mivel több 100000 háromszög és egyenes metszéspontját kellene alap esetben számítani, így ez több optimalizálási problémát is felvet, amit a későbbiekben részletezek.
+A játékban megvalósítandó elemek között szerepel a lövés, a mesterséges intelligencia, az ütközésvizsgálat, és mindnek megvannak a maga optimalizálási problémái. Ütközésvizsgálatra szükség van a játékos karakterének az ellenfeleknek és a lövéshez is a találatok regisztrálására, pontos helyének számolására. A játéktér háromszögekből áll. A lövés megvalósításához szükségünk van háromszög, és egyenes metszéspontjának számítására, hogy vizualizálható legyen a lövedék becsapódásának helye a talajon, falakon, illetve egyéb játékbeli elemeken. Ez alapjában véve egy matematikai probléma, amit ki kell számoltatni, le kell programozni. Meg kell határozni azt az egyenest, ami azt mutatja meg, éppen merre nézünk, majd vizsgálni kell, hogy az adott egyenes metszi-e a teret alkotó háromszögek egyikét. De mivel több 100000 háromszög és egyenes metszéspontját kellene alap esetben számítani, így ez több optimalizálási problémát is felvet, amelyek a későbbiekben részletezésre kerülnek.
 
 \Section{A játékmotor fő elemei}
 
 \SubSection{Mesterséges intelligencia}
 
-A mesterséges intelligenciának elsősorban az a feladata, hogy az ellenfelek egy meghatározott útvonalon mozogjanak, ne menjenek át falakon, menjenek egymásba. A véletlenszerűen lerakott ellenfelet a legközelebbi definiált waypoint-hoz kell irányítani, definiálni kell a célpontot (ami elsődlegesen a játékos), és ki kell számítani a pontokon keresztül vezető legrövidebb útvonalat.
+A mesterséges intelligenciának elsősorban az a feladata, hogy az ellenfelek egy meghatározott útvonalon mozogjanak, ne menjenek át falakon, menjenek egymásba. A véletlenszerűen lerakott ellenfelet a legközelebbi definiált waypoint-hoz kell irányítani, definiálni kell a célt (ami elsődlegesen a játékos), és ki kell számítani a pontokon keresztül vezető legrövidebb útvonalat.
 
 \SubSection{Hangok}
 
-Egy játékhoz hozzátartoznak a hangeffektek, zenék is, amik élvezetessé teszik azt. Egy jól megválasztott zene például nagyon sokat tud javítani a játékélményen. Ezek megszólalásáért az SDL\_mixer felelős, ami lehetővé teszi azt is, hogy több hang egyidőben, átfedésben megszólaljon, és ne várják meg egymást. Lehetőség van hangcsatornákat megadni, folyamatos újrajátszást, illetve a hangok egymáshoz viszonyított hangerejét beállítani.
+Egy játékhoz hozzátartoznak a hangeffektek, zenék is, amelyek élvezetessé teszik azt. Egy jól megválasztott zene például nagyon sokat tud javítani a játékélményen. Ezek megszólalásáért az SDL\_mixer felelős, amely lehetővé teszi azt is, hogy több hang egy időben, átfedésben megszólaljon, és ne várják meg egymást. Lehetőség van hangcsatornákat megadni, folyamatos újrajátszást, illetve a hangok egymáshoz viszonyított hangerejét beállítani.
 
 \SubSection{Magasságmező}
 
@@ -48,7 +48,7 @@ A játéktér domborzatának adatait egy képből, az egyéb modelleket pedig .o
 
 \SubSection{A csapda, mint játékelem}
 
-Mindenképp szerettem volna olyan elemet a játékba, ami megkülönbözteti a többi, hasonló, aréna jellegű, túlélős játéktól. Az egyik ilyen elem, hogy ha a játékos egy előre meghatározott időnél több ideig nem mozdul, akkor megjelenik alatta egy csapda, amelybe leesik, és meghal. Vannak olyan játékok, ahol szimplán az ellenfelek ösztönzik a játékost a mozgásra, de a játék itt kikényszeríti azt, hogy a játékosok mozgásban legyenek. A megállásnál a küszöbérték tapasztalati alapon beállítva 5 másodperc lett. Ezt követően megjelenik a csapda modell egy hang kíséretében. Ezt követően 2 másodpercig még a kamera irányát tudja változtatni a játékos, utána viszont már azt sem. Ezt követően az a föld felé fordul, majd értesíti a játékost a történtek okáról.
+Mindenképp szerettem volna olyan elemet a játékba, ami megkülönbözteti a többi, hasonló, aréna jellegű, túlélős játéktól. Az egyik ilyen elem, hogy ha a játékos egy előre meghatározott időnél több ideig nem mozdul, akkor megjelenik alatta egy csapda, amelybe leesik, és meghal. Vannak olyan játékok, ahol szimplán az ellenfelek ösztönzik a játékost a mozgásra, de a játék itt kikényszeríti azt, hogy a játékosok mozgásban legyenek. A megállásnál a küszöbérték tapasztalati alapon beállítva 5 másodperc lett. Ezt követően megjelenik a csapda modell egy hang kíséretében, majd 2 másodpercig még a kamera irányát tudja változtatni a játékos, utána viszont már azt sem. Ezt követően az a föld felé fordul, majd értesíti a játékost a történtek okáról.
 
 \SubSection{A lövés}
 

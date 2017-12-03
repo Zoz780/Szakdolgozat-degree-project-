@@ -96,7 +96,7 @@ Az ütközésvizsgálatra minden képkocka kiszámítása előtt szükség van. 
 
 Az optimalizálás egyik módja, hogy felosztjuk a játékteret kisebb részekre, majd ezeket olyan struktúrába rendezzük, hogy a bennük való keresés hatékonyabb legyen. Ennek egyik egyszerűbb változata, hogy egyenközű felosztást alkalmazunk. Ezt követően meg kell határoznunk, hogy melyik objektum, vagy a pályának melyik része melyik térrészben található. Egyenközű felosztásra láthatunk egy példát \aref{fig:grid}. ábrán.
 
-A karakterek ütközésvizsgálatánál elegendő, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyikben épp tartózkodik az objektum, de ajánlott a körülötte levő 8 részre is. Utóbbira azért lehet szükség egyes esetkben, mert a játékos gyors mozgása esetén előfordulhat, hogy nem tölti be időben a közvetlen mellette lévő térrészt, ami problémákhoz vezethet.
+A karakterek ütközésvizsgálatánál elegendő, ha mindig csak arra a térrészre vesszük figyelembe az ütközést amelyikben épp tartózkodik az objektum, de ajánlott a körülötte levő 8 részre is. Utóbbira azért lehet szükség egyes esetekben, mert a játékos gyors mozgása esetén előfordulhat, hogy nem tölti be időben a közvetlen mellette lévő térrészt, ami problémákhoz vezethet.
 
 A lövedék becsapódásának $(x, y, z)$ koordinátáját is kevesebb számítással kaphatjuk meg így, mert csak azokat a térrészeket kell figyelembe venni, amelyek a játékos karakterének irányvektorával metszésben vannak. A módszer implementálása egyszerű, de mégis nagy gyorsulást tapasztalhatunk a számításokban. Hátránya viszont, hogy mindenhol egyformán osztjuk fel a teret, és lehetnek olyan részek, ahol indokolatlanul sűrű a felosztás. Ilyen például egy nagy mező, amelyen nincsenek tereptárgyak vagy egyéb objektumok. Azért, hogy a felosztott térrészekben való keresés hatékonyabb legyen, a felosztást egy fa struktúra szerint tesszük meg. A felosztásban szereplő régiók számának logaritmusával lesz majd arányos a keresés lépéseinek a száma.
 
@@ -122,11 +122,11 @@ Használatánál az első feladatunk a fa gyökerének meghatározása, ami a te
 
 \SubSection{A BSP fa}
 
-A BSP (\textit{Binary Space Partitioning}) egy, a tér felezésére épülő térpartícionáló módszer. Tetszőleges dimenziójú térben alkalmazható. A BSP fa mindig két részre osztja a teret, viszont a vágósík nem a térrész mérete alapján felezi a teret, hanem a benne található objektumok száma alapján. (Páratlan elemszám esetén az egyik térrészben egyel több elem kerül.) Az osztás irányát a fa minden mélységi szintjén változtatja, egyszer vízszintes, egyszer függőleges a vágás. Az adott objektumig úgy jutunk el, hogy mindig kiválasztjuk, hogy az éppen vizsgált objektum az osztás bal, vagy jobb oldalán van. Kilépési feltételnek, szintén a négyes fához hasonlóan, megadhatjuk a fa maximális mélységét, illetve az adott cellában szereplő maximális objektumszámot. Ideális esetben a fa leveleibe egy-egy objektum kerül.
+A BSP (\textit{Binary Space Partitioning}) egy, a tér felezésére épülő térpartícionáló módszer. Tetszőleges dimenziójú térben alkalmazható. A BSP fa mindig két részre osztja a teret, viszont a vágósík nem a térrész mérete alapján felezi a teret, hanem a benne található objektumok száma alapján. (Páratlan elemszám esetén az egyik térrészbe egyel több elem kerül.) Az osztás irányát a fa minden mélységi szintjén változtatja, egyszer vízszintes, egyszer függőleges a vágás. Az adott objektumig úgy jutunk el, hogy mindig kiválasztjuk, hogy az éppen vizsgált objektum az osztás bal, vagy jobb oldalán van. Kilépési feltételnek, szintén a négyes fához hasonlóan, megadhatjuk a fa maximális mélységét, illetve az adott cellában szereplő maximális objektumszámot. Ideális esetben a fa leveleibe egy-egy objektum kerül.
 
 \SubSection{Optimalizálási módszer kiválasztása}
 
-A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrások felhasználását a fölösleges számítások mellőzésével, de ez a módszer felhasználható még akár egy raktárépület területének felosztására, hogy a keresést optimalizáljuk, így kevesebb időt vegyen igénybe.
+A saját játékom készítése során a négyes fát alkalmaztam, hogy optimalizáljam az erőforrások felhasználását a fölösleges számítások mellőzésével. Ez a módszer felhasználható még egy raktárépület területének felosztására, hogy a keresést optimalizáljuk, így kevesebb időt vegyen igénybe.
 
 Azért a négyes fa alkalmazására esett a választás, mert ezt egyszerűbb volt implementálni, és a térrész magassága eleve limitált, így a $z$ összetevőnek kisebb a jelentősége.
 
